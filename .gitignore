@@ -67,3 +67,4 @@ fabric.properties
 
 # My definitions of ignored directories and files
 target/
+!.mvn/wrapper/maven-wrapper.jar
