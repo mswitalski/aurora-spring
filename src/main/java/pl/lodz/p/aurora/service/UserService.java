@@ -1,14 +1,13 @@
 package pl.lodz.p.aurora.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import pl.lodz.p.aurora.domain.repository.UserRepository;
+import pl.lodz.p.aurora.domain.entity.User;
+
+import java.util.List;
 
 /**
- * Service class used for processing user account data.
+ * Interface for service for user feature.
  */
-@Service
-public class UserService {
+public interface UserService {
 
-    @Autowired private UserRepository userRepository;
+    List<User> findAll();
 }

@@ -16,14 +16,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class UserRepositoryUnitTests {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private UserDataFactory dataFactory;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserDataFactory dataFactory;
 
     @Test
     public void allUsersWereReturnedFromDatabase() {
         // Given
         Integer howManyDummyUsers = 5;
-        List<User> testData = dataFactory.createMany(howManyDummyUsers);
+        List<User> testData = dataFactory.createAndSaveMany(howManyDummyUsers);
 
         // When
         List<User> dataReturnedByRepository = userRepository.findAll();
@@ -41,7 +43,7 @@ public class UserRepositoryUnitTests {
     @Test
     public void foundUserWithGivenUsernameInDatabase() {
         // Given
-        User dummyUser = dataFactory.createSingle();
+        User dummyUser = dataFactory.createAndSaveSingle();
 
         // When
         User userReturnedByRepository = userRepository.findByUsername(dummyUser.getUsername());

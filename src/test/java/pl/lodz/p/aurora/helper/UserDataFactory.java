@@ -20,19 +20,21 @@ public class UserDataFactory {
     @Value("${aurora.test.default.password}")
     private String defaultPassword;
 
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     private RandomStringGenerator randomGenerator = new RandomStringGenerator.Builder()
             .withinRange('a', 'z').build();
 
     /**
-     * Provide a single dummy user entity, that was saved to the database.
+     * Provide a single dummy user entity without saving to database.
      *
      * @return Dummy user entity saved to database
      */
     public User createSingle() {
         String randomString = randomGenerator.generate(10);
         String randomEmail = randomString + '@' + randomString + ".com";
-        User user = new User(
+        return new User(
                 randomString,
                 defaultPassword,
                 randomEmail,
@@ -42,8 +44,27 @@ public class UserDataFactory {
                 randomString,
                 true
         );
+    }
 
-        return userRepository.saveAndFlush(user);
+    /**
+     * Provide as many dummy user entities as given without saving to database.
+     *
+     * @return List of dummy user entities saved to the database
+     */
+    public List<User> createMany(Integer howMany) {
+        List<User> generatedUsers = new ArrayList<>();
+        IntStream.range(0, howMany).forEach(i -> generatedUsers.add(createSingle()));
+
+        return generatedUsers;
+    }
+
+    /**
+     * Provide a single dummy user entity, that was saved to the database.
+     *
+     * @return Dummy user entity saved to database
+     */
+    public User createAndSaveSingle() {
+        return userRepository.saveAndFlush(createSingle());
     }
 
     /**
@@ -51,9 +72,9 @@ public class UserDataFactory {
      *
      * @return List of dummy user entities saved to the database
      */
-    public List<User> createMany(Integer howMany) {
+    public List<User> createAndSaveMany(Integer howMany) {
         List<User> generatedUsers = new ArrayList<>();
-        IntStream.range(0, howMany).forEach(i -> generatedUsers.add(createSingle()));
+        IntStream.range(0, howMany).forEach(i -> generatedUsers.add(createAndSaveSingle()));
 
         return generatedUsers;
     }
