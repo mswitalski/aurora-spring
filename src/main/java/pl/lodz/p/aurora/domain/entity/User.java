@@ -19,6 +19,9 @@ public class User {
     @SequenceGenerator(name = "user_pk_sequence", sequenceName = "user_id_sequence", allocationSize = 1)
     private Long id;
 
+    @Column(name = "USERNAME", nullable = false, length = 20, unique = true)
+    private String username;
+
     @Column(name = "PASSWORD", nullable = false, length = 60)
     private String password;
 
@@ -46,7 +49,8 @@ public class User {
     public User() {
     }
 
-    public User(String password, String email, String name, String surname, String position, String goals, boolean enabled) {
+    public User(String username, String password, String email, String name, String surname, String position, String goals, boolean enabled) {
+        this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
@@ -54,6 +58,14 @@ public class User {
         this.position = position;
         this.goals = goals;
         this.enabled = enabled;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getId() {
