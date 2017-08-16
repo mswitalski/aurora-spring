@@ -2,9 +2,7 @@ package pl.lodz.p.aurora.web;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.domain.dto.UserDto;
 import pl.lodz.p.aurora.domain.entity.User;
 import pl.lodz.p.aurora.service.UserServiceImpl;
@@ -15,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * REST controller for managing any requests related to user account.
  */
-@RequestMapping(value = "api/users/")
+@RequestMapping("api/users/")
 @RestController
 public class UserController {
 
@@ -28,7 +26,7 @@ public class UserController {
         this.modelMapper = modelMapper;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public List<UserDto> findAll() {
         return userService.findAll().stream().map(this::convertToDto)
                 .collect(Collectors.toList());
