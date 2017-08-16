@@ -2,6 +2,8 @@ package pl.lodz.p.aurora.web;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.domain.dto.UserDto;
 import pl.lodz.p.aurora.domain.entity.User;
@@ -30,6 +32,18 @@ public class UserController {
     public List<UserDto> findAll() {
         return userService.findAll().stream().map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "{username}", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
+        User foundUser = userService.findByUsername(username);
+
+        if (foundUser == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        } else {
+            return new ResponseEntity<>(convertToDto(foundUser), HttpStatus.OK);
+        }
     }
 
     /**

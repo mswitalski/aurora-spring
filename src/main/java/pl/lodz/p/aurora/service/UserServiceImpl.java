@@ -27,7 +27,18 @@ public class UserServiceImpl implements UserService {
      *
      * @return List of all users saved in data source
      */
+    @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Find user saved in data source by username.
+     *
+     * @return User with given username
+     */
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,6 +25,7 @@ public class UserServiceImplUnitTests {
     private UserServiceImpl userService;
 
     private UserDataFactory dataFactory = new UserDataFactory();
+    private String fakeUsername = "fakeUsername";
 
     @Test
     public void emptyListReturnedIfNoUsersFound() {
@@ -59,5 +61,30 @@ public class UserServiceImplUnitTests {
 
         // Then
         assertThat(returnedUsersList).isNotNull().hasSize(2);
+    }
+
+    @Test
+    public void noUserReturnedWithGivenUsername() {
+        // Given
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
+
+        // When
+        User returnedUser = userService.findByUsername(fakeUsername);
+
+        // Then
+        assertThat(returnedUser).isNull();
+    }
+
+    @Test
+    public void userReturnedWithGivenUsername() {
+        // Given
+        User dummyUser = dataFactory.createSingle();
+        when(userRepository.findByUsername(anyString())).thenReturn(dummyUser);
+
+        // When
+        User returnedUser = userService.findByUsername(fakeUsername);
+
+        // Then
+        assertThat(returnedUser).isNotNull().isEqualTo(dummyUser);
     }
 }

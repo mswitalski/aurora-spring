@@ -65,4 +65,30 @@ public class UserControllerIntegrationTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2).contains(savedUsersList.get(0));
     }
+
+    @Test
+    public void noContentResponseIfNoUserFoundWithGivenUsername() {
+        // Given
+        String findByUsernameUrl = "/api/users/some+fake+username";
+
+        // When
+        ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    public void responseWithUserIfUserFoundWithGivenUsername() {
+        // Given
+        UserDto savedUser = dataFactory.createAndSaveSingle();
+        String findByUsernameUrl = "/api/users/" + savedUser.getName();
+
+        // When
+        ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().isEqualTo(savedUser);
+    }
 }
