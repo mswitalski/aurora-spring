@@ -46,7 +46,7 @@ public class UserRepositoryUnitTests {
         User dummyUser = dataFactory.createAndSaveSingle();
 
         // When
-        User userReturnedByRepository = userRepository.findByUsername(dummyUser.getUsername());
+        User userReturnedByRepository = userRepository.findDistinctByUsername(dummyUser.getUsername());
 
         // Then
         assertThat(userReturnedByRepository).isNotNull().isEqualTo(dummyUser);
@@ -58,7 +58,7 @@ public class UserRepositoryUnitTests {
         String nonExistingUsername = "this name is strange";
 
         // When
-        User userReturnedByRepository = userRepository.findByUsername(nonExistingUsername);
+        User userReturnedByRepository = userRepository.findDistinctByUsername(nonExistingUsername);
 
         // Then
         assertThat(userReturnedByRepository).isNull();

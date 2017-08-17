@@ -66,7 +66,7 @@ public class UserServiceImplUnitTests {
     @Test
     public void noUserReturnedWithGivenUsername() {
         // Given
-        when(userRepository.findByUsername(anyString())).thenReturn(null);
+        when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
 
         // When
         User returnedUser = userService.findByUsername(fakeUsername);
@@ -79,7 +79,7 @@ public class UserServiceImplUnitTests {
     public void userReturnedWithGivenUsername() {
         // Given
         User dummyUser = dataFactory.createSingle();
-        when(userRepository.findByUsername(anyString())).thenReturn(dummyUser);
+        when(userRepository.findDistinctByUsername(anyString())).thenReturn(dummyUser);
 
         // When
         User returnedUser = userService.findByUsername(fakeUsername);
