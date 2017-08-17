@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity class holding information about an user account.
@@ -45,6 +47,18 @@ public class User {
 
     @Column(name = "IS_ENABLED", nullable = false)
     private boolean enabled = true;
+
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class)
+    @JoinTable(
+            name = "USER_ROLE",
+            joinColumns = @JoinColumn(
+                    name = "USER_ID", referencedColumnName = "ID", nullable = false, updatable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "ROLE_NAME", referencedColumnName = "NAME", nullable = false, updatable = false
+            )
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @Version
     private Long version;
@@ -133,6 +147,18 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Set<Role> getRoles() {
+        return new HashSet<>(roles);
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = new HashSet<>(roles);
+    }
+
+    public void assignRole(Role role) {
+        this.roles.add(role);
     }
 
     public int hashCode() {
