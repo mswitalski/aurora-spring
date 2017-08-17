@@ -42,25 +42,27 @@ public class UserServiceImplUnitTests {
     @Test
     public void oneUserInListReturnedIfOneUserFound() {
         // Given
-        when(userRepository.findAll()).thenReturn(dataFactory.createMany(1));
+        Integer howManyUsers = 1;
+        when(userRepository.findAll()).thenReturn(dataFactory.createMany(howManyUsers));
 
         // When
         List<User> returnedUsersList = userService.findAll();
 
         // Then
-        assertThat(returnedUsersList).isNotNull().hasSize(1);
+        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
     }
 
     @Test
     public void twoUsersInListReturnedIfTwoUsersFound() {
         // Given
-        when(userRepository.findAll()).thenReturn(dataFactory.createMany(2));
+        Integer howManyUsers = 2;
+        when(userRepository.findAll()).thenReturn(dataFactory.createMany(howManyUsers));
 
         // When
         List<User> returnedUsersList = userService.findAll();
 
         // Then
-        assertThat(returnedUsersList).isNotNull().hasSize(2);
+        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
     }
 
     @Test
