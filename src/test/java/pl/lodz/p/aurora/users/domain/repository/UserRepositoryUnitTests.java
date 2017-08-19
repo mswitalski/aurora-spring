@@ -1,11 +1,12 @@
-package pl.lodz.p.aurora.domain.repository;
+package pl.lodz.p.aurora.users.domain.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.aurora.domain.entity.User;
+import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.helper.UserDataFactory;
 
 import java.util.List;
@@ -62,5 +63,25 @@ public class UserRepositoryUnitTests {
 
         // Then
         assertThat(userReturnedByRepository).isNull();
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void emptyUserIsNotSavedToDatabase() {
+        // Given
+        User dummyUser = new User();
+
+        // When
+        userRepository.saveAndFlush(dummyUser);
+    }
+
+    @Test(expected = Exception.class)
+    public void userWithInvalidUsernameIsNotSavedToDatabase() {
+        // Given
+        String invalidUsername = "#2@#$_  ASd";
+        User dummyUser = dataFactory.createSingle();
+        dummyUser.setUsername(invalidUsername);
+
+        // When
+        userRepository.saveAndFlush(dummyUser);
     }
 }

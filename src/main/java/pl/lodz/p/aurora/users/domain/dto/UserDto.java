@@ -1,72 +1,59 @@
-package pl.lodz.p.aurora.domain.entity;
+package pl.lodz.p.aurora.users.domain.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.validator.constraints.Email;
+import pl.lodz.p.aurora.users.domain.entity.Role;
 
-import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Entity class holding information about an user account.
+ * DTO class for User entity.
  */
-@Entity
-@Table(name = "USER", indexes = {
-        @Index(columnList = "NAME"),
-        @Index(columnList = "SURNAME"),
-        @Index(columnList = "IS_ENABLED")
-})
-public class User {
+public class UserDto {
 
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(generator = "user_pk_sequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_pk_sequence", sequenceName = "user_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(name = "USERNAME", nullable = false, length = 20, unique = true)
+    @NotNull(message = "{UserDto.username.NotNull}")
+    @Size(min = 3, max = 20, message = "{UserDto.username.Size}")
     private String username;
 
-    @Column(name = "PASSWORD", nullable = false, length = 60)
+    @NotNull(message = "{UserDto.password.NotNull}")
+    @Size(min = 3, max = 60, message = "{UserDto.password.Size}")
     private String password;
 
-    @Column(name = "EMAIL", nullable = false, length = 40, unique = true)
+    @NotNull(message = "{UserDto.email.NotNull}")
+    @Email(message = "{UserDto.email.Email}")
+    @Size(max = 40, message = "{UserDto.email.Size}")
     private String email;
 
-    @Column(name = "NAME", nullable = false, length = 20)
+    @NotNull(message = "{UserDto.name.NotNull}")
+    @Size(min = 3, max = 20, message = "{UserDto.name.Size}")
     private String name;
 
-    @Column(name = "SURNAME", nullable = false, length = 30)
+    @NotNull(message = "{UserDto.surname.NotNull}")
+    @Size(min = 3, max = 30, message = "{UserDto.surname.Size}")
     private String surname;
 
-    @Column(name = "POSITION", nullable = false, length = 40)
+    @NotNull(message = "{UserDto.position.NotNull}")
+    @Size(min = 2, max = 40, message = "{UserDto.position.Size}")
     private String position;
 
-    @Column(name = "GOALS", nullable = false, length = 200)
-    private String goals;
+    @Size(max = 200, message = "{UserDto.goals.Size}")
+    private String goals = "";
 
-    @Column(name = "IS_ENABLED", nullable = false)
+    @NotNull(message = "{UserDto.enabled.NotNull}")
     private boolean enabled = true;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class)
-    @JoinTable(
-            name = "USER_ROLE",
-            joinColumns = @JoinColumn(
-                    name = "USER_ID", referencedColumnName = "ID", nullable = false, updatable = false
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "ROLE_NAME", referencedColumnName = "NAME", nullable = false, updatable = false
-            )
-    )
     private Set<Role> roles = new HashSet<>();
 
-    @Version
-    private Long version;
-
-    public User() {
+    public UserDto() {
     }
 
-    public User(String username, String password, String email, String name, String surname, String position, String goals, boolean enabled) {
+    public UserDto(Long id, String username, String password, String email, String name, String surname, String position, String goals, boolean enabled, Set<Role> roles) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -75,14 +62,7 @@ public class User {
         this.position = position;
         this.goals = goals;
         this.enabled = enabled;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        this.roles = new HashSet<>(roles);
     }
 
     public Long getId() {
@@ -91,6 +71,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -155,10 +143,6 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = new HashSet<>(roles);
-    }
-
-    public void assignRole(Role role) {
-        this.roles.add(role);
     }
 
     public int hashCode() {

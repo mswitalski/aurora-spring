@@ -33,9 +33,9 @@ public abstract class EntityDataFactory<T> {
     }
 
     /**
-     * Provide as many dummy user entities as given, that were saved to database.
+     * Provide as many dummy users entities as given, that were saved to database.
      *
-     * @return List of dummy user entities saved to the database
+     * @return List of dummy users entities saved to the database
      */
     public List<T> createAndSaveMany(Integer howMany) {
         List<T> generatedEntities = new ArrayList<>();

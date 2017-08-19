@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.web;
+package pl.lodz.p.aurora.users.web;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.aurora.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.helper.UserDtoDataFactory;
 
 import java.util.List;
@@ -69,7 +69,7 @@ public class UserControllerIntegrationTests {
     @Test
     public void noContentResponseIfNoUserFoundWithGivenUsername() {
         // Given
-        String findByUsernameUrl = "/api/users/some+fake+username";
+        String findByUsernameUrl = featureUrl + "some+fake+username";
 
         // When
         ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
@@ -82,7 +82,7 @@ public class UserControllerIntegrationTests {
     public void responseWithUserIfUserFoundWithGivenUsername() {
         // Given
         UserDto savedUser = dataFactory.createAndSaveSingle();
-        String findByUsernameUrl = "/api/users/" + savedUser.getName();
+        String findByUsernameUrl = featureUrl + savedUser.getName();
 
         // When
         ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);

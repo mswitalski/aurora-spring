@@ -1,10 +1,10 @@
-package pl.lodz.p.aurora.service;
+package pl.lodz.p.aurora.users.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.aurora.domain.entity.Role;
-import pl.lodz.p.aurora.domain.repository.RoleRepository;
+import pl.lodz.p.aurora.users.domain.entity.Role;
+import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
 
 import java.util.List;
 

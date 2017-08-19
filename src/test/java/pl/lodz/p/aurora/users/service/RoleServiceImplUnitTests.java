@@ -1,12 +1,12 @@
-package pl.lodz.p.aurora.service;
+package pl.lodz.p.aurora.users.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import pl.lodz.p.aurora.domain.entity.Role;
-import pl.lodz.p.aurora.domain.repository.RoleRepository;
+import pl.lodz.p.aurora.users.domain.entity.Role;
+import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 
 import java.util.ArrayList;

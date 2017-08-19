@@ -4,12 +4,8 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.aurora.domain.entity.User;
-import pl.lodz.p.aurora.domain.repository.UserRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
+import pl.lodz.p.aurora.users.domain.entity.User;
+import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 /**
  * Utility class providing test data for features related to users.
@@ -29,9 +25,9 @@ public class UserDataFactory extends EntityDataFactory<User> {
     }
 
     /**
-     * Provide a single dummy user entity without saving to database.
+     * Provide a single dummy users entity without saving to database.
      *
-     * @return Dummy user entity saved to database
+     * @return Dummy users entity saved to database
      */
     @Override
     public User createSingle() {

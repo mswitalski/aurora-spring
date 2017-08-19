@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.domain.entity;
+package pl.lodz.p.aurora.users.domain.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,11 +9,11 @@ import javax.persistence.*;
  * Entity class holding information about an user role in the system.
  */
 @Entity
-@Table(name = "ROLE")
+@Table
 public class Role {
 
     @Id
-    @Column(name = "NAME", length = 10)
+    @Column(length = 10)
     private String name;
 
     public Role() {
