@@ -73,15 +73,4 @@ public class UserRepositoryUnitTests {
         // When
         userRepository.saveAndFlush(dummyUser);
     }
-
-    @Test(expected = Exception.class)
-    public void userWithInvalidUsernameIsNotSavedToDatabase() {
-        // Given
-        String invalidUsername = "#2@#$_  ASd";
-        User dummyUser = dataFactory.createSingle();
-        dummyUser.setUsername(invalidUsername);
-
-        // When
-        userRepository.saveAndFlush(dummyUser);
-    }
 }
