@@ -2,8 +2,11 @@ package pl.lodz.p.aurora.users.domain.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,27 +27,43 @@ public class User {
     private Long id;
 
     @Column(nullable = false, length = 20, unique = true)
+    @NotNull
+    @Size(min = 3, max = 20)
     private String username;
 
     @Column(nullable = false, length = 60)
+    @NotNull
+    @Size(min = 3, max = 60)
     private String password;
 
     @Column(nullable = false, length = 40, unique = true)
+    @Email
+    @NotNull
+    @Size(max = 40)
     private String email;
 
     @Column(nullable = false, length = 20)
+    @NotNull
+    @Size(min = 3, max = 20)
     private String name;
 
     @Column(nullable = false, length = 30)
+    @NotNull
+    @Size(min = 3, max = 30)
     private String surname;
 
     @Column(nullable = false, length = 40)
+    @NotNull
+    @Size(min = 2, max = 40)
     private String position;
 
     @Column(nullable = false, length = 200)
-    private String goals;
+    @NotNull
+    @Size(max = 200)
+    private String goals = "";
 
     @Column(nullable = false)
+    @NotNull
     private boolean enabled = true;
 
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class)
@@ -166,5 +185,13 @@ public class User {
 
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", version=" + version +
+                '}';
     }
 }

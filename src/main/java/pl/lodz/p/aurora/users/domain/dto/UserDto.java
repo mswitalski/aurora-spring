@@ -24,8 +24,8 @@ public class UserDto {
     @Size(min = 3, max = 60, message = "{UserDto.password.Size}")
     private String password;
 
-    @NotNull(message = "{UserDto.email.NotNull}")
     @Email(message = "{UserDto.email.Email}")
+    @NotNull(message = "{UserDto.email.NotNull}")
     @Size(max = 40, message = "{UserDto.email.Size}")
     private String email;
 
@@ -41,6 +41,7 @@ public class UserDto {
     @Size(min = 2, max = 40, message = "{UserDto.position.Size}")
     private String position;
 
+    @NotNull(message = "{UserDto.goals.NotNull}")
     @Size(max = 200, message = "{UserDto.goals.Size}")
     private String goals = "";
 

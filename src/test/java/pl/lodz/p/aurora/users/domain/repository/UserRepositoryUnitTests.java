@@ -4,11 +4,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.helper.UserDataFactory;
+import pl.lodz.p.aurora.users.domain.entity.User;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +65,7 @@ public class UserRepositoryUnitTests {
         assertThat(userReturnedByRepository).isNull();
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void emptyUserIsNotSavedToDatabase() {
         // Given
         User dummyUser = new User();

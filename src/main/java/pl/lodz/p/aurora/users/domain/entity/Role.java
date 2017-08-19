@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 /**
  * Entity class holding information about an user role in the system.
@@ -14,6 +15,7 @@ public class Role {
 
     @Id
     @Column(length = 10)
+    @Size(min = 2, max = 10)
     private String name;
 
     public Role() {

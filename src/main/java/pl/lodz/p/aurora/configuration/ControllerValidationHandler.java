@@ -1,5 +1,7 @@
 package pl.lodz.p.aurora.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -7,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
+import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
 
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerValidationHandler {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Translator translator;
 
     @Autowired
@@ -36,7 +40,9 @@ public class ControllerValidationHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public List<ValidationMessageDto> processValidationError(MethodArgumentNotValidException exception) {
+    public List<ValidationMessageDto> processBeanValidationError(MethodArgumentNotValidException exception) {
+        logger.info("Data provided by user did not pass validation phase", exception);
+
         BindingResult bindingResult = exception.getBindingResult();
 
         return bindingResult.getFieldErrors().stream().map(this::constructValidationMessage).collect(Collectors.toList());
@@ -49,13 +55,21 @@ public class ControllerValidationHandler {
     @ExceptionHandler(UniqueConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public List<ValidationMessageDto> processValidationError2(@RequestHeader("Accept-Language") Locale locale,
-                                                              UniqueConstraintViolationException exception) {
+    public List<ValidationMessageDto> processUniqueValidationError(@RequestHeader("Accept-Language") Locale locale,
+                                                                   UniqueConstraintViolationException exception) {
+        logger.info("Data provided by user was not unique", exception);
+
         return exception.getFieldsNames().stream()
                 .map(f -> constructValidationMessage(
                         translator.translate(exception.getEntityName() + "." + f + ".Unique", locale),
                         f
                 )).collect(Collectors.toList());
+    }
+
+    @ExceptionHandler(InvalidEntityStateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void processInvalidEntityState(InvalidEntityStateException exception) {
+        logger.error("Application tried to save entity with invalid state", exception);
     }
 
     private ValidationMessageDto constructValidationMessage(String message, String fieldName) {
