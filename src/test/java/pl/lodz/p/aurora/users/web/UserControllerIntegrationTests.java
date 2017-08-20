@@ -14,7 +14,6 @@ import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.helper.UserDtoDataFactory;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,8 +29,8 @@ public class UserControllerIntegrationTests {
     private TestRestTemplate testRestTemplate;
     @Value("${aurora.default.role.name}")
     private String defaultEmployeeRoleName;
-    private String featureUrl = "/api/users/";
-    private String featureAdminUrl = "/api/admin/users/";
+    private final String featureUrl = "/api/users/";
+    private final String featureAdminUrl = "/api/admin/users/";
 
     @Test
     public void emptyUsersListReturnedWhenDatabaseIsEmpty() throws Exception {
@@ -138,7 +137,7 @@ public class UserControllerIntegrationTests {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Arrays.stream(response.getBody()).count()).isGreaterThan(0);
+        assertThat(response.getBody().length).isGreaterThan(0);
     }
 
     @Test
@@ -154,7 +153,7 @@ public class UserControllerIntegrationTests {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Arrays.stream(response.getBody()).count()).isEqualTo(1);
+        assertThat(response.getBody().length).isEqualTo(1);
         assertThat(response.getBody()[0].getFieldName()).isEqualTo("username");
     }
 
@@ -171,7 +170,7 @@ public class UserControllerIntegrationTests {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Arrays.stream(response.getBody()).count()).isEqualTo(1);
+        assertThat(response.getBody().length).isEqualTo(1);
         assertThat(response.getBody()[0].getFieldName()).isEqualTo("email");
     }
 
@@ -189,7 +188,7 @@ public class UserControllerIntegrationTests {
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Arrays.stream(response.getBody()).count()).isEqualTo(2);
+        assertThat(response.getBody().length).isEqualTo(2);
         assertThat(response.getBody()[1].getFieldName()).isEqualTo("username");
         assertThat(response.getBody()[0].getFieldName()).isEqualTo("email");
     }
