@@ -5,14 +5,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
+import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
+import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
+import pl.lodz.p.aurora.helper.UserDataFactory;
+import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
-import pl.lodz.p.aurora.helper.UserDataFactory;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -88,5 +95,66 @@ public class UserServiceImplUnitTests {
 
         // Then
         assertThat(returnedUser).isNotNull().isEqualTo(dummyUser);
+    }
+
+    @Test
+    public void returnProperlyCreatedUser() {
+        // Given
+        User dummyUser = dataFactory.createSingle();
+        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+
+        // When
+        User savedUserEntity = userRepository.saveAndFlush(dummyUser);
+
+        // Then
+        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
+    }
+
+    @Test(expected = InvalidEntityStateException.class)
+    public void failToCreateUserWithNullFields() {
+        // Given
+        User dummyUser = new User();
+        when(userRepository.saveAndFlush(any(User.class))).thenThrow(ConstraintViolationException.class);
+
+        // Then
+        userService.create(dummyUser);
+    }
+
+    @Test
+    public void failIfCreatedUserHasNotUniqueUsername() {
+        // Given
+        User dummyUser = dataFactory.createSingle();
+        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+        when(userRepository.findDistinctByUsername(anyString())).thenReturn(new User());
+        when(userRepository.findDistinctByEmail(anyString())).thenReturn(null);
+
+        // Expect
+        Throwable thrown = catchThrowable(() -> userService.create(dummyUser));
+
+        // Then
+        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
+        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
+                .isEqualTo(UserDto.class.getSimpleName());
+        assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
+                .isNotEmpty().contains("username");
+    }
+
+    @Test
+    public void failIfCreatedUserHasNotUniqueEmailAddress() {
+        // Given
+        User dummyUser = dataFactory.createSingle();
+        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+        when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
+        when(userRepository.findDistinctByEmail(anyString())).thenReturn(new User());
+
+        // Expect
+        Throwable thrown = catchThrowable(() -> userService.create(dummyUser));
+
+        // Then
+        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
+        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
+                .isEqualTo(UserDto.class.getSimpleName());
+        assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
+                .isNotEmpty().contains("email");
     }
 }

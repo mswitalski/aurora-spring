@@ -68,10 +68,10 @@ public class RoleServiceImplUnitTests {
     @Test
     public void noRoleReturnedWithGivenName() {
         // Given
-        when(roleRepository.findByName(anyString())).thenReturn(null);
+        when(roleService.findByName(anyString())).thenReturn(null);
 
         // When
-        Role returnedRole = roleRepository.findByName(fakeRoleName);
+        Role returnedRole = roleService.findByName(fakeRoleName);
 
         // Then
         assertThat(returnedRole).isNull();
@@ -81,10 +81,10 @@ public class RoleServiceImplUnitTests {
     public void roleReturnedWithGivenName() {
         // Given
         Role dummyRole = dataFactory.createSingle();
-        when(roleRepository.findByName(anyString())).thenReturn(dummyRole);
+        when(roleService.findByName(anyString())).thenReturn(dummyRole);
 
         // When
-        Role returnedRole = roleRepository.findByName(fakeRoleName);
+        Role returnedRole = roleService.findByName(fakeRoleName);
 
         // Then
         assertThat(returnedRole).isNotNull().isEqualTo(dummyRole);

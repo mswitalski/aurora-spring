@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
             nonUniqueFieldsNames.add("email");
         }
 
+        System.out.println(nonUniqueFieldsNames.size());
         return nonUniqueFieldsNames;
     }
 
