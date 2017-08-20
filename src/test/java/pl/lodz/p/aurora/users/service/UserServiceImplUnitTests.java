@@ -8,8 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
+import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDataFactory;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
@@ -28,10 +30,13 @@ public class UserServiceImplUnitTests {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private RoleService roleService;
     @InjectMocks
     private UserServiceImpl userService;
 
-    private UserDataFactory dataFactory = new UserDataFactory();
+    private UserDataFactory userDataFactory = new UserDataFactory();
+    private RoleDataFactory roleDataFactory = new RoleDataFactory();
     private String fakeUsername = "fakeUsername";
 
     @Test
@@ -50,7 +55,7 @@ public class UserServiceImplUnitTests {
     public void oneUserInListReturnedIfOneUserFound() {
         // Given
         Integer howManyUsers = 1;
-        when(userRepository.findAll()).thenReturn(dataFactory.createMany(howManyUsers));
+        when(userRepository.findAll()).thenReturn(userDataFactory.createMany(howManyUsers));
 
         // When
         List<User> returnedUsersList = userService.findAll();
@@ -63,7 +68,7 @@ public class UserServiceImplUnitTests {
     public void twoUsersInListReturnedIfTwoUsersFound() {
         // Given
         Integer howManyUsers = 2;
-        when(userRepository.findAll()).thenReturn(dataFactory.createMany(howManyUsers));
+        when(userRepository.findAll()).thenReturn(userDataFactory.createMany(howManyUsers));
 
         // When
         List<User> returnedUsersList = userService.findAll();
@@ -87,7 +92,7 @@ public class UserServiceImplUnitTests {
     @Test
     public void userReturnedWithGivenUsername() {
         // Given
-        User dummyUser = dataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
         when(userRepository.findDistinctByUsername(anyString())).thenReturn(dummyUser);
 
         // When
@@ -98,38 +103,54 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void returnProperlyCreatedUser() {
+    public void returnProperlyCreatedUserAsAdmin() {
         // Given
-        User dummyUser = dataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
         when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
 
         // When
-        User savedUserEntity = userRepository.saveAndFlush(dummyUser);
+        User savedUserEntity = userService.createAsAdmin(dummyUser);
 
         // Then
         assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
     }
 
+    @Test
+    public void returnProperlyCreatedUserAsUnitLeader() {
+        // Given
+        User dummyUser = userDataFactory.createSingle();
+        Role dummyRole = roleDataFactory.createSingle();
+        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+        when(roleService.findByName(any())).thenReturn(dummyRole);
+
+        // When
+        User savedUserEntity = userService.createAsUnitLeader(dummyUser);
+
+        // Then
+        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
+        assertThat(savedUserEntity.getRoles()).isNotNull().contains(dummyRole);
+    }
+
     @Test(expected = InvalidEntityStateException.class)
-    public void failToCreateUserWithNullFields() {
+    public void failToCreateUserWithNullFieldsAsAdmin() {
         // Given
         User dummyUser = new User();
         when(userRepository.saveAndFlush(any(User.class))).thenThrow(ConstraintViolationException.class);
 
         // Then
-        userService.create(dummyUser);
+        userService.createAsAdmin(dummyUser);
     }
 
     @Test
-    public void failIfCreatedUserHasNotUniqueUsername() {
+    public void failIfCreatedUserHasNotUniqueUsernameAsAdmin() {
         // Given
-        User dummyUser = dataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
         when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
         when(userRepository.findDistinctByUsername(anyString())).thenReturn(new User());
         when(userRepository.findDistinctByEmail(anyString())).thenReturn(null);
 
         // Expect
-        Throwable thrown = catchThrowable(() -> userService.create(dummyUser));
+        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
 
         // Then
         assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
@@ -140,15 +161,15 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void failIfCreatedUserHasNotUniqueEmailAddress() {
+    public void failIfCreatedUserHasNotUniqueEmailAddressAsAdmin() {
         // Given
-        User dummyUser = dataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
         when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
         when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
         when(userRepository.findDistinctByEmail(anyString())).thenReturn(new User());
 
         // Expect
-        Throwable thrown = catchThrowable(() -> userService.create(dummyUser));
+        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
 
         // Then
         assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);

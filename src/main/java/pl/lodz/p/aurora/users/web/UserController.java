@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * REST controller for managing any requests related to users account.
  */
-@RequestMapping("api/users/")
+@RequestMapping("api/")
 @RestController
 public class UserController {
 
@@ -29,32 +29,9 @@ public class UserController {
         this.modelMapper = modelMapper;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public UserDto create(@Validated @RequestBody UserDto userDto) {
-        return convertToDto(userService.create(convertToEntity(userDto)));
-    }
-
-    private void foo(Throwable t) {
-        System.out.println(t.getMessage());
-        if (t.getCause() != null) foo(t.getCause());
-    }
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<UserDto> findAll() {
-        return userService.findAll().stream().map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "{username}", method = RequestMethod.GET)
-    public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
-        User foundUser = userService.findByUsername(username);
-
-        if (foundUser == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-        } else {
-            return new ResponseEntity<>(convertToDto(foundUser), HttpStatus.OK);
-        }
+    @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
+    public UserDto createAsAdmin(@Validated @RequestBody UserDto userDto) {
+        return convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
     }
 
     /**
@@ -75,5 +52,28 @@ public class UserController {
      */
     private User convertToEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
+    }
+
+    @RequestMapping(value = "users/", method = RequestMethod.POST)
+    public UserDto createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
+        return convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
+    }
+
+    @RequestMapping(value = "users/", method = RequestMethod.GET)
+    public List<UserDto> findAll() {
+        return userService.findAll().stream().map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "users/{username}", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
+        User foundUser = userService.findByUsername(username);
+
+        if (foundUser == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        } else {
+            return new ResponseEntity<>(convertToDto(foundUser), HttpStatus.OK);
+        }
     }
 }

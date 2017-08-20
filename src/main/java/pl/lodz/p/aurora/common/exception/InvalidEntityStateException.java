@@ -1,13 +1,13 @@
 package pl.lodz.p.aurora.common.exception;
 
 /**
- * Unchecked exception thrown in situation when entity has an invalid state. Normally this situation should not
- * be possible because user input in form of DTO object is previously validated. That means the system changed
- * somewhere in the way entity's state from valid to invalid.
+ * Unchecked exception thrown in situation when entity has an invalid state. Also a many-to-many relationship with
+ * other entity could be invalid because a null was intended to be inserted into data source.
  */
 public class InvalidEntityStateException extends RuntimeException {
 
     public InvalidEntityStateException(Object invalidEntity, Throwable cause) {
-        super("Processed entity has invalid state: " + invalidEntity.toString(), cause);
+        super("Processed entity has invalid state or tried to insert null in many-to-many relationship: "
+                + invalidEntity.toString(), cause);
     }
 }

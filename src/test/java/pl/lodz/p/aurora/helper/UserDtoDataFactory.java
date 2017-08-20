@@ -23,12 +23,22 @@ public class UserDtoDataFactory {
     private UserDataFactory dataFactory;
 
     /**
-     * Provide a single dummy users DTO without saving to database.
+     * Provide a single dummy user DTO without saving to database.
      *
-     * @return Dummy users DTO saved to database
+     * @return Dummy user DTO saved to database
      */
     public UserDto createSingle() {
         return convertToDto(dataFactory.createSingle());
+    }
+
+    /**
+     * Convert given User object to UserDto.
+     *
+     * @param user Object containing data about an user
+     * @return UserDto object
+     */
+    private UserDto convertToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 
     /**
@@ -44,18 +54,18 @@ public class UserDtoDataFactory {
     }
 
     /**
-     * Provide a single dummy users DTO, that was saved to the database.
+     * Provide a single dummy user DTO, that was saved to the database.
      *
-     * @return Dummy users DTO saved to database
+     * @return Dummy user DTO saved to database
      */
     public UserDto createAndSaveSingle() {
         return convertToDto(dataFactory.createAndSaveSingle());
     }
 
     /**
-     * Provide as many dummy users DTOs as given, that were saved to database.
+     * Provide as many dummy user DTOs as given, that were saved to database.
      *
-     * @return List of dummy users DTOs saved to the database
+     * @return List of dummy user DTOs saved to the database
      */
     public List<UserDto> createAndSaveMany(Integer howMany) {
         List<UserDto> generatedUsers = new ArrayList<>();
@@ -65,12 +75,12 @@ public class UserDtoDataFactory {
     }
 
     /**
-     * Convert given User object to UserDto.
+     * Provide a single dummy user DTO without saving to database but with assigned role to it. Role is saved
+     * to database.
      *
-     * @param user Object containing data about a users
-     * @return UserDto object
+     * @return Dummy user DTO saved to database
      */
-    private UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
+    public UserDto createSingleWithRandomRole() {
+        return convertToDto(dataFactory.createSingleWithRandomRole());
     }
 }

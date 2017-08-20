@@ -22,9 +22,9 @@ public class RoleRepositoryUnitTests {
     private RoleDataFactory dataFactory;
 
     @Test
-    public void noRolesWereReturnedFromDatabase() {
+    public void onlyBasicRolesWereReturnedFromDatabase() {
         // Then
-        assertThat(roleRepository.findAll()).isNotNull().isEmpty();
+        assertThat(roleRepository.findAll()).isNotNull().hasSize(3);
     }
 
     @Test

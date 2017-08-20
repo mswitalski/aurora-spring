@@ -8,6 +8,9 @@ public class ValidationMessageDto {
     private String messageContent;
     private String fieldName;
 
+    public ValidationMessageDto() {
+    }
+
     public ValidationMessageDto(String messageContent, String fieldName) {
         this.messageContent = messageContent;
         this.fieldName = fieldName;

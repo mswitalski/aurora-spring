@@ -14,8 +14,8 @@ import javax.validation.constraints.Size;
 public class Role {
 
     @Id
-    @Column(length = 10)
-    @Size(min = 2, max = 10)
+    @Column(length = 15)
+    @Size(min = 2, max = 15)
     private String name;
 
     public Role() {

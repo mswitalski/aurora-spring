@@ -1,6 +1,5 @@
 package pl.lodz.p.aurora.users.service;
 
-import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.List;
@@ -10,7 +9,8 @@ import java.util.List;
  */
 public interface UserService {
 
-    User create(User user) throws UniqueConstraintViolationException;
+    User createAsAdmin(User user);
+    User createAsUnitLeader(User user);
     List<User> findAll();
     User findByUsername(String username);
 }
