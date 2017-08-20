@@ -12,15 +12,6 @@ public class UniqueConstraintViolationException extends RuntimeException {
     private final String entityName;
     private final Set<String> fieldsNames;
 
-    public UniqueConstraintViolationException(String entityName, Set<String> fieldsNames) {
-        super(
-                "Unique constraint was violated in entity " + entityName + " on fields: "
-                        + Joiner.on(", ").skipNulls().join(fieldsNames)
-        );
-        this.entityName = entityName;
-        this.fieldsNames = fieldsNames;
-    }
-
     public UniqueConstraintViolationException(Throwable cause, String entityName, Set<String> fieldsNames) {
         super(
                 "Unique constraint was violated in entity " + entityName + " on fields: "

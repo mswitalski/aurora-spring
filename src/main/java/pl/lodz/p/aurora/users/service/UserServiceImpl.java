@@ -80,7 +80,9 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidEntityStateException(user, exception);
             }
 
-            throw new UniqueConstraintViolationException(UserDto.class.getSimpleName(), findFieldsThatViolatedConstraints(user));
+            throw new UniqueConstraintViolationException(
+                    exception, UserDto.class.getSimpleName(), findFieldsThatViolatedConstraints(user)
+            );
 
         } catch (ConstraintViolationException exception) {
             throw new InvalidEntityStateException(user, exception);
