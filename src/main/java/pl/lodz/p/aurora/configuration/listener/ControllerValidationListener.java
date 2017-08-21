@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.configuration;
+package pl.lodz.p.aurora.configuration.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +18,16 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * Handler for failed controller validation of passed objects.
+ * Listener for failed controller validation of passed objects.
  */
 @ControllerAdvice
-public class ControllerValidationHandler {
+public class ControllerValidationListener {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Translator translator;
 
     @Autowired
-    public ControllerValidationHandler(Translator translator) {
+    public ControllerValidationListener(Translator translator) {
         this.translator = translator;
     }
 
@@ -66,13 +66,13 @@ public class ControllerValidationHandler {
                 )).collect(Collectors.toList());
     }
 
+    private ValidationMessageDto constructValidationMessage(String message, String fieldName) {
+        return new ValidationMessageDto(message, fieldName);
+    }
+
     @ExceptionHandler(InvalidEntityStateException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processInvalidEntityState(InvalidEntityStateException exception) {
         logger.error("Application tried to save entity with invalid state", exception);
-    }
-
-    private ValidationMessageDto constructValidationMessage(String message, String fieldName) {
-        return new ValidationMessageDto(message, fieldName);
     }
 }
