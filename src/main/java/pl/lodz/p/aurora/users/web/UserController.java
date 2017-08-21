@@ -57,7 +57,7 @@ public class UserController extends BaseController {
         return modelMapper.map(userDto, User.class);
     }
 
-    @RequestMapping(value = "users/", method = RequestMethod.POST)
+    @RequestMapping(value = "unitleader/users/", method = RequestMethod.POST)
     public UserDto createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
         return convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
     }
@@ -80,8 +80,20 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "users/", method = RequestMethod.PUT)
+    @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
     public UserDto updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return convertToDto(userService.update(eTag, convertToEntity(user)));
+    }
+
+    @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
+    public UserDto updateAsUnitLeader(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return convertToDto(userService.update(eTag, convertToEntity(user)));
+    }
+
+    // Here will be something like
+    // @PreAuthorize("isFullyAuthenticated() and #user.getUsername() == principal.name")
+    @RequestMapping(value = "users/", method = RequestMethod.PUT)
+    public UserDto updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
         return convertToDto(userService.update(eTag, convertToEntity(user)));
     }
 }

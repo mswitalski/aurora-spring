@@ -31,6 +31,7 @@ public class UserControllerIntegrationTests {
     private String defaultEmployeeRoleName;
     private final String featureUrl = "/api/users/";
     private final String featureAdminUrl = "/api/admin/users/";
+    private final String featureUnitLeaderUrl = "/api/unitleader/users/";
 
     @Test
     public void emptyUsersListReturnedWhenDatabaseIsEmpty() throws Exception {
@@ -116,7 +117,7 @@ public class UserControllerIntegrationTests {
         UserDto dummyUser = userDataFactory.createSingle();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplate.postForEntity(featureUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> response = testRestTemplate.postForEntity(featureUnitLeaderUrl, dummyUser, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
