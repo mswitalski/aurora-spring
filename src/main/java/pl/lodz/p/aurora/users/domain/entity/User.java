@@ -1,8 +1,7 @@
 package pl.lodz.p.aurora.users.domain.entity;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
+import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,14 +18,14 @@ import java.util.Set;
         @Index(columnList = "surname"),
         @Index(columnList = "enabled")
 })
-public class User {
+public class User extends VersionedEntity {
 
     @Id
     @GeneratedValue(generator = "user_pk_sequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "user_pk_sequence", sequenceName = "user_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 20, unique = true, updatable = false)
     @NotNull
     @Size(min = 3, max = 20)
     private String username;
@@ -77,9 +76,6 @@ public class User {
             )
     )
     private Set<Role> roles = new HashSet<>();
-
-    @Version
-    private Long version;
 
     public User() {
     }
@@ -177,21 +173,5 @@ public class User {
 
     public void assignRole(Role role) {
         this.roles.add(role);
-    }
-
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", version=" + version +
-                '}';
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
+import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
+import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -20,7 +22,7 @@ import java.util.Set;
  * Service class used for processing users account data.
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends BaseService implements UserService {
 
     @Value("${aurora.default.role.name}")
     private String defaultEmployeeRoleName;
@@ -28,7 +30,8 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, EntityVersionTransformer transformer) {
+        super(transformer);
         this.userRepository = userRepository;
         this.roleService = roleService;
     }
@@ -103,6 +106,13 @@ public class UserServiceImpl implements UserService {
         return nonUniqueFieldsNames;
     }
 
+    private boolean isUsernameAlreadyTaken(String username) {
+        return userRepository.findDistinctByUsername(username) != null;
+    }
+    private boolean isEmailAlreadyTaken(String email) {
+        return userRepository.findDistinctByEmail(email) != null;
+    }
+
     /**
      * Find all users saved in data source.
      *
@@ -123,10 +133,24 @@ public class UserServiceImpl implements UserService {
         return userRepository.findDistinctByUsername(username);
     }
 
-    private boolean isUsernameAlreadyTaken(String username) {
-        return userRepository.findDistinctByUsername(username) != null;
-    }
-    private boolean isEmailAlreadyTaken(String email) {
-        return userRepository.findDistinctByEmail(email) != null;
+    /**
+     * Modify existing user account with provided data.
+     *
+     * @param user Object holding modified user account data
+     * @return Entity with modified data that was saved to data source
+     */
+    @Override
+    public User update(String eTag, User user) {
+        User storedUser = userRepository.findDistinctByUsername(user.getUsername());
+
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+
+        storedUser.setEmail(user.getEmail());
+        storedUser.setName(user.getName());
+        storedUser.setSurname(user.getSurname());
+        storedUser.setPosition(user.getPosition());
+        storedUser.setGoals(user.getGoals());
+
+        return userRepository.saveAndFlush(storedUser);
     }
 }

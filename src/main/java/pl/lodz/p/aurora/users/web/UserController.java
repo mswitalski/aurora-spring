@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
@@ -18,13 +20,14 @@ import java.util.stream.Collectors;
  */
 @RequestMapping("api/")
 @RestController
-public class UserController {
+public class UserController extends BaseController {
 
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserController(UserServiceImpl userService, ModelMapper modelMapper) {
+    public UserController(UserServiceImpl userService, ModelMapper modelMapper, EntityVersionTransformer transformer) {
+        super(transformer);
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
@@ -73,7 +76,12 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } else {
-            return new ResponseEntity<>(convertToDto(foundUser), HttpStatus.OK);
+            return new ResponseEntity<>(convertToDto(foundUser), prepareETagHeaders(foundUser), HttpStatus.OK);
         }
+    }
+
+    @RequestMapping(value = "users/", method = RequestMethod.PUT)
+    public UserDto updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return convertToDto(userService.update(eTag, convertToEntity(user)));
     }
 }

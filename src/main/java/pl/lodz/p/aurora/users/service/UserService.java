@@ -13,4 +13,5 @@ public interface UserService {
     User createAsUnitLeader(User user);
     List<User> findAll();
     User findByUsername(String username);
+    User update(String eTag, User user);
 }

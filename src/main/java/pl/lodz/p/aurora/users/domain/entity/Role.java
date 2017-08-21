@@ -1,9 +1,11 @@
 package pl.lodz.p.aurora.users.domain.entity;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import pl.lodz.p.aurora.common.domain.entity.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
@@ -11,7 +13,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table
-public class Role {
+public class Role extends BaseEntity {
 
     @Id
     @Column(length = 15)
@@ -31,13 +33,5 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
     }
 }
