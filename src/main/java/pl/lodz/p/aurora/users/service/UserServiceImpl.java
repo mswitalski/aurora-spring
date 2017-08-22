@@ -141,6 +141,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     /**
      * Modify existing user account with provided data.
      *
+     * @param eTag ETag value received from client
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
      * @throws InvalidResourceRequestedException when client requested non-existing record from data source
@@ -160,5 +161,46 @@ public class UserServiceImpl extends BaseService implements UserService {
         storedUser.setGoals(user.getGoals());
 
         return userRepository.saveAndFlush(storedUser);
+    }
+
+    /**
+     * Enable user account.
+     *
+     * @param id ID of user account to be enabled
+     * @param eTag ETag value received from client
+     * @return Updated user entity
+     */
+    @Override
+    public User enable(Long id, String eTag) {
+        return changeUserEnabledState(id, eTag, true);
+    }
+
+    /**
+     * Change account state of user chosen by id.
+     *
+     * @param id ID of user account to be enabled
+     * @param eTag ETag value received from client
+     * @param state Desired state, enabled (true) or disabled (false)
+     * @return Updated user entity
+     */
+    private User changeUserEnabledState(Long id, String eTag, boolean state) {
+        User storedUser = userRepository.findOne(id);
+        failIfNoRecordInDatabaseFound(storedUser, id);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        storedUser.setEnabled(state);
+
+        return userRepository.saveAndFlush(storedUser);
+    }
+
+    /**
+     * Disable user account.
+     *
+     * @param id ID of user account to be disabled
+     * @param eTag ETag value received from client
+     * @return Updated user entity
+     */
+    @Override
+    public User disable(Long id, String eTag) {
+        return changeUserEnabledState(id, eTag, false);
     }
 }

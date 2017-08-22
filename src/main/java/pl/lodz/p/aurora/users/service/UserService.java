@@ -14,4 +14,6 @@ public interface UserService {
     List<User> findAll();
     User findByUsername(String username);
     User update(String eTag, User user);
+    User enable(Long id, String eTag);
+    User disable(Long id, String eTag);
 }

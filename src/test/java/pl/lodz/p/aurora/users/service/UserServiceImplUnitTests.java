@@ -42,6 +42,7 @@ public class UserServiceImplUnitTests {
     private UserDataFactory userDataFactory = new UserDataFactory();
     private RoleDataFactory roleDataFactory = new RoleDataFactory();
     private String fakeUsername = "fakeUsername";
+    private String fakeETag = "fakeETag";
 
     @Test
     public void emptyListReturnedIfNoUsersFound() {
@@ -183,7 +184,6 @@ public class UserServiceImplUnitTests {
     @Test
     public void returnProperlyUpdatedUser() {
         // Given
-        String fakeETag = "fakeETag";
         String newName = "Some New Name";
         User storedUser = userDataFactory.createSingle();
         User userPassedToMethod = storedUser.clone();
@@ -203,12 +203,9 @@ public class UserServiceImplUnitTests {
     @Test(expected = OutdatedEntityModificationException.class)
     public void failOnValidationETagHeaderWhileUpdatingUser() {
         // Given
-        String fakeETag = "fakeETag";
         String invalidETag = "invalidETag";
-        String newName = "Some New Name";
         User storedUser = userDataFactory.createSingle();
         User userPassedToMethod = storedUser.clone();
-        userPassedToMethod.setName(newName);
         when(userRepository.findDistinctByUsername(storedUser.getUsername())).thenReturn(storedUser);
         when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
 
@@ -225,5 +222,62 @@ public class UserServiceImplUnitTests {
 
         // When-then
         userService.update(invalidETag, dummyUser);
+    }
+
+    @Test
+    public void returnUpdatedUserWithEnabledState() {
+        // Given
+        User dummyUser = prepareForUserWithStateTest(false);
+
+        // When
+        User updatedUsed = userService.enable(dummyUser.getId(), fakeETag);
+
+        // Then
+        assertThat(updatedUsed.isEnabled()).isTrue();
+    }
+
+    private User prepareForUserWithStateTest(boolean state) {
+        User dummyUser = userDataFactory.createSingle();
+        dummyUser.setEnabled(state);
+        when(userRepository.findOne(dummyUser.getId())).thenReturn(dummyUser);
+        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
+
+        return dummyUser;
+    }
+
+
+    @Test(expected = InvalidResourceRequestedException.class)
+    public void failOnTryingToEnableNonExistingUser() {
+        // Given
+        User dummyUser = userDataFactory.createSingle();
+        when(userRepository.findOne(dummyUser.getId())).thenReturn(null);
+
+        // When-then
+        userService.enable(dummyUser.getId(), fakeETag);
+    }
+
+    @Test(expected = OutdatedEntityModificationException.class)
+    public void failOnValidationETagHeaderWhileEnablingUser() {
+        // Given
+        String invalidETag = "invalidETag";
+        User dummyUser = userDataFactory.createSingle();
+        when(userRepository.findOne(dummyUser.getId())).thenReturn(dummyUser);
+        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
+
+        // When-then
+        userService.enable(dummyUser.getId(), invalidETag);
+    }
+
+    @Test
+    public void returnUpdatedUserWithDisabledState() {
+        // Given
+        User dummyUser = prepareForUserWithStateTest(true);
+
+        // When
+        User updatedUsed = userService.disable(dummyUser.getId(), fakeETag);
+
+        // Then
+        assertThat(updatedUsed.isEnabled()).isFalse();
     }
 }
