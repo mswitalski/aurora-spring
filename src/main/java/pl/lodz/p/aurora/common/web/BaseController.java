@@ -27,4 +27,14 @@ public abstract class BaseController {
 
         return httpHeaders;
     }
+
+    /**
+     * Clean received ETag value and leave only lowercase letters, uppercase letters and digits.
+     *
+     * @param eTag Received ETag value
+     * @return Sanitized ETag
+     */
+    protected String sanitizeReceivedETag(String eTag) {
+        return eTag.replaceAll("[^a-zA-Z0-9]", "");
+    }
 }

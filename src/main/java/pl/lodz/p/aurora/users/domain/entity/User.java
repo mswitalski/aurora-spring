@@ -18,7 +18,7 @@ import java.util.Set;
         @Index(columnList = "surname"),
         @Index(columnList = "enabled")
 })
-public class User extends VersionedEntity {
+public class User extends VersionedEntity implements Cloneable {
 
     @Id
     @GeneratedValue(generator = "user_pk_sequence", strategy = GenerationType.SEQUENCE)
@@ -173,5 +173,23 @@ public class User extends VersionedEntity {
 
     public void assignRole(Role role) {
         this.roles.add(role);
+    }
+
+    @Override
+    public User clone() {
+        User clonedUser = new User();
+        clonedUser.setId(this.id);
+        clonedUser.setUsername(this.username);
+        clonedUser.setPassword(this.password);
+        clonedUser.setEmail(this.email);
+        clonedUser.setName(this.name);
+        clonedUser.setSurname(this.surname);
+        clonedUser.setPosition(this.position);
+        clonedUser.setGoals(this.goals);
+        clonedUser.setEnabled(this.enabled);
+        clonedUser.setRoles(new HashSet<>(roles));
+        clonedUser.setVersion(this.getVersion());
+
+        return clonedUser;
     }
 }

@@ -16,6 +16,10 @@ public abstract class VersionedEntity extends BaseEntity {
         return version;
     }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     public abstract Long getId();
 
     @Override

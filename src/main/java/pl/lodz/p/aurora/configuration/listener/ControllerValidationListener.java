@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
+import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
 
@@ -74,5 +75,11 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processInvalidEntityState(InvalidEntityStateException exception) {
         logger.error("Application tried to save entity with invalid state", exception);
+    }
+
+    @ExceptionHandler(OutdatedEntityModificationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void processOutdatedEntityModification(OutdatedEntityModificationException exception) {
+        logger.error(exception.getMessage(), exception);
     }
 }

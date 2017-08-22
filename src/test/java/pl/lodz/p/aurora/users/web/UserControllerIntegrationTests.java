@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
@@ -79,7 +78,7 @@ public class UserControllerIntegrationTests {
         ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -192,5 +191,75 @@ public class UserControllerIntegrationTests {
         assertThat(response.getBody().length).isEqualTo(2);
         assertThat(response.getBody()[1].getFieldName()).isEqualTo("username");
         assertThat(response.getBody()[0].getFieldName()).isEqualTo("email");
+    }
+
+    @Test
+    public void returnProperlyUpdatedUserAsAdmin() {
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        String newName = "some new name";
+        fetchedUserBeforeUpdate.setName(newName);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnUpdateUserDto.getBody().getName()).isEqualTo(newName);
+    }
+
+    @Test
+    public void failOnSimultaneousUserUpdatesAsAdmin() {
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdateFirstUpdate = responseOnGetUserDto.getBody();
+        UserDto fetchedUserBeforeUpdateOtherUpdate = fetchedUserBeforeUpdateFirstUpdate.clone();
+        String newName = "some new name";
+        String newNameOnSecondUpdate = "on second update new name";
+        fetchedUserBeforeUpdateFirstUpdate.setName(newName);
+        fetchedUserBeforeUpdateOtherUpdate.setName(newNameOnSecondUpdate);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntityFirstUpdate = new HttpEntity<>(fetchedUserBeforeUpdateFirstUpdate, httpHeaders);
+        HttpEntity<UserDto> httpEntityOtherUpdate = new HttpEntity<>(fetchedUserBeforeUpdateOtherUpdate, httpHeaders);
+
+        // When
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplate
+                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityFirstUpdate, UserDto.class);
+        ResponseEntity<UserDto> responseOnOtherUpdateUserDto = testRestTemplate
+                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityOtherUpdate, UserDto.class);
+
+        // Then
+        assertThat(responseOnFirstUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnFirstUpdateUserDto.getBody().getName()).isEqualTo(newName);
+        assertThat(responseOnOtherUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+    }
+
+    @Test
+    public void failOnTryingToUpdateNonExistingUserAsAdmin() {
+        // Given
+        String fakeETag = "fakeETag";
+        UserDto savedUser = userDataFactory.createSingle();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", fakeETag);
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(savedUser, httpHeaders);
+
+        // When
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplate
+                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnFirstUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

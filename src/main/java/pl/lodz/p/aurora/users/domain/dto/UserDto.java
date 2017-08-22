@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * DTO class for User entity.
  */
-public class UserDto {
+public class UserDto implements Cloneable {
 
     private Long id;
 
@@ -153,5 +153,22 @@ public class UserDto {
 
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public UserDto clone() {
+        UserDto clonedUser = new UserDto();
+        clonedUser.setId(this.id);
+        clonedUser.setUsername(this.username);
+        clonedUser.setPassword(this.password);
+        clonedUser.setEmail(this.email);
+        clonedUser.setName(this.name);
+        clonedUser.setSurname(this.surname);
+        clonedUser.setPosition(this.position);
+        clonedUser.setGoals(this.goals);
+        clonedUser.setEnabled(this.enabled);
+        clonedUser.setRoles(new HashSet<>(roles));
+
+        return clonedUser;
     }
 }

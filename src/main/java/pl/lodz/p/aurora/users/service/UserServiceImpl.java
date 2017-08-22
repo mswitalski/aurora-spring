@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
+import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.service.BaseService;
@@ -130,7 +132,10 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User findByUsername(String username) {
-        return userRepository.findDistinctByUsername(username);
+        User storedUsed = userRepository.findDistinctByUsername(username);
+        failIfNoRecordInDatabaseFound(storedUsed, username);
+
+        return storedUsed;
     }
 
     /**
@@ -138,11 +143,14 @@ public class UserServiceImpl extends BaseService implements UserService {
      *
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
+     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
      */
     @Override
     public User update(String eTag, User user) {
         User storedUser = userRepository.findDistinctByUsername(user.getUsername());
 
+        failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
 
         storedUser.setEmail(user.getEmail());

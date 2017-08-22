@@ -7,7 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
+import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
+import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDataFactory;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
@@ -21,8 +24,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,6 +34,8 @@ public class UserServiceImplUnitTests {
     private UserRepository userRepository;
     @Mock
     private RoleService roleService;
+    @Mock
+    private EntityVersionTransformer versionTransformer;
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -77,16 +81,13 @@ public class UserServiceImplUnitTests {
         assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
     }
 
-    @Test
+    @Test(expected = InvalidResourceRequestedException.class)
     public void noUserReturnedWithGivenUsername() {
         // Given
         when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
 
         // When
         User returnedUser = userService.findByUsername(fakeUsername);
-
-        // Then
-        assertThat(returnedUser).isNull();
     }
 
     @Test
@@ -177,5 +178,52 @@ public class UserServiceImplUnitTests {
                 .isEqualTo(UserDto.class.getSimpleName());
         assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
                 .isNotEmpty().contains("email");
+    }
+
+    @Test
+    public void returnProperlyUpdatedUser() {
+        // Given
+        String fakeETag = "fakeETag";
+        String newName = "Some New Name";
+        User storedUser = userDataFactory.createSingle();
+        User userPassedToMethod = storedUser.clone();
+        userPassedToMethod.setName(newName);
+        when(userRepository.findDistinctByUsername(storedUser.getUsername())).thenReturn(storedUser);
+        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
+        when(userRepository.saveAndFlush(any(User.class))).thenReturn(storedUser);
+
+        // When
+        User updatedUser = userService.update(fakeETag, userPassedToMethod);
+
+        // Then
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getName()).isEqualTo(newName);
+    }
+
+    @Test(expected = OutdatedEntityModificationException.class)
+    public void failOnValidationETagHeaderWhileUpdatingUser() {
+        // Given
+        String fakeETag = "fakeETag";
+        String invalidETag = "invalidETag";
+        String newName = "Some New Name";
+        User storedUser = userDataFactory.createSingle();
+        User userPassedToMethod = storedUser.clone();
+        userPassedToMethod.setName(newName);
+        when(userRepository.findDistinctByUsername(storedUser.getUsername())).thenReturn(storedUser);
+        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
+
+        // When-then
+        userService.update(invalidETag, userPassedToMethod);
+    }
+
+    @Test(expected = InvalidResourceRequestedException.class)
+    public void failOnTryingToUpdateNonExistingUser() {
+        // Given
+        String invalidETag = "etag";
+        User dummyUser = userDataFactory.createSingle();
+        when(userRepository.findDistinctByUsername(dummyUser.getUsername())).thenReturn(null);
+
+        // When-then
+        userService.update(invalidETag, dummyUser);
     }
 }

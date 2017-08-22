@@ -1,6 +1,5 @@
 package pl.lodz.p.aurora.helper;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,8 +16,6 @@ public class UserDataFactory extends EntityDataFactory<User> {
     @Value("${aurora.test.default.password}")
     private String defaultPassword;
     private RoleDataFactory roleDataFactory;
-    private RandomStringGenerator randomGenerator = new RandomStringGenerator.Builder()
-            .withinRange('a', 'z').build();
 
     @Autowired
     public void setRepository(UserRepository userRepository, RoleDataFactory roleDataFactory) {
@@ -33,10 +30,9 @@ public class UserDataFactory extends EntityDataFactory<User> {
      */
     @Override
     public User createSingle() {
-        String randomString = randomGenerator.generate(10);
+        String randomString = stringGenerator.generate(10);
         String randomEmail = randomString + '@' + randomString + ".com";
-
-        return new User(
+        User createdUser = new User(
                 randomString,
                 defaultPassword,
                 randomEmail,
@@ -46,6 +42,10 @@ public class UserDataFactory extends EntityDataFactory<User> {
                 randomString,
                 true
         );
+        createdUser.setId(generateRandomId());
+        createdUser.setVersion(generateRandomVersion());
+
+        return createdUser;
     }
 
     /**

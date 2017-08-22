@@ -72,28 +72,23 @@ public class UserController extends BaseController {
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
         User foundUser = userService.findByUsername(username);
 
-        if (foundUser == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-        } else {
-            return new ResponseEntity<>(convertToDto(foundUser), prepareETagHeaders(foundUser), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(convertToDto(foundUser), prepareETagHeaders(foundUser), HttpStatus.OK);
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
     public UserDto updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(eTag, convertToEntity(user)));
+        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
     public UserDto updateAsUnitLeader(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(eTag, convertToEntity(user)));
+        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     // Here will be something like
     // @PreAuthorize("isFullyAuthenticated() and #user.getUsername() == principal.name")
     @RequestMapping(value = "users/", method = RequestMethod.PUT)
     public UserDto updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(eTag, convertToEntity(user)));
+        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 }
