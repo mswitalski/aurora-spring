@@ -16,4 +16,5 @@ public interface UserService {
     User update(String eTag, User user);
     User enable(Long id, String eTag);
     User disable(Long id, String eTag);
+    User assignRole(Long userId, String roleName, String eTag);
 }

@@ -203,4 +203,23 @@ public class UserServiceImpl extends BaseService implements UserService {
     public User disable(Long id, String eTag) {
         return changeUserEnabledState(id, eTag, false);
     }
+
+    /**
+     * Assign chosen role to the user given by ID.
+     *
+     * @param userId User's ID to whom we want to assign a role
+     * @param roleName Chosen role's name
+     * @param eTag ETag value received from client
+     * @return Updated user entity
+     */
+    @Override
+    public User assignRole(Long userId, String roleName, String eTag) {
+        Role chosenRole = roleService.findByName(roleName);
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        storedUser.assignRole(chosenRole);
+
+        return userRepository.saveAndFlush(storedUser);
+    }
 }

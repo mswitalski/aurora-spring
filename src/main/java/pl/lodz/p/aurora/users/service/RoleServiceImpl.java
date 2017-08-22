@@ -3,6 +3,8 @@ package pl.lodz.p.aurora.users.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
 
@@ -10,12 +12,13 @@ import java.util.List;
 
 @Service
 @Transactional
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends BaseService implements RoleService {
 
     private final RoleRepository roleRepository;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository, EntityVersionTransformer transformer) {
+        super(transformer);
         this.roleRepository = roleRepository;
     }
 
@@ -36,6 +39,9 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role findByName(String name) {
-        return roleRepository.findByName(name);
+        Role storedRole = roleRepository.findByName(name);
+        failIfNoRecordInDatabaseFound(storedRole, name);
+
+        return storedRole;
     }
 }

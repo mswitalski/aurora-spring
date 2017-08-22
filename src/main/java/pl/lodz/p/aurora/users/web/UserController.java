@@ -101,4 +101,9 @@ public class UserController extends BaseController {
     public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
         return convertToDto(userService.disable(userId, eTag));
     }
+
+    @RequestMapping(value = "users/{userId}/role/{roleName}", method = RequestMethod.PUT)
+    public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
+        return convertToDto(userService.assignRole(userId, roleName, eTag));
+    }
 }
