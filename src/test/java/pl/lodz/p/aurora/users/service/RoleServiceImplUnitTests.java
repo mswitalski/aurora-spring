@@ -5,9 +5,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
-import pl.lodz.p.aurora.helper.RoleDataFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,23 +66,20 @@ public class RoleServiceImplUnitTests {
         assertThat(returnedRolesList).isNotNull().hasSize(howManyRoles);
     }
 
-    @Test
+    @Test(expected = InvalidResourceRequestedException.class)
     public void noRoleReturnedWithGivenName() {
         // Given
-        when(roleService.findByName(anyString())).thenReturn(null);
+        when(roleRepository.findByName(anyString())).thenReturn(null);
 
-        // When
-        Role returnedRole = roleService.findByName(fakeRoleName);
-
-        // Then
-        assertThat(returnedRole).isNull();
+        // When-then
+        roleService.findByName(fakeRoleName);
     }
 
     @Test
     public void roleReturnedWithGivenName() {
         // Given
         Role dummyRole = dataFactory.createSingle();
-        when(roleService.findByName(anyString())).thenReturn(dummyRole);
+        when(roleRepository.findByName(anyString())).thenReturn(dummyRole);
 
         // When
         Role returnedRole = roleService.findByName(fakeRoleName);
