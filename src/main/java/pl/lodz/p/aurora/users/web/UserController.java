@@ -33,8 +33,10 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
-    public UserDto createAsAdmin(@Validated @RequestBody UserDto userDto) {
-        return convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
+    public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody UserDto userDto) {
+        User createdUser = userService.createAsAdmin(convertToEntity(userDto));
+
+        return new ResponseEntity<>(convertToDto(createdUser), prepareETagHeaders(createdUser), HttpStatus.OK);
     }
 
     /**
@@ -58,8 +60,10 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.POST)
-    public UserDto createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
-        return convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
+    public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
+        User createdUser = userService.createAsUnitLeader(convertToEntity(userDto));
+
+        return new ResponseEntity<>(convertToDto(createdUser), prepareETagHeaders(createdUser), HttpStatus.OK);
     }
 
     @RequestMapping(value = "users/", method = RequestMethod.GET)
@@ -92,18 +96,18 @@ public class UserController extends BaseController {
         return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
-    @RequestMapping(value = "users/{userId}/activation", method = RequestMethod.PATCH)
+    @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
     public UserDto enableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
         return convertToDto(userService.enable(userId, eTag));
     }
 
-    @RequestMapping(value = "users/{userId}/deactivation", method = RequestMethod.PATCH)
+    @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
     public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
         return convertToDto(userService.disable(userId, eTag));
     }
 
     @RequestMapping(value = "users/{userId}/role/{roleName}", method = RequestMethod.PUT)
-    public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
+    public UserDto assignRoleToUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
         return convertToDto(userService.assignRole(userId, roleName, eTag));
     }
 }

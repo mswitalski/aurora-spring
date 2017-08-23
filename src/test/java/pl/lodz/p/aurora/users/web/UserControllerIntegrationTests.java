@@ -262,4 +262,48 @@ public class UserControllerIntegrationTests {
         // Then
         assertThat(responseOnFirstUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    public void returnEnabledUser() {
+        // Given
+        UserDto dummyUser = userDataFactory.createSingle();
+        dummyUser.setEnabled(false);
+        ResponseEntity<UserDto> responseOnCreated = testRestTemplate.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        dummyUser = responseOnCreated.getBody();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
+        String url = featureAdminUrl + dummyUser.getId() + "/activation";
+        System.out.println(url);
+
+        // When
+        ResponseEntity<UserDto> responseOnPatched = testRestTemplate
+                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnPatched.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnPatched.getBody().isEnabled()).isTrue();
+    }
+
+    @Test
+    public void returnDisabledUser() {
+        // Given
+        UserDto dummyUser = userDataFactory.createSingle();
+        dummyUser.setEnabled(true);
+        ResponseEntity<UserDto> responseOnCreated = testRestTemplate.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        dummyUser = responseOnCreated.getBody();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
+        String url = featureAdminUrl + dummyUser.getId() + "/deactivation";
+        System.out.println(url);
+
+        // When
+        ResponseEntity<UserDto> responseOnPatched = testRestTemplate
+                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnPatched.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnPatched.getBody().isEnabled()).isFalse();
+    }
 }
