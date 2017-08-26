@@ -18,7 +18,6 @@ import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,7 +136,7 @@ public class UserServiceImplUnitTests {
     public void failToCreateUserWithNullFieldsAsAdmin() {
         // Given
         User dummyUser = new User();
-        when(userRepository.saveAndFlush(any(User.class))).thenThrow(ConstraintViolationException.class);
+        when(userRepository.saveAndFlush(dummyUser)).thenThrow(javax.validation.ConstraintViolationException.class);
 
         // Then
         userService.createAsAdmin(dummyUser);
@@ -160,6 +159,22 @@ public class UserServiceImplUnitTests {
                 .isEqualTo(UserDto.class.getSimpleName());
         assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
                 .isNotEmpty().contains("username");
+    }
+
+    @Test
+    public void failIfCreatedUserIsAnInvalidEntityAsAdmin() {
+        // Given
+        User dummyUser = userDataFactory.createSingle();
+        org.hibernate.exception.ConstraintViolationException exceptionCause =
+                new org.hibernate.exception.ConstraintViolationException(null, null, null);
+        when(userRepository.saveAndFlush(any(User.class)))
+                .thenThrow(new DataIntegrityViolationException("constraint [null]", exceptionCause));
+
+        // Expect
+        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
+
+        // Then
+        assertThat(thrown).isInstanceOf(InvalidEntityStateException.class);
     }
 
     @Test
@@ -279,5 +294,35 @@ public class UserServiceImplUnitTests {
 
         // Then
         assertThat(updatedUsed.isEnabled()).isFalse();
+    }
+
+    @Test
+    public void returnUserWithProperlyAssignedRole() {
+        // Given
+        Role dummyRole = roleDataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
+        dummyUser.setId(1L);
+        when(roleService.findByName(dummyRole.getName())).thenReturn(dummyRole);
+        when(userRepository.findOne(dummyUser.getId())).thenReturn(dummyUser);
+        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
+        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+
+        // When
+        User userWithAssignedRole = userService.assignRole(dummyUser.getId(), dummyRole.getName(), fakeETag);
+
+        // Then
+        assertThat(userWithAssignedRole.getRoles()).isNotEmpty().contains(dummyRole);
+    }
+
+    @Test(expected = InvalidResourceRequestedException.class)
+    public void failWhileTryingToAssignNonExistingRole() {
+        // Given
+        Role dummyRole = roleDataFactory.createSingle();
+        User dummyUser = userDataFactory.createSingle();
+        dummyUser.setId(1L);
+        when(roleService.findByName(dummyRole.getName())).thenThrow(InvalidResourceRequestedException.class);
+        
+        // When-then
+        userService.assignRole(dummyUser.getId(), dummyRole.getName(), fakeETag);
     }
 }

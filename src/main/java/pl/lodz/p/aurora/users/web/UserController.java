@@ -98,16 +98,16 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
     public UserDto enableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return convertToDto(userService.enable(userId, eTag));
+        return convertToDto(userService.enable(userId, sanitizeReceivedETag(eTag)));
     }
 
     @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
     public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return convertToDto(userService.disable(userId, eTag));
+        return convertToDto(userService.disable(userId, sanitizeReceivedETag(eTag)));
     }
 
-    @RequestMapping(value = "users/{userId}/role/{roleName}", method = RequestMethod.PUT)
+    @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.PUT)
     public UserDto assignRoleToUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        return convertToDto(userService.assignRole(userId, roleName, eTag));
+        return convertToDto(userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag)));
     }
 }

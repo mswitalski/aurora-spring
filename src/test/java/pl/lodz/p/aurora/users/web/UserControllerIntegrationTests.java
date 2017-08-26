@@ -10,8 +10,10 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
+import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDtoDataFactory;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.entity.Role;
 
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class UserControllerIntegrationTests {
 
     @Autowired
     private UserDtoDataFactory userDataFactory;
+    @Autowired
+    private RoleDataFactory roleDataFactory;
     @Autowired
     private TestRestTemplate testRestTemplate;
     @Value("${aurora.default.role.name}")
@@ -195,6 +199,10 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void returnProperlyUpdatedUserAsAdmin() {
+        updateTest(featureAdminUrl);
+    }
+
+    private void updateTest(String url) {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
         ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
@@ -208,11 +216,40 @@ public class UserControllerIntegrationTests {
 
         // When
         ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
-                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseOnUpdateUserDto.getBody().getName()).isEqualTo(newName);
+    }
+
+    @Test
+    public void returnProperlyUpdatedUserAsUnitLeader() {
+        updateTest(featureUnitLeaderUrl);
+    }
+
+    @Test
+    public void returnProperlyUpdatedUserAsUser() {
+        updateTest(featureUrl);
+    }
+
+    @Test
+    public void failOnUpdatingUserWithoutRequiredETagHeaderAsAdmin() {
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        String newName = "some new name";
+        fetchedUserBeforeUpdate.setName(newName);
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate);
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -305,5 +342,29 @@ public class UserControllerIntegrationTests {
         // Then
         assertThat(responseOnPatched.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseOnPatched.getBody().isEnabled()).isFalse();
+    }
+
+    @Test
+    public void returnUserWithProperlyAssignedRole() {
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        Role savedRole = roleDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
+        String url = featureAdminUrl + fetchedUserBeforeUpdate.getId() + "/role/" + savedRole.getName();
+        System.out.println(url);
+        System.out.println(responseOnGetUserDto.getHeaders().getETag());
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnUpdateUserDto.getBody().getRoles()).hasSize(1).contains(savedRole);
     }
 }
