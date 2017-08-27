@@ -1,13 +1,19 @@
 package pl.lodz.p.aurora.users.domain.entity;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Entity class holding information about an user account.
@@ -18,7 +24,7 @@ import java.util.Set;
         @Index(columnList = "surname"),
         @Index(columnList = "enabled")
 })
-public class User extends VersionedEntity implements Cloneable {
+public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     @Id
     @GeneratedValue(generator = "user_pk_sequence", strategy = GenerationType.SEQUENCE)
@@ -95,6 +101,21 @@ public class User extends VersionedEntity implements Cloneable {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -105,6 +126,18 @@ public class User extends VersionedEntity implements Cloneable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (roles.isEmpty() || roles == null) {
+            return Collections.emptySet();
+        }
+
+        return roles.stream()
+                .map(Role::getName)
+                .map(roleName -> new SimpleGrantedAuthority("ROLE_" + roleName))
+                .collect(Collectors.toList());
     }
 
     public String getPassword() {

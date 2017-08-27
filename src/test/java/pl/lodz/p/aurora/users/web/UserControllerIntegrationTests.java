@@ -10,6 +10,7 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
+import pl.lodz.p.aurora.common.web.AuthorizedTestsBase;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDtoDataFactory;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
@@ -22,14 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerIntegrationTests {
+public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
     @Autowired
     private UserDtoDataFactory userDataFactory;
     @Autowired
     private RoleDataFactory roleDataFactory;
-    @Autowired
-    private TestRestTemplate testRestTemplate;
     @Value("${aurora.default.role.name}")
     private String defaultEmployeeRoleName;
     private final String featureUrl = "/api/users/";
@@ -37,39 +36,39 @@ public class UserControllerIntegrationTests {
     private final String featureUnitLeaderUrl = "/api/unitleader/users/";
 
     @Test
-    public void emptyUsersListReturnedWhenDatabaseIsEmpty() throws Exception {
+    public void basicUsersInListReturnedWhenDatabaseContainsOnlyBasicUsers() throws Exception {
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplate.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEmpty();
+        assertThat(response.getBody()).hasSize(3);
     }
 
     @Test
-    public void oneUserInListReturnedWhenDatabaseContainsOneUser() throws Exception {
+    public void userInReturnedListWhenDatabaseContainsOneUser() throws Exception {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
 
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplate.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(1).contains(savedUser);
+        assertThat(response.getBody()).contains(savedUser);
     }
 
     @Test
-    public void twoUsersInListReturnedWhenDatabaseContainsTwoUsers() throws Exception {
+    public void twoAdditionalUsersInListReturnedWhenDatabaseContainsTwoAdditionalUsers() throws Exception {
         // Given
         List<UserDto> savedUsersList = userDataFactory.createAndSaveMany(2);
 
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplate.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(2).contains(savedUsersList.get(0));
+        assertThat(response.getBody()).hasSize(5).contains(savedUsersList.get(0));
     }
 
     @Test
@@ -79,7 +78,7 @@ public class UserControllerIntegrationTests {
         String findByUsernameUrl = featureUrl + fakeUsername;
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
+        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.getForEntity(findByUsernameUrl, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -92,7 +91,7 @@ public class UserControllerIntegrationTests {
         String findByUsernameUrl = featureUrl + savedUser.getName();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplate.getForEntity(findByUsernameUrl, UserDto.class);
+        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.getForEntity(findByUsernameUrl, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -105,7 +104,7 @@ public class UserControllerIntegrationTests {
         UserDto dummyUser = userDataFactory.createSingleWithRandomRole();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplate.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -120,7 +119,7 @@ public class UserControllerIntegrationTests {
         UserDto dummyUser = userDataFactory.createSingle();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplate.postForEntity(featureUnitLeaderUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> response = testRestTemplateAsUnitLeader.postForEntity(featureUnitLeaderUrl, dummyUser, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -137,7 +136,7 @@ public class UserControllerIntegrationTests {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplate.postForEntity(featureAdminUrl, dummyUser, ValidationMessageDto[].class);
+                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -153,7 +152,7 @@ public class UserControllerIntegrationTests {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplate.postForEntity(featureAdminUrl, newUserWithSameUsername, ValidationMessageDto[].class);
+                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameUsername, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -170,7 +169,7 @@ public class UserControllerIntegrationTests {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplate.postForEntity(featureAdminUrl, newUserWithSameEmail, ValidationMessageDto[].class);
+                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameEmail, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -188,7 +187,7 @@ public class UserControllerIntegrationTests {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplate.postForEntity(featureAdminUrl, newUserWithSameUsernameAndEmail, ValidationMessageDto[].class);
+                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameUsernameAndEmail, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -199,13 +198,13 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void returnProperlyUpdatedUserAsAdmin() {
-        updateTest(featureAdminUrl);
+        updateTest(featureAdminUrl, testRestTemplateAsAdmin);
     }
 
-    private void updateTest(String url) {
+    private void updateTest(String url, TestRestTemplate template) {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
                 .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         String newName = "some new name";
@@ -215,7 +214,7 @@ public class UserControllerIntegrationTests {
         HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnUpdateUserDto = template
                 .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
@@ -225,12 +224,12 @@ public class UserControllerIntegrationTests {
 
     @Test
     public void returnProperlyUpdatedUserAsUnitLeader() {
-        updateTest(featureUnitLeaderUrl);
+        updateTest(featureUnitLeaderUrl, testRestTemplateAsUnitLeader);
     }
 
     @Test
     public void returnProperlyUpdatedUserAsUser() {
-        updateTest(featureUrl);
+        updateTest(featureUrl, testRestTemplateAsEmployee);
     }
 
     @Test
@@ -245,7 +244,7 @@ public class UserControllerIntegrationTests {
         HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsAdmin
                 .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
@@ -256,7 +255,7 @@ public class UserControllerIntegrationTests {
     public void failOnSimultaneousUserUpdatesAsAdmin() {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
                 .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdateFirstUpdate = responseOnGetUserDto.getBody();
         UserDto fetchedUserBeforeUpdateOtherUpdate = fetchedUserBeforeUpdateFirstUpdate.clone();
@@ -271,9 +270,9 @@ public class UserControllerIntegrationTests {
         HttpEntity<UserDto> httpEntityOtherUpdate = new HttpEntity<>(fetchedUserBeforeUpdateOtherUpdate, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplateAsAdmin
                 .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityFirstUpdate, UserDto.class);
-        ResponseEntity<UserDto> responseOnOtherUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnOtherUpdateUserDto = testRestTemplateAsAdmin
                 .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityOtherUpdate, UserDto.class);
 
         // Then
@@ -293,7 +292,7 @@ public class UserControllerIntegrationTests {
         HttpEntity<UserDto> httpEntity = new HttpEntity<>(savedUser, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplateAsAdmin
                 .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
@@ -305,7 +304,7 @@ public class UserControllerIntegrationTests {
         // Given
         UserDto dummyUser = userDataFactory.createSingle();
         dummyUser.setEnabled(false);
-        ResponseEntity<UserDto> responseOnCreated = testRestTemplate.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> responseOnCreated = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
         dummyUser = responseOnCreated.getBody();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
@@ -314,7 +313,7 @@ public class UserControllerIntegrationTests {
         System.out.println(url);
 
         // When
-        ResponseEntity<UserDto> responseOnPatched = testRestTemplate
+        ResponseEntity<UserDto> responseOnPatched = testRestTemplateAsAdmin
                 .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
@@ -327,7 +326,7 @@ public class UserControllerIntegrationTests {
         // Given
         UserDto dummyUser = userDataFactory.createSingle();
         dummyUser.setEnabled(true);
-        ResponseEntity<UserDto> responseOnCreated = testRestTemplate.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> responseOnCreated = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
         dummyUser = responseOnCreated.getBody();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
@@ -336,7 +335,7 @@ public class UserControllerIntegrationTests {
         System.out.println(url);
 
         // When
-        ResponseEntity<UserDto> responseOnPatched = testRestTemplate
+        ResponseEntity<UserDto> responseOnPatched = testRestTemplateAsAdmin
                 .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then
@@ -349,7 +348,7 @@ public class UserControllerIntegrationTests {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
         Role savedRole = roleDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
                 .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -360,7 +359,7 @@ public class UserControllerIntegrationTests {
         System.out.println(responseOnGetUserDto.getHeaders().getETag());
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplate
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsAdmin
                 .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
 
         // Then

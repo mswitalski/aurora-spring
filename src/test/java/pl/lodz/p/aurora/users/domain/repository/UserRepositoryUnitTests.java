@@ -23,22 +23,15 @@ public class UserRepositoryUnitTests {
     private UserDataFactory dataFactory;
 
     @Test
-    public void allUsersWereReturnedFromDatabase() {
+    public void allBasicUsersWereReturnedFromDatabase() {
         // Given
-        Integer howManyDummyUsers = 5;
-        List<User> testData = dataFactory.createAndSaveMany(howManyDummyUsers);
+        Integer howManyBasicUsers = 3;
 
         // When
         List<User> dataReturnedByRepository = userRepository.findAll();
 
         // Then
-        assertThat(dataReturnedByRepository).isNotNull().isNotEmpty().isEqualTo(testData);
-    }
-
-    @Test
-    public void noUsersWereReturnedFromDatabase() {
-        // Then
-        assertThat(userRepository.findAll()).isNotNull().isEmpty();
+        assertThat(dataReturnedByRepository).isNotNull().isNotEmpty().hasSize(howManyBasicUsers);
     }
 
     @Test
