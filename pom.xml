@@ -5,7 +5,7 @@
 
     <groupId>pl.lodz.p</groupId>
     <artifactId>aurora</artifactId>
-    <version>0.0.24-SNAPSHOT</version>
+    <version>0.0.25-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>aurora</name>
