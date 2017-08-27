@@ -4,10 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
+import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
@@ -89,8 +91,7 @@ public class UserController extends BaseController {
         return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
-    // Here will be something like
-    // @PreAuthorize("isFullyAuthenticated() and #user.getUsername() == principal.name")
+    @PreAuthorize("#user.getUsername() == principal.username")
     @RequestMapping(value = "users/", method = RequestMethod.PUT)
     public UserDto updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
         return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));

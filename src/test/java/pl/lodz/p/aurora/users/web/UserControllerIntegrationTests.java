@@ -228,8 +228,45 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
     }
 
     @Test
-    public void returnProperlyUpdatedUserAsUser() {
-        updateTest(featureUrl, testRestTemplateAsEmployee);
+    public void failToUpdateAnotherUserAsEmployee() {
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
+                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        String newName = "some new name";
+        fetchedUserBeforeUpdate.setName(newName);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsEmployee
+                .exchange(featureUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void returnProperlyUpdatedOwnAccountAsEmployee() {
+        // Given
+        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
+                .getForEntity(featureUrl + employeeUsername, UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        String newName = "some new name";
+        fetchedUserBeforeUpdate.setName(newName);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
+        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsEmployee
+                .exchange(featureUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnUpdateUserDto.getBody().getName()).isEqualTo(newName);
     }
 
     @Test
