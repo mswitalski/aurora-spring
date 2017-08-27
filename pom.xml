@@ -5,7 +5,7 @@
 
     <groupId>pl.lodz.p</groupId>
     <artifactId>aurora</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.24-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>aurora</name>
@@ -64,12 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
         </dependency>
 
         <dependency>
