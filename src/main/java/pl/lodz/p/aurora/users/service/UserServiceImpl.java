@@ -10,6 +10,7 @@ import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -30,12 +31,14 @@ public class UserServiceImpl extends BaseService implements UserService {
     private String defaultEmployeeRoleName;
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoderProvider passwordEncoderProvider;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService, EntityVersionTransformer transformer) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, EntityVersionTransformer transformer, PasswordEncoderProvider passwordEncoderProvider) {
         super(transformer);
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.passwordEncoderProvider = passwordEncoderProvider;
     }
 
     /**
@@ -221,5 +224,31 @@ public class UserServiceImpl extends BaseService implements UserService {
         storedUser.assignRole(chosenRole);
 
         return userRepository.saveAndFlush(storedUser);
+    }
+
+    @Override
+    public User updatePasswordAsAdmin(Long userId, String newPassword, String eTag) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        storedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
+
+        return userRepository.saveAndFlush(storedUser);
+    }
+
+    @Override
+    public boolean updateOwnPassword(String username, String newPassword, String oldPassword, String eTag) {
+        User loggedUser = userRepository.findDistinctByUsername(username);
+        failIfNoRecordInDatabaseFound(loggedUser, username);
+        failIfEncounteredOutdatedEntity(eTag, loggedUser);
+
+        if (!passwordEncoderProvider.getEncoder().matches(oldPassword, loggedUser.getPassword())) {
+            return false;
+        }
+
+        loggedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
+        userRepository.saveAndFlush(loggedUser);
+
+        return true;
     }
 }

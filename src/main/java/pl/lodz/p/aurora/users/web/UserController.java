@@ -8,8 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
@@ -76,39 +78,82 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "users/{username}", method = RequestMethod.GET)
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
-        User foundUser = userService.findByUsername(username);
+        return respondWithUserDto(userService.findByUsername(username));
+    }
 
-        return new ResponseEntity<>(convertToDto(foundUser), prepareETagHeaders(foundUser), HttpStatus.OK);
+    private ResponseEntity<UserDto> respondWithUserDto(User user) {
+        return new ResponseEntity<>(convertToDto(user), prepareETagHeaders(user), HttpStatus.OK);
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
-    public UserDto updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
-    public UserDto updateAsUnitLeader(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateAsUnitLeader(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @PreAuthorize("#user.getUsername() == principal.username")
     @RequestMapping(value = "users/", method = RequestMethod.PUT)
-    public UserDto updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return convertToDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
+        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
-    public UserDto enableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return convertToDto(userService.enable(userId, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> enableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
+        return respondWithUserDto(userService.enable(userId, sanitizeReceivedETag(eTag)));
     }
 
     @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
-    public UserDto disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return convertToDto(userService.disable(userId, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
+        return respondWithUserDto(userService.disable(userId, sanitizeReceivedETag(eTag)));
     }
 
     @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.PUT)
-    public UserDto assignRoleToUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        return convertToDto(userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> assignRoleToUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
+        return respondWithUserDto(userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag)));
+    }
+
+    @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
+    public ResponseEntity<UserDto> updatePasswordAsAdmin(
+            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @RequestBody PasswordChangeFormDto formData
+    ) {
+        return respondWithUserDto(userService.updatePasswordAsAdmin(
+                userId,
+                formData.getNewPassword(),
+                sanitizeReceivedETag(eTag)));
+    }
+
+    @RequestMapping(value = "users/password", method = RequestMethod.PUT)
+    public ResponseEntity<Object> updateOwnPassword(
+            @RequestHeader("ETag") String eTag, @RequestBody PasswordChangeFormDto formData
+    ) {
+        if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
+            ValidationMessageDto errorMessage = new ValidationMessageDto("dupa", "repeated-password");
+
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (wasUserPasswordUpdated(eTag, loggedUser.getUsername(), formData)) {
+            User updatedUser = userService.findByUsername(loggedUser.getUsername());
+
+            return new ResponseEntity<>(convertToDto(updatedUser), prepareETagHeaders(updatedUser), HttpStatus.OK);
+
+        } else {
+            ValidationMessageDto errorMessage = new ValidationMessageDto("dupa", "old-password");
+
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private boolean wasUserPasswordUpdated(String eTag, String username, PasswordChangeFormDto formData) {
+        return userService.updateOwnPassword(
+                username,
+                formData.getNewPassword(),
+                formData.getOldPassword(),
+                sanitizeReceivedETag(eTag));
     }
 }

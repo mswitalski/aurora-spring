@@ -17,4 +17,6 @@ public interface UserService {
     User enable(Long id, String eTag);
     User disable(Long id, String eTag);
     User assignRole(Long userId, String roleName, String eTag);
+    User updatePasswordAsAdmin(Long userId, String newPassword, String eTag);
+    boolean updateOwnPassword(String username, String newPassword, String oldPassword, String eTag);
 }
