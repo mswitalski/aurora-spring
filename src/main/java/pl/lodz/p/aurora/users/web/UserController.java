@@ -1,5 +1,7 @@
 package pl.lodz.p.aurora.users.web;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +14,12 @@ import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
+import pl.lodz.p.aurora.users.domain.dto.UserAccountCredentialsDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,5 +159,16 @@ public class UserController extends BaseController {
                 formData.getNewPassword(),
                 formData.getOldPassword(),
                 sanitizeReceivedETag(eTag));
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestBody UserAccountCredentialsDto userCredentials) {
+        UserDto storedUserDto = convertToDto(userService.findByUsername(userCredentials.getUsername()));
+        String token = Jwts.builder()
+                .setSubject(storedUserDto.getUsername())
+                .setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS512, "x2ztZccts5Ev9aNvGxPXJbqt").compact();
+
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }
