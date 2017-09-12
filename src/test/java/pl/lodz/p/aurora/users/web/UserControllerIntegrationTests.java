@@ -2,17 +2,14 @@ package pl.lodz.p.aurora.users.web;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.web.AuthorizedTestsBase;
-import pl.lodz.p.aurora.helper.RoleDataFactory;
-import pl.lodz.p.aurora.helper.UserDtoDataFactory;
+import pl.lodz.p.aurora.helper.*;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 
@@ -38,7 +35,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
     @Test
     public void basicUsersInListReturnedWhenDatabaseContainsOnlyBasicUsers() throws Exception {
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = getAsAdmin(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -51,7 +48,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         UserDto savedUser = userDataFactory.createAndSaveSingle();
 
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = getAsAdmin(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -64,7 +61,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         List<UserDto> savedUsersList = userDataFactory.createAndSaveMany(2);
 
         // When
-        ResponseEntity<UserDto[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, UserDto[].class);
+        ResponseEntity<UserDto[]> response = getAsAdmin(featureUrl, UserDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -78,7 +75,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         String findByUsernameUrl = featureUrl + fakeUsername;
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.getForEntity(findByUsernameUrl, UserDto.class);
+        ResponseEntity<UserDto> response = getAsAdmin(findByUsernameUrl, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -91,7 +88,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         String findByUsernameUrl = featureUrl + savedUser.getName();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.getForEntity(findByUsernameUrl, UserDto.class);
+        ResponseEntity<UserDto> response = getAsAdmin(findByUsernameUrl, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -104,7 +101,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         UserDto dummyUser = userDataFactory.createSingleWithRandomRole();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> response = postAsAdmin(featureAdminUrl, dummyUser, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -119,7 +116,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         UserDto dummyUser = userDataFactory.createSingle();
 
         // When
-        ResponseEntity<UserDto> response = testRestTemplateAsUnitLeader.postForEntity(featureUnitLeaderUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> response = postAsUnitLeader(featureUnitLeaderUrl, dummyUser, UserDto.class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -136,7 +133,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, ValidationMessageDto[].class);
+                postAsAdmin(featureAdminUrl, dummyUser, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -152,7 +149,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameUsername, ValidationMessageDto[].class);
+                postAsAdmin(featureAdminUrl, newUserWithSameUsername, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -169,7 +166,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameEmail, ValidationMessageDto[].class);
+                postAsAdmin(featureAdminUrl, newUserWithSameEmail, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -187,7 +184,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
         // When
         ResponseEntity<ValidationMessageDto[]> response =
-                testRestTemplateAsAdmin.postForEntity(featureAdminUrl, newUserWithSameUsernameAndEmail, ValidationMessageDto[].class);
+                postAsAdmin(featureAdminUrl, newUserWithSameUsernameAndEmail, ValidationMessageDto[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -198,24 +195,19 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
     @Test
     public void returnProperlyUpdatedUserAsAdmin() {
-        updateTest(featureAdminUrl, testRestTemplateAsAdmin);
-    }
-
-    private void updateTest(String url, TestRestTemplate template) {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
-                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         String newName = "some new name";
         fetchedUserBeforeUpdate.setName(newName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = template
-                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsAdmin(
+                featureAdminUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdate,
+                UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -224,25 +216,40 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
 
     @Test
     public void returnProperlyUpdatedUserAsUnitLeader() {
-        updateTest(featureUnitLeaderUrl, testRestTemplateAsUnitLeader);
+        // Given
+        UserDto savedUser = userDataFactory.createAndSaveSingle();
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
+        UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
+        String newName = "some new name";
+        fetchedUserBeforeUpdate.setName(newName);
+
+        // When
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsUnitLeader(
+                featureUnitLeaderUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdate,
+                UserDto.class);
+
+        // Then
+        assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseOnUpdateUserDto.getBody().getName()).isEqualTo(newName);
     }
 
     @Test
     public void failToUpdateAnotherUserAsEmployee() {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
-                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         String newName = "some new name";
         fetchedUserBeforeUpdate.setName(newName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsEmployee
-                .exchange(featureUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsEmployee(
+                featureUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdate,
+                UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -251,18 +258,17 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
     @Test
     public void returnProperlyUpdatedOwnAccountAsEmployee() {
         // Given
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
-                .getForEntity(featureUrl + employeeUsername, UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + employeeUsername, UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         String newName = "some new name";
         fetchedUserBeforeUpdate.setName(newName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate, httpHeaders);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsEmployee
-                .exchange(featureUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsEmployee(
+                featureUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdate,
+                UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -273,16 +279,17 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
     public void failOnUpdatingUserWithoutRequiredETagHeaderAsAdmin() {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplate
-                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
         String newName = "some new name";
         fetchedUserBeforeUpdate.setName(newName);
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(fetchedUserBeforeUpdate);
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsAdmin
-                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsAdmin(
+                featureAdminUrl,
+                "",
+                fetchedUserBeforeUpdate,
+                UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -292,8 +299,7 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
     public void failOnSimultaneousUserUpdatesAsAdmin() {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
-                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdateFirstUpdate = responseOnGetUserDto.getBody();
         UserDto fetchedUserBeforeUpdateOtherUpdate = fetchedUserBeforeUpdateFirstUpdate.clone();
         String newName = "some new name";
@@ -301,16 +307,17 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         fetchedUserBeforeUpdateFirstUpdate.setName(newName);
         fetchedUserBeforeUpdateOtherUpdate.setName(newNameOnSecondUpdate);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntityFirstUpdate = new HttpEntity<>(fetchedUserBeforeUpdateFirstUpdate, httpHeaders);
-        HttpEntity<UserDto> httpEntityOtherUpdate = new HttpEntity<>(fetchedUserBeforeUpdateOtherUpdate, httpHeaders);
-
         // When
-        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplateAsAdmin
-                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityFirstUpdate, UserDto.class);
-        ResponseEntity<UserDto> responseOnOtherUpdateUserDto = testRestTemplateAsAdmin
-                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntityOtherUpdate, UserDto.class);
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = putAsAdmin(
+                featureAdminUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdateFirstUpdate,
+                UserDto.class);
+        ResponseEntity<UserDto> responseOnOtherUpdateUserDto = putAsAdmin(
+                featureAdminUrl,
+                responseOnGetUserDto.getHeaders().getETag(),
+                fetchedUserBeforeUpdateOtherUpdate,
+                UserDto.class);
 
         // Then
         assertThat(responseOnFirstUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -324,13 +331,8 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         String fakeETag = "fakeETag";
         UserDto savedUser = userDataFactory.createSingle();
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", fakeETag);
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(savedUser, httpHeaders);
-
         // When
-        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = testRestTemplateAsAdmin
-                .exchange(featureAdminUrl, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnFirstUpdateUserDto = putAsAdmin(featureAdminUrl, fakeETag, savedUser, UserDto.class);
 
         // Then
         assertThat(responseOnFirstUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -341,17 +343,16 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         // Given
         UserDto dummyUser = userDataFactory.createSingle();
         dummyUser.setEnabled(false);
-        ResponseEntity<UserDto> responseOnCreated = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> responseOnCreated = postAsAdmin(featureAdminUrl, dummyUser, UserDto.class);
         dummyUser = responseOnCreated.getBody();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
         String url = featureAdminUrl + dummyUser.getId() + "/activation";
-        System.out.println(url);
 
         // When
-        ResponseEntity<UserDto> responseOnPatched = testRestTemplateAsAdmin
-                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnPatched = putAsAdmin(
+                url,
+                responseOnCreated.getHeaders().getETag(),
+                null,
+                UserDto.class);
 
         // Then
         assertThat(responseOnPatched.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -363,17 +364,16 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         // Given
         UserDto dummyUser = userDataFactory.createSingle();
         dummyUser.setEnabled(true);
-        ResponseEntity<UserDto> responseOnCreated = testRestTemplateAsAdmin.postForEntity(featureAdminUrl, dummyUser, UserDto.class);
+        ResponseEntity<UserDto> responseOnCreated = postAsAdmin(featureAdminUrl, dummyUser, UserDto.class);
         dummyUser = responseOnCreated.getBody();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnCreated.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
         String url = featureAdminUrl + dummyUser.getId() + "/deactivation";
-        System.out.println(url);
 
         // When
-        ResponseEntity<UserDto> responseOnPatched = testRestTemplateAsAdmin
-                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnPatched = putAsAdmin(
+                url,
+                responseOnCreated.getHeaders().getETag(),
+                null,
+                UserDto.class);
 
         // Then
         assertThat(responseOnPatched.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -385,19 +385,16 @@ public class UserControllerIntegrationTests extends AuthorizedTestsBase {
         // Given
         UserDto savedUser = userDataFactory.createAndSaveSingle();
         Role savedRole = roleDataFactory.createAndSaveSingle();
-        ResponseEntity<UserDto> responseOnGetUserDto = testRestTemplateAsAdmin
-                .getForEntity(featureUrl + savedUser.getUsername(), UserDto.class);
+        ResponseEntity<UserDto> responseOnGetUserDto = getAsAdmin(featureUrl + savedUser.getUsername(), UserDto.class);
         UserDto fetchedUserBeforeUpdate = responseOnGetUserDto.getBody();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("ETag", responseOnGetUserDto.getHeaders().getETag());
-        HttpEntity<UserDto> httpEntity = new HttpEntity<>(httpHeaders);
         String url = featureAdminUrl + fetchedUserBeforeUpdate.getId() + "/role/" + savedRole.getName();
-        System.out.println(url);
-        System.out.println(responseOnGetUserDto.getHeaders().getETag());
 
         // When
-        ResponseEntity<UserDto> responseOnUpdateUserDto = testRestTemplateAsAdmin
-                .exchange(url, HttpMethod.PUT, httpEntity, UserDto.class);
+        ResponseEntity<UserDto> responseOnUpdateUserDto = putAsAdmin(
+                url,
+                responseOnGetUserDto.getHeaders().getETag(),
+                null,
+                UserDto.class);
 
         // Then
         assertThat(responseOnUpdateUserDto.getStatusCode()).isEqualTo(HttpStatus.OK);

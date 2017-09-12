@@ -25,7 +25,7 @@ public class RoleControllerIntegrationTests extends AuthorizedTestsBase {
         Integer expectedNumberOfRoles = 3;
 
         // When
-        ResponseEntity<Role[]> response = testRestTemplateAsAdmin.getForEntity(featureUrl, Role[].class);
+        ResponseEntity<Role[]> response = getAsAdmin(featureUrl, Role[].class);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
