@@ -20,13 +20,12 @@ import java.io.IOException;
  */
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final String tokenHeader = "Authorization";
-    private final String tokenPrefix = "Bearer ";
-    private String tokenSecretKey = "x2ztZccts5Ev9aNvGxPXJbqt";
     private UserRepository userRepository;
+    private JwtConfigurationData configurationData;
 
     public AuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
+        this.configurationData = new JwtConfigurationData();
     }
 
     @Override
@@ -37,9 +36,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         userRepository = WebApplicationContextUtils.
                 getWebApplicationContext(request.getServletContext()).
                 getBean(UserRepository.class);
-        String header = request.getHeader(tokenHeader);
+        String header = request.getHeader(configurationData.getTokenHeader());
 
-        if (header == null || !header.startsWith(tokenPrefix)) {
+        if (header == null || !header.startsWith(configurationData.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,12 +50,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader);
+        String token = request.getHeader(configurationData.getTokenHeader());
 
         if (token != null) {
             String subject = Jwts.parser()
-                    .setSigningKey(tokenSecretKey)
-                    .parseClaimsJws(token.replace(tokenPrefix, ""))
+                    .setSigningKey(configurationData.getTokenSecretKey())
+                    .parseClaimsJws(token.replace(configurationData.getTokenPrefix(), ""))
                     .getBody()
                     .getSubject();
             User storedUser = userRepository.findDistinctByUsername(subject);

@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.lodz.p.aurora.users.domain.dto.UserAccountCredentialsDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
@@ -16,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,19 +26,18 @@ import java.util.Date;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-    private final Integer tokenExpiresInHours = 168;
-    private final String tokenHeader = "Authorization";
-    private final String tokenPrefix = "Bearer ";
-    private String tokenSecretKey = "x2ztZccts5Ev9aNvGxPXJbqt";
+    private JwtConfigurationData configurationData;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
+        super();
         this.authenticationManager = authenticationManager;
+        this.configurationData = new JwtConfigurationData();
+        setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        System.out.println("attemptAuthentication");
         try {
             UserAccountCredentialsDto accountCredentialsDto = new ObjectMapper()
                     .readValue(request.getInputStream(), UserAccountCredentialsDto.class);
@@ -46,9 +45,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             accountCredentialsDto.getUsername(),
-                            accountCredentialsDto.getPassword(),
-                            new ArrayList<>())
-            );
+                            accountCredentialsDto.getPassword()));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,16 +57,19 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response,
                                             FilterChain filterChain,
                                             Authentication auth) throws IOException, ServletException {
-
-        System.out.println("successfulAuthentication");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.HOUR_OF_DAY, tokenExpiresInHours);
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
-                .setExpiration(calendar.getTime())
-                .signWith(SignatureAlgorithm.HS512, tokenSecretKey)
+                .setExpiration(getExpirationDate())
+                .signWith(SignatureAlgorithm.HS512, configurationData.getTokenSecretKey())
                 .compact();
-        response.addHeader(tokenHeader, tokenPrefix + token);
+        response.addHeader(configurationData.getTokenHeader(), configurationData.getTokenPrefix() + token);
+    }
+
+    private Date getExpirationDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR_OF_DAY, configurationData.getTokenExpiresInHours());
+
+        return calendar.getTime();
     }
 }

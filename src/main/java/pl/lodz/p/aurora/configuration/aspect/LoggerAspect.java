@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ public class LoggerAspect {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null) {
-            messageToLog.append(" Invoked by principal: ").append(auth.getPrincipal());
+            messageToLog.append(" Invoked by principal: ").append(((User) auth.getPrincipal()).getUsername());
         }
 
         messageToLog.append(" Parameters values: ");
