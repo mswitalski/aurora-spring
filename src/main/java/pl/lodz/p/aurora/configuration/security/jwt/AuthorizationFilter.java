@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import pl.lodz.p.aurora.configuration.security.jwt.TokenConfigurationData;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
@@ -21,11 +22,11 @@ import java.io.IOException;
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
-    private JwtConfigurationData configurationData;
+    private TokenConfigurationData configurationData;
 
     public AuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
-        this.configurationData = new JwtConfigurationData();
+        this.configurationData = new TokenConfigurationData();
     }
 
     @Override
@@ -33,9 +34,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
 
-        userRepository = WebApplicationContextUtils.
-                getWebApplicationContext(request.getServletContext()).
-                getBean(UserRepository.class);
+        initializeDependencies(request);
         String header = request.getHeader(configurationData.getTokenHeader());
 
         if (header == null || !header.startsWith(configurationData.getTokenPrefix())) {
@@ -47,6 +46,15 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
+    }
+
+    private void initializeDependencies(HttpServletRequest request) {
+        userRepository = WebApplicationContextUtils.
+                getWebApplicationContext(request.getServletContext()).
+                getBean(UserRepository.class);
+        configurationData = WebApplicationContextUtils.
+                getWebApplicationContext(request.getServletContext()).
+                getBean(TokenConfigurationData.class);
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {

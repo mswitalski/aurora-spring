@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import pl.lodz.p.aurora.configuration.security.jwt.TokenConfigurationData;
 import pl.lodz.p.aurora.users.domain.dto.UserAccountCredentialsDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
@@ -26,18 +28,19 @@ import java.util.Date;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-    private JwtConfigurationData configurationData;
+    private TokenConfigurationData configurationData;
 
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
         super();
         this.authenticationManager = authenticationManager;
-        this.configurationData = new JwtConfigurationData();
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
+        initializeDependencies(request);
+
         try {
             UserAccountCredentialsDto accountCredentialsDto = new ObjectMapper()
                     .readValue(request.getInputStream(), UserAccountCredentialsDto.class);
@@ -52,11 +55,18 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         }
     }
 
+    private void initializeDependencies(HttpServletRequest request) {
+        configurationData = WebApplicationContextUtils.
+                getWebApplicationContext(request.getServletContext()).
+                getBean(TokenConfigurationData.class);
+    }
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain filterChain,
                                             Authentication auth) throws IOException, ServletException {
+        initializeDependencies(request);
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(getExpirationDate())

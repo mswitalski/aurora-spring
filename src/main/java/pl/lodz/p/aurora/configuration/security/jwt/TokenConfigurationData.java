@@ -1,31 +1,36 @@
 package pl.lodz.p.aurora.configuration.security.jwt;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Marek on 9/10/2017.
  */
-public class TokenConfigurationData {
+@Component
+class TokenConfigurationData {
 
-    private final Integer tokenExpiresInHours = 168;
-    private final String tokenHeader = "Authorization";
-    private final String tokenPrefix = "Bearer ";
+    @Value("${aurora.security.jwt.token.expires_in_hours}")
+    private Integer tokenExpiresInHours;
+    @Value("${aurora.security.jwt.token.header}")
+    private String tokenHeader;
+    @Value("${aurora.security.jwt.token.prefix}")
+    private String tokenPrefix;
     @Value("${aurora.security.jwt.secret}")
     private String tokenSecretKey;
 
-    public Integer getTokenExpiresInHours() {
+    Integer getTokenExpiresInHours() {
         return tokenExpiresInHours;
     }
 
-    public String getTokenHeader() {
+    String getTokenHeader() {
         return tokenHeader;
     }
 
-    public String getTokenPrefix() {
+    String getTokenPrefix() {
         return tokenPrefix;
     }
 
-    public String getTokenSecretKey() {
+    String getTokenSecretKey() {
         return tokenSecretKey;
     }
 }
