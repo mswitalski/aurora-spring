@@ -99,6 +99,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, configurationData.getTokenSecretKey())
                 .compact();
         response.addHeader(configurationData.getTokenHeader(), configurationData.getTokenPrefix() + token);
+        response.setContentType("application/json");
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
+
+        try {
+            response.getOutputStream().write("{}".getBytes());
+
+        } catch (IOException e) {
+            logger.error("Failed to provide the default JSON body for the JWT token response", e);
+        }
     }
 
     private Date getExpirationDate() {

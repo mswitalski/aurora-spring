@@ -76,6 +76,13 @@ public class UserController extends BaseController {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "user", method = RequestMethod.GET)
+    public ResponseEntity<UserDto> findLoggedUser() {
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return respondWithUserDto(userService.findByUsername(loggedUser.getUsername()));
+    }
+
     @RequestMapping(value = "users/{username}", method = RequestMethod.GET)
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
         return respondWithUserDto(userService.findByUsername(username));
