@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Security filter responsible for handling user authentication with JWT.
@@ -93,8 +95,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain filterChain,
                                             Authentication auth) {
         initializeDependencies(request);
+        User authenticatedUser = (User) auth.getPrincipal();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", authenticatedUser.getRoles());
+        claims.put("enabled", authenticatedUser.isEnabled());
+
         String token = Jwts.builder()
-                .setSubject(((User) auth.getPrincipal()).getUsername())
+                .setClaims(claims)
+                .setSubject(authenticatedUser.getUsername())
                 .setExpiration(getExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, configurationData.getTokenSecretKey())
                 .compact();

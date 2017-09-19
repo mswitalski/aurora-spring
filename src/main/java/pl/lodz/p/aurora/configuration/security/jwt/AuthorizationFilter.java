@@ -1,5 +1,6 @@
 package pl.lodz.p.aurora.configuration.security.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import pl.lodz.p.aurora.users.domain.dto.TokenClaimsDto;
+import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
@@ -17,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Security filter responsible for handling user authorization with JWT.
@@ -86,18 +90,22 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
      * @param request Received request
      * @return Authenticated user
      */
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException {
         String token = request.getHeader(configurationData.getTokenHeader());
 
         if (token != null) {
-            String subject = Jwts.parser()
+            Claims claims = Jwts.parser()
                     .setSigningKey(configurationData.getTokenSecretKey())
                     .parseClaimsJws(token.replace(configurationData.getTokenPrefix(), ""))
-                    .getBody()
-                    .getSubject();
-            User storedUser = userRepository.findDistinctByUsername(subject);
+                    .getBody();
 
-            if (storedUser != null) {
+            User storedUser = userRepository.findDistinctByUsername(claims.getSubject());
+            TokenClaimsDto tokenClaimsDto = new TokenClaimsDto(
+                    claims.get("enabled", Boolean.class),
+                    processMisshapedRoles(claims.get("roles", ArrayList.class))
+            );
+
+            if (areTokenClaimsValid(storedUser, tokenClaimsDto)) {
                 return new UsernamePasswordAuthenticationToken(storedUser, null, storedUser.getAuthorities());
 
             } else {
@@ -106,5 +114,23 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         return null;
+    }
+
+    private Set<Role> processMisshapedRoles(ArrayList rolesFromToken) {
+        Set<Role> properRoles = new HashSet<>();
+
+        rolesFromToken.forEach(misshaped -> {
+            String roleName = misshaped.toString().replace("{name=", "")
+                    .replace("}", "");
+            properRoles.add(new Role(roleName));
+        });
+
+        return properRoles;
+    }
+
+    private boolean areTokenClaimsValid(User storedUser, TokenClaimsDto tokenClaimsDto) {
+        return storedUser != null &&
+                storedUser.isEnabled() == tokenClaimsDto.isEnabled() &&
+                storedUser.getRoles().containsAll(tokenClaimsDto.getRoles());
     }
 }
