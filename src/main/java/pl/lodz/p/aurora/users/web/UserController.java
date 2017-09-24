@@ -93,19 +93,19 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateAsAdmin(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateAsAdmin(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
+        return respondWithUserDto(userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateAsUnitLeader(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateAsUnitLeader(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
+        return respondWithUserDto(userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @PreAuthorize("#user.getUsername() == principal.username")
     @RequestMapping(value = "users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateOwnAccount(@RequestHeader("ETag") String eTag, @RequestBody UserDto user) {
-        return respondWithUserDto(userService.update(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<UserDto> updateOwnAccount(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
+        return respondWithUserDto(userService.updateOwnAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
     }
 
     @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
@@ -125,7 +125,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
-            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @RequestBody PasswordChangeFormDto formData
+            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @Validated @RequestBody PasswordChangeFormDto formData
     ) {
         return respondWithUserDto(userService.updatePasswordAsAdmin(
                 userId,
@@ -135,7 +135,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "users/password", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateOwnPassword(
-            @RequestHeader("ETag") String eTag, @RequestBody PasswordChangeFormDto formData
+            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
     ) {
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
             ValidationMessageDto errorMessage = new ValidationMessageDto("dupa", "repeated-password");

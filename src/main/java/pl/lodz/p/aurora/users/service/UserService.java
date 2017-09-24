@@ -13,7 +13,8 @@ public interface UserService {
     User createAsUnitLeader(User user);
     List<User> findAll();
     User findByUsername(String username);
-    User update(String eTag, User user);
+    User updateOwnAccount(String eTag, User user);
+    User updateAccount(String eTag, User user);
     User enable(Long id, String eTag);
     User disable(Long id, String eTag);
     User assignRole(Long userId, String roleName, String eTag);

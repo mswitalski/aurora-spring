@@ -208,7 +208,7 @@ public class UserServiceImplUnitTests {
         when(userRepository.saveAndFlush(any(User.class))).thenReturn(storedUser);
 
         // When
-        User updatedUser = userService.update(fakeETag, userPassedToMethod);
+        User updatedUser = userService.updateAccount(fakeETag, userPassedToMethod);
 
         // Then
         assertThat(updatedUser).isNotNull();
@@ -225,7 +225,7 @@ public class UserServiceImplUnitTests {
         when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
 
         // When-then
-        userService.update(invalidETag, userPassedToMethod);
+        userService.updateAccount(invalidETag, userPassedToMethod);
     }
 
     @Test(expected = InvalidResourceRequestedException.class)
@@ -236,7 +236,7 @@ public class UserServiceImplUnitTests {
         when(userRepository.findDistinctByUsername(dummyUser.getUsername())).thenReturn(null);
 
         // When-then
-        userService.update(invalidETag, dummyUser);
+        userService.updateAccount(invalidETag, dummyUser);
     }
 
     @Test

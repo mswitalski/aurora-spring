@@ -142,7 +142,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     /**
-     * Modify existing user account with provided data.
+     * Modify existing other user account with provided data including position.
      *
      * @param eTag ETag value received from client
      * @param user Object holding modified user account data
@@ -151,7 +151,23 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
      */
     @Override
-    public User update(String eTag, User user) {
+    public User updateAccount(String eTag, User user) {
+        User storedUser = update(eTag, user);
+        storedUser.setPosition(user.getPosition());
+
+        return userRepository.saveAndFlush(storedUser);
+    }
+
+    /**
+     * Modify any user account with provided data.
+     *
+     * @param eTag ETag value received from client
+     * @param user Object holding modified user account data
+     * @return Entity with modified data that was saved to data source
+     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
+     */
+    private User update(String eTag, User user) {
         User storedUser = userRepository.findDistinctByUsername(user.getUsername());
 
         failIfNoRecordInDatabaseFound(storedUser, user);
@@ -160,10 +176,23 @@ public class UserServiceImpl extends BaseService implements UserService {
         storedUser.setEmail(user.getEmail());
         storedUser.setName(user.getName());
         storedUser.setSurname(user.getSurname());
-        storedUser.setPosition(user.getPosition());
         storedUser.setGoals(user.getGoals());
 
-        return userRepository.saveAndFlush(storedUser);
+        return storedUser;
+    }
+
+    /**
+     * Modify own user account with provided data.
+     *
+     * @param eTag ETag value received from client
+     * @param user Object holding modified user account data
+     * @return Entity with modified data that was saved to data source
+     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
+     */
+    @Override
+    public User updateOwnAccount(String eTag, User user) {
+        return userRepository.saveAndFlush(update(eTag, user));
     }
 
     /**
