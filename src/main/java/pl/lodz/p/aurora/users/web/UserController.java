@@ -10,13 +10,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
+import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -28,12 +31,17 @@ public class UserController extends BaseController {
 
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper;
+    private final Translator translator;
 
     @Autowired
-    public UserController(UserServiceImpl userService, ModelMapper modelMapper, EntityVersionTransformer transformer) {
+    public UserController(UserServiceImpl userService,
+                          ModelMapper modelMapper,
+                          EntityVersionTransformer transformer,
+                          Translator translator) {
         super(transformer);
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.translator = translator;
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
@@ -135,12 +143,11 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "users/password", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateOwnPassword(
-            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
+            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData,
+            @RequestHeader("Accept-Language") Locale locale
     ) {
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
-            ValidationMessageDto errorMessage = new ValidationMessageDto("dupa", "repeated-password");
-
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            return preparePasswordChangeErrorResponse("PasswordChangeFormDto.newPasswordRepeated.Invalid", "new-password-repeated", locale);
         }
 
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -150,17 +157,23 @@ public class UserController extends BaseController {
             return new ResponseEntity<>(convertToDto(updatedUser), prepareETagHeaders(updatedUser), HttpStatus.OK);
 
         } else {
-            ValidationMessageDto errorMessage = new ValidationMessageDto("dupa", "old-password");
-
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            return preparePasswordChangeErrorResponse("PasswordChangeFormDto.currentPassword.Invalid", "current-password", locale);
         }
+    }
+
+    private ResponseEntity<Object> preparePasswordChangeErrorResponse(String translationKey, String fieldName, Locale locale) {
+        List<ValidationMessageDto> errorMessage =
+                Collections.singletonList(new ValidationMessageDto(translator.translate(translationKey, locale), fieldName));
+        errorMessage.forEach(msg -> System.out.println(msg.getMessageContent()));
+        System.out.println("size = " + errorMessage.size());
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     private boolean wasUserPasswordUpdated(String eTag, String username, PasswordChangeFormDto formData) {
         return userService.updateOwnPassword(
                 username,
                 formData.getNewPassword(),
-                formData.getOldPassword(),
+                formData.getCurrentPassword(),
                 sanitizeReceivedETag(eTag));
     }
 }
