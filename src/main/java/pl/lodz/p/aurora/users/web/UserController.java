@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.users.web;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -143,9 +144,10 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "users/password", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateOwnPassword(
-            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData,
-            @RequestHeader("Accept-Language") Locale locale
+            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
     ) {
+        Locale locale = LocaleContextHolder.getLocale();
+
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
             return preparePasswordChangeErrorResponse("PasswordChangeFormDto.newPasswordRepeated.Invalid", "new-password-repeated", locale);
         }
@@ -164,8 +166,7 @@ public class UserController extends BaseController {
     private ResponseEntity<Object> preparePasswordChangeErrorResponse(String translationKey, String fieldName, Locale locale) {
         List<ValidationMessageDto> errorMessage =
                 Collections.singletonList(new ValidationMessageDto(translator.translate(translationKey, locale), fieldName));
-        errorMessage.forEach(msg -> System.out.println(msg.getMessageContent()));
-        System.out.println("size = " + errorMessage.size());
+
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 

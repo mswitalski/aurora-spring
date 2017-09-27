@@ -3,6 +3,7 @@ package pl.lodz.p.aurora.configuration.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -56,9 +57,9 @@ public class ControllerValidationListener {
     @ExceptionHandler(UniqueConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public List<ValidationMessageDto> processUniqueValidationError(@RequestHeader("Accept-Language") Locale locale,
-                                                                   UniqueConstraintViolationException exception) {
+    public List<ValidationMessageDto> processUniqueValidationError(UniqueConstraintViolationException exception) {
         logger.info("Data provided by user was not unique", exception);
+        Locale locale = LocaleContextHolder.getLocale();
 
         return exception.getFieldsNames().stream()
                 .map(f -> constructValidationMessage(
