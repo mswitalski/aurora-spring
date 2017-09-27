@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.common.domain.entity;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 /**
  * An abstract entity that will serve as base entity for other versioned entities.
@@ -9,6 +10,7 @@ import javax.persistence.Version;
 @MappedSuperclass
 public abstract class VersionedEntity extends BaseEntity {
 
+    @NotNull
     @Version
     private Long version;
 
