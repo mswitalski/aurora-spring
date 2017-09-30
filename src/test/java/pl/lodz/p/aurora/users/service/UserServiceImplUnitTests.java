@@ -18,9 +18,6 @@ import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.*;
@@ -43,43 +40,43 @@ public class UserServiceImplUnitTests {
     private String fakeUsername = "fakeUsername";
     private String fakeETag = "fakeETag";
 
-    @Test
-    public void emptyListReturnedIfNoUsersFound() {
-        // Given
-        when(userRepository.findAll()).thenReturn(new ArrayList<>());
-
-        // When
-        List<User> returnedUsersList = userService.findAll();
-
-        // Then
-        assertThat(returnedUsersList).isNotNull().isEmpty();
-    }
-
-    @Test
-    public void oneUserInListReturnedIfOneUserFound() {
-        // Given
-        Integer howManyUsers = 1;
-        when(userRepository.findAll()).thenReturn(userDataFactory.createMany(howManyUsers));
-
-        // When
-        List<User> returnedUsersList = userService.findAll();
-
-        // Then
-        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
-    }
-
-    @Test
-    public void twoUsersInListReturnedIfTwoUsersFound() {
-        // Given
-        Integer howManyUsers = 2;
-        when(userRepository.findAll()).thenReturn(userDataFactory.createMany(howManyUsers));
-
-        // When
-        List<User> returnedUsersList = userService.findAll();
-
-        // Then
-        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
-    }
+//    @Test
+//    public void emptyListReturnedIfNoUsersFound() {
+//        // Given
+//        when(userRepository.findAllByOrderBySurnameAscNameAsc()).thenReturn(new ArrayList<>());
+//
+//        // When
+//        List<User> returnedUsersList = userService.findAllByOrderBySurnameAscNameAsc();
+//
+//        // Then
+//        assertThat(returnedUsersList).isNotNull().isEmpty();
+//    }
+//
+//    @Test
+//    public void oneUserInListReturnedIfOneUserFound() {
+//        // Given
+//        Integer howManyUsers = 1;
+//        when(userRepository.findAllByOrderBySurnameAscNameAsc()).thenReturn(userDataFactory.createMany(howManyUsers));
+//
+//        // When
+//        List<User> returnedUsersList = userService.findAllByOrderBySurnameAscNameAsc();
+//
+//        // Then
+//        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
+//    }
+//
+//    @Test
+//    public void twoUsersInListReturnedIfTwoUsersFound() {
+//        // Given
+//        Integer howManyUsers = 2;
+//        when(userRepository.findAllByOrderBySurnameAscNameAsc()).thenReturn(userDataFactory.createMany(howManyUsers));
+//
+//        // When
+//        List<User> returnedUsersList = userService.findAllByOrderBySurnameAscNameAsc();
+//
+//        // Then
+//        assertThat(returnedUsersList).isNotNull().hasSize(howManyUsers);
+//    }
 
     @Test(expected = InvalidResourceRequestedException.class)
     public void noUserReturnedWithGivenUsername() {

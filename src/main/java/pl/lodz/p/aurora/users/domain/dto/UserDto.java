@@ -21,10 +21,6 @@ public class UserDto implements Cloneable {
     @Size(min = 3, max = 20, message = "{UserDto.username.Size}")
     private String username;
 
-    @NotNull(message = "{UserDto.password.NotNull}")
-    @Size(min = 3, max = 60, message = "{UserDto.password.Size}")
-    private String password;
-
     @Email(message = "{UserDto.email.Email}")
     @NotNull(message = "{UserDto.email.NotNull}")
     @Size(max = 40, message = "{UserDto.email.Size}")
@@ -54,10 +50,9 @@ public class UserDto implements Cloneable {
     public UserDto() {
     }
 
-    public UserDto(Long id, String username, String password, String email, String name, String surname, String position, String goals, boolean enabled, Set<Role> roles) {
+    public UserDto(Long id, String username, String email, String name, String surname, String position, String goals, boolean enabled, Set<Role> roles) {
         this.id = id;
         this.username = username;
-        this.password = password;
         this.email = email;
         this.name = name;
         this.surname = surname;
@@ -81,14 +76,6 @@ public class UserDto implements Cloneable {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {
@@ -160,7 +147,6 @@ public class UserDto implements Cloneable {
         UserDto clonedUser = new UserDto();
         clonedUser.setId(this.id);
         clonedUser.setUsername(this.username);
-        clonedUser.setPassword(this.password);
         clonedUser.setEmail(this.email);
         clonedUser.setName(this.name);
         clonedUser.setSurname(this.surname);

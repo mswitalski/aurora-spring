@@ -1,8 +1,8 @@
 package pl.lodz.p.aurora.users.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pl.lodz.p.aurora.users.domain.entity.User;
-
-import java.util.List;
 
 /**
  * Interface for service for users feature.
@@ -11,7 +11,7 @@ public interface UserService {
 
     User createAsAdmin(User user);
     User createAsUnitLeader(User user);
-    List<User> findAll();
+    Page<User> findAllByPage(Pageable pageable);
     User findByUsername(String username);
     User updateOwnAccount(String eTag, User user);
     User updateAccount(String eTag, User user);

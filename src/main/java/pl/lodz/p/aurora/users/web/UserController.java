@@ -3,6 +3,8 @@ package pl.lodz.p.aurora.users.web;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,7 @@ import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -21,7 +24,6 @@ import pl.lodz.p.aurora.users.service.UserServiceImpl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing any requests related to users account.
@@ -33,16 +35,19 @@ public class UserController extends BaseController {
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper;
     private final Translator translator;
+    private final UserEntityToDtoConverter entityToDtoConverter;
 
     @Autowired
     public UserController(UserServiceImpl userService,
                           ModelMapper modelMapper,
                           EntityVersionTransformer transformer,
-                          Translator translator) {
+                          Translator translator,
+                          UserEntityToDtoConverter entityToDtoConverter) {
         super(transformer);
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.translator = translator;
+        this.entityToDtoConverter = entityToDtoConverter;
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
@@ -80,9 +85,8 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "users/", method = RequestMethod.GET)
-    public List<UserDto> findAll() {
-        return userService.findAll().stream().map(this::convertToDto)
-                .collect(Collectors.toList());
+    public Page<User> findAll(Pageable pageable) {
+        return userService.findAllByPage(pageable);
     }
 
     @RequestMapping(value = "user", method = RequestMethod.GET)

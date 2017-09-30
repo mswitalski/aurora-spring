@@ -3,13 +3,15 @@ package pl.lodz.p.aurora.users.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
-import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
@@ -18,7 +20,6 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 import javax.validation.ConstraintViolationException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -124,8 +125,8 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @return List of all users saved in data source
      */
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAllByPage(Pageable pageable) {
+        return userRepository.findAllByOrderBySurnameAscNameAsc(pageable);
     }
 
     /**

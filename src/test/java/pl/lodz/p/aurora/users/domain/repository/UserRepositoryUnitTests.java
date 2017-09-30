@@ -9,7 +9,6 @@ import pl.lodz.p.aurora.helper.UserDataFactory;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.validation.ConstraintViolationException;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,17 +21,17 @@ public class UserRepositoryUnitTests {
     @Autowired
     private UserDataFactory dataFactory;
 
-    @Test
-    public void allBasicUsersWereReturnedFromDatabase() {
-        // Given
-        Integer howManyBasicUsers = 3;
-
-        // When
-        List<User> dataReturnedByRepository = userRepository.findAll();
-
-        // Then
-        assertThat(dataReturnedByRepository).isNotNull().isNotEmpty().hasSize(howManyBasicUsers);
-    }
+//    @Test
+//    public void allBasicUsersWereReturnedFromDatabase() {
+//        // Given
+//        Integer howManyBasicUsers = 3;
+//
+//        // When
+//        List<User> dataReturnedByRepository = userRepository.findAllByOrderBySurnameAscNameAsc();
+//
+//        // Then
+//        assertThat(dataReturnedByRepository).isNotNull().isNotEmpty().hasSize(howManyBasicUsers);
+//    }
 
     @Test
     public void foundUserWithGivenUsernameInDatabase() {
