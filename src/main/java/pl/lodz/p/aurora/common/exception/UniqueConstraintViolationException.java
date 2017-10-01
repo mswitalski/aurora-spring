@@ -22,6 +22,15 @@ public class UniqueConstraintViolationException extends RuntimeException {
         this.fieldsNames = fieldsNames;
     }
 
+    public UniqueConstraintViolationException(String entityName, Set<String> fieldsNames) {
+        super(
+                "Unique constraint was violated in entity " + entityName + " on fields: "
+                        + Joiner.on(", ").skipNulls().join(fieldsNames)
+        );
+        this.entityName = entityName;
+        this.fieldsNames = fieldsNames;
+    }
+
     public String getEntityName() {
         return entityName;
     }

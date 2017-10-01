@@ -19,6 +19,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -143,20 +144,34 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     /**
-     * Modify existing other user account with provided data including position.
+     * Modify existing other user account with provided data including position and whether it's enabled or not.
      *
      * @param eTag ETag value received from client
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
      * @throws InvalidResourceRequestedException when client requested non-existing record from data source
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
+     * @throws UniqueConstraintViolationException when provided entity violates unique constraints
      */
     @Override
     public User updateAccount(String eTag, User user) {
+        failOnNonUniqueEditedEmail(user);
         User storedUser = update(eTag, user);
+        storedUser.setEmail(user.getEmail());
         storedUser.setPosition(user.getPosition());
+        storedUser.setEnabled(user.isEnabled());
 
         return userRepository.saveAndFlush(storedUser);
+    }
+
+    private void failOnNonUniqueEditedEmail(User user) {
+        User userFoundByEmail = userRepository.findDistinctByEmail(user.getEmail());
+
+        if (userFoundByEmail != null && !userFoundByEmail.getUsername().equals(user.getUsername())) {
+            throw new UniqueConstraintViolationException(
+                    UserDto.class.getSimpleName(), new HashSet<>(Collections.singletonList("email"))
+            );
+        }
     }
 
     /**
@@ -174,7 +189,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
 
-        storedUser.setEmail(user.getEmail());
         storedUser.setName(user.getName());
         storedUser.setSurname(user.getSurname());
         storedUser.setGoals(user.getGoals());
