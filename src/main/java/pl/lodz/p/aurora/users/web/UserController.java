@@ -16,6 +16,7 @@ import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
+import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -136,12 +137,12 @@ public class UserController extends BaseController {
         return respondWithUserDto(userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag)));
     }
 
-    @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
+    @RequestMapping(value = "admin/users/{username}/password", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
-            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @Validated @RequestBody PasswordChangeFormDto formData
+            @RequestHeader("ETag") String eTag, @PathVariable String username, @Validated @RequestBody AdminPasswordChangeFormDto formData
     ) {
         return respondWithUserDto(userService.updatePasswordAsAdmin(
-                userId,
+                username,
                 formData.getNewPassword(),
                 sanitizeReceivedETag(eTag)));
     }

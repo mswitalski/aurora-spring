@@ -271,9 +271,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public User updatePasswordAsAdmin(Long userId, String newPassword, String eTag) {
-        User storedUser = userRepository.findOne(userId);
-        failIfNoRecordInDatabaseFound(storedUser, userId);
+    public User updatePasswordAsAdmin(String username, String newPassword, String eTag) {
+        User storedUser = userRepository.findDistinctByUsername(username);
+        failIfNoRecordInDatabaseFound(storedUser, username);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         storedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
 
