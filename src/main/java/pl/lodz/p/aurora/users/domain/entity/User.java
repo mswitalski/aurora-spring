@@ -208,6 +208,10 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         this.roles.add(role);
     }
 
+    public void retractRole(Role role) {
+        this.roles.remove(role);
+    }
+
     @Override
     public User clone() {
         User clonedUser = new User();

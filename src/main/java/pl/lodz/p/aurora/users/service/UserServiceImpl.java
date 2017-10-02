@@ -270,6 +270,25 @@ public class UserServiceImpl extends BaseService implements UserService {
         return userRepository.saveAndFlush(storedUser);
     }
 
+    /**
+     * Retract chosen role from the user given by ID.
+     *
+     * @param userId User's ID to whom we want to assign a role
+     * @param roleName Chosen role's name
+     * @param eTag ETag value received from client
+     * @return Updated user entity
+     */
+    @Override
+    public User retractRole(Long userId, String roleName, String eTag) {
+        Role chosenRole = roleService.findByName(roleName);
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        storedUser.retractRole(chosenRole);
+
+        return userRepository.saveAndFlush(storedUser);
+    }
+
     @Override
     public User updatePasswordAsAdmin(String username, String newPassword, String eTag) {
         User storedUser = userRepository.findDistinctByUsername(username);
