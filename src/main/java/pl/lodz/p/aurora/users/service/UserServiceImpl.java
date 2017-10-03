@@ -11,7 +11,6 @@ import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.service.BaseService;
-import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
@@ -36,8 +35,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     private final PasswordEncoderProvider passwordEncoderProvider;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService, EntityVersionTransformer transformer, PasswordEncoderProvider passwordEncoderProvider) {
-        super(transformer);
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoderProvider passwordEncoderProvider) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoderProvider = passwordEncoderProvider;

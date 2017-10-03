@@ -12,10 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
-import pl.lodz.p.aurora.common.util.EntityVersionTransformer;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
-import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
@@ -36,26 +34,21 @@ public class UserController extends BaseController {
     private final UserServiceImpl userService;
     private final ModelMapper modelMapper;
     private final Translator translator;
-    private final UserEntityToDtoConverter entityToDtoConverter;
 
     @Autowired
     public UserController(UserServiceImpl userService,
                           ModelMapper modelMapper,
-                          EntityVersionTransformer transformer,
-                          Translator translator,
-                          UserEntityToDtoConverter entityToDtoConverter) {
-        super(transformer);
+                          Translator translator) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.translator = translator;
-        this.entityToDtoConverter = entityToDtoConverter;
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
     public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody UserDto userDto) {
-        User createdUser = userService.createAsAdmin(convertToEntity(userDto));
+        UserDto savedUser = convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
 
-        return new ResponseEntity<>(convertToDto(createdUser), prepareETagHeaders(createdUser), HttpStatus.OK);
+        return ResponseEntity.ok().body(savedUser);
     }
 
     /**
@@ -80,14 +73,14 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.POST)
     public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
-        User createdUser = userService.createAsUnitLeader(convertToEntity(userDto));
+        UserDto savedUser = convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
 
-        return new ResponseEntity<>(convertToDto(createdUser), prepareETagHeaders(createdUser), HttpStatus.OK);
+        return ResponseEntity.ok().body(savedUser);
     }
 
     @RequestMapping(value = "users/", method = RequestMethod.GET)
-    public Page<User> findAll(Pageable pageable) {
-        return userService.findAllByPage(pageable);
+    public ResponseEntity<Page<User>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPage(pageable));
     }
 
     @RequestMapping(value = "user", method = RequestMethod.GET)
@@ -103,58 +96,71 @@ public class UserController extends BaseController {
     }
 
     private ResponseEntity<UserDto> respondWithUserDto(User user) {
-        return new ResponseEntity<>(convertToDto(user), prepareETagHeaders(user), HttpStatus.OK);
+        return ResponseEntity.ok().eTag(Integer.toString(user.hashCode())).body(convertToDto(user));
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateAsAdmin(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
-        return respondWithUserDto(userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<Void> updateAsAdmin(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
+        userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateAsUnitLeader(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
-        return respondWithUserDto(userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<Void> updateAsUnitLeader(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
+        userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("#user.getUsername() == principal.username")
     @RequestMapping(value = "users/", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> updateOwnAccount(@RequestHeader("ETag") String eTag, @Validated @RequestBody UserDto user) {
-        return respondWithUserDto(userService.updateOwnAccount(sanitizeReceivedETag(eTag), convertToEntity(user)));
+    public ResponseEntity<Void> updateOwnAccount(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
+        userService.updateOwnAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> enableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return respondWithUserDto(userService.enable(userId, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<Void> enableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
+        userService.enable(userId, sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> disableUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId) {
-        return respondWithUserDto(userService.disable(userId, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> disableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
+        userService.disable(userId, sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> assignRoleToUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        return respondWithUserDto(userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> assignRoleToUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
+        userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.DELETE)
-    public ResponseEntity<UserDto> retractRoleFromUser(@RequestHeader("ETag") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        return respondWithUserDto(userService.retractRole(userId, roleName, sanitizeReceivedETag(eTag)));
+    public ResponseEntity<UserDto> retractRoleFromUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
+        userService.retractRole(userId, roleName, sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
-            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
+            @RequestHeader("If-Match") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
     ) {
-        return respondWithUserDto(userService.updatePasswordAsAdmin(
-                userId,
-                formData.getNewPassword(),
-                sanitizeReceivedETag(eTag)));
+        userService.updatePasswordAsAdmin(userId, formData.getNewPassword(), sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "users/password", method = RequestMethod.PUT)
     public ResponseEntity<Object> updateOwnPassword(
-            @RequestHeader("ETag") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
+            @RequestHeader("If-Match") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
     ) {
         Locale locale = LocaleContextHolder.getLocale();
 
@@ -163,10 +169,11 @@ public class UserController extends BaseController {
         }
 
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (wasUserPasswordUpdated(eTag, loggedUser.getUsername(), formData)) {
-            User updatedUser = userService.findByUsername(loggedUser.getUsername());
 
-            return new ResponseEntity<>(convertToDto(updatedUser), prepareETagHeaders(updatedUser), HttpStatus.OK);
+        if (wasUserPasswordUpdated(eTag, loggedUser.getUsername(), formData)) {
+            userService.findByUsername(loggedUser.getUsername());
+
+            return ResponseEntity.noContent().build();
 
         } else {
             return preparePasswordChangeErrorResponse("PasswordChangeFormDto.currentPassword.Invalid", "current-password", locale);
