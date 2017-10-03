@@ -142,12 +142,12 @@ public class UserController extends BaseController {
         return respondWithUserDto(userService.retractRole(userId, roleName, sanitizeReceivedETag(eTag)));
     }
 
-    @RequestMapping(value = "admin/users/{username}/password", method = RequestMethod.PUT)
+    @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
-            @RequestHeader("ETag") String eTag, @PathVariable String username, @Validated @RequestBody AdminPasswordChangeFormDto formData
+            @RequestHeader("ETag") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
     ) {
         return respondWithUserDto(userService.updatePasswordAsAdmin(
-                username,
+                userId,
                 formData.getNewPassword(),
                 sanitizeReceivedETag(eTag)));
     }

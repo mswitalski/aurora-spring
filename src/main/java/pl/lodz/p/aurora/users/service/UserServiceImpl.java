@@ -213,26 +213,26 @@ public class UserServiceImpl extends BaseService implements UserService {
     /**
      * Enable user account.
      *
-     * @param id ID of user account to be enabled
+     * @param userId ID of user account to be enabled
      * @param eTag ETag value received from client
      * @return Updated user entity
      */
     @Override
-    public User enable(Long id, String eTag) {
-        return changeUserEnabledState(id, eTag, true);
+    public User enable(Long userId, String eTag) {
+        return changeUserEnabledState(userId, eTag, true);
     }
 
     /**
      * Change account state of user chosen by id.
      *
-     * @param id ID of user account to be enabled
+     * @param userId ID of user account to be enabled
      * @param eTag ETag value received from client
      * @param state Desired state, enabled (true) or disabled (false)
      * @return Updated user entity
      */
-    private User changeUserEnabledState(Long id, String eTag, boolean state) {
-        User storedUser = userRepository.findOne(id);
-        failIfNoRecordInDatabaseFound(storedUser, id);
+    private User changeUserEnabledState(Long userId, String eTag, boolean state) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         storedUser.setEnabled(state);
 
@@ -242,13 +242,13 @@ public class UserServiceImpl extends BaseService implements UserService {
     /**
      * Disable user account.
      *
-     * @param id ID of user account to be disabled
+     * @param userId ID of user account to be disabled
      * @param eTag ETag value received from client
      * @return Updated user entity
      */
     @Override
-    public User disable(Long id, String eTag) {
-        return changeUserEnabledState(id, eTag, false);
+    public User disable(Long userId, String eTag) {
+        return changeUserEnabledState(userId, eTag, false);
     }
 
     /**
@@ -290,9 +290,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public User updatePasswordAsAdmin(String username, String newPassword, String eTag) {
-        User storedUser = userRepository.findDistinctByUsername(username);
-        failIfNoRecordInDatabaseFound(storedUser, username);
+    public User updatePasswordAsAdmin(Long userId, String newPassword, String eTag) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         storedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
 
