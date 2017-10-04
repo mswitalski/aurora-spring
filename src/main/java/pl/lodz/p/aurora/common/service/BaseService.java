@@ -17,7 +17,7 @@ public abstract class BaseService {
      * @param entity Relevant entity from data source
      */
     protected void failIfEncounteredOutdatedEntity(String eTag, VersionedEntity entity) {
-        if (!eTag.equals(Integer.toString(entity.hashCode()))) {
+        if (Long.parseLong(eTag) != entity.getVersion()) {
             throw new OutdatedEntityModificationException(entity);
         }
     }

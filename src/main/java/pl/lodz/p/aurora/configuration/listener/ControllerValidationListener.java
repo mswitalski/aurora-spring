@@ -79,7 +79,7 @@ public class ControllerValidationListener {
     }
 
     @ExceptionHandler(OutdatedEntityModificationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public void processOutdatedEntityModification(OutdatedEntityModificationException exception) {
         logger.error(exception.getMessage(), exception);
     }

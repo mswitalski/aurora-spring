@@ -96,7 +96,7 @@ public class UserController extends BaseController {
     }
 
     private ResponseEntity<UserDto> respondWithUserDto(User user) {
-        return ResponseEntity.ok().eTag(Integer.toString(user.hashCode())).body(convertToDto(user));
+        return ResponseEntity.ok().eTag(Long.toString(user.getVersion())).body(convertToDto(user));
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
