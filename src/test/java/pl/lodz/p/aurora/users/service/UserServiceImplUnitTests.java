@@ -202,7 +202,7 @@ public class UserServiceImplUnitTests {
 //        when(userRepository.saveAndFlush(any(User.class))).thenReturn(storedUser);
 //
 //        // When
-//        User updatedUser = userService.updateAccount(fakeETag, userPassedToMethod);
+//        User updatedUser = userService.updateOtherAccount(fakeETag, userPassedToMethod);
 //
 //        // Then
 //        assertThat(updatedUser).isNotNull();
@@ -219,7 +219,7 @@ public class UserServiceImplUnitTests {
 //        when(versionTransformer.hash(anyLong())).thenReturn(fakeETag);
 //
 //        // When-then
-//        userService.updateAccount(invalidETag, userPassedToMethod);
+//        userService.updateOtherAccount(invalidETag, userPassedToMethod);
 //    }
 
     @Test(expected = InvalidResourceRequestedException.class)
@@ -230,7 +230,7 @@ public class UserServiceImplUnitTests {
         when(userRepository.findDistinctByUsername(dummyUser.getUsername())).thenReturn(null);
 
         // When-then
-        userService.updateAccount(invalidETag, dummyUser);
+        userService.updateOtherAccount(invalidETag, dummyUser);
     }
 
 //    @Test
@@ -307,16 +307,16 @@ public class UserServiceImplUnitTests {
 //        // Then
 //        assertThat(userWithAssignedRole.getRoles()).isNotEmpty().contains(dummyRole);
 //    }
-
-    @Test(expected = InvalidResourceRequestedException.class)
-    public void failWhileTryingToAssignNonExistingRole() {
-        // Given
-        Role dummyRole = roleDataFactory.createSingle();
-        User dummyUser = userDataFactory.createSingle();
-        dummyUser.setId(1L);
-        when(roleService.findByName(dummyRole.getName())).thenThrow(InvalidResourceRequestedException.class);
-        
-        // When-then
-        userService.assignRole(dummyUser.getId(), dummyRole.getName(), fakeETag);
-    }
+//
+//    @Test(expected = InvalidResourceRequestedException.class)
+//    public void failWhileTryingToAssignNonExistingRole() {
+//        // Given
+//        Role dummyRole = roleDataFactory.createSingle();
+//        User dummyUser = userDataFactory.createSingle();
+//        dummyUser.setId(1L);
+//        when(roleService.findByName(dummyRole.getName())).thenThrow(InvalidResourceRequestedException.class);
+//
+//        // When-then
+//        userService.assignRole(dummyUser.getId(), dummyRole.getName(), fakeETag);
+//    }
 }

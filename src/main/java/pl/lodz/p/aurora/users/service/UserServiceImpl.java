@@ -152,12 +152,13 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
      */
     @Override
-    public User updateAccount(String eTag, User user) {
+    public User updateOtherAccount(String eTag, User user) {
         failOnNonUniqueEditedEmail(user);
         User storedUser = update(eTag, user);
         storedUser.setEmail(user.getEmail());
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
+        storedUser.setRoles(user.getRoles());
 
         return userRepository.saveAndFlush(storedUser);
     }
@@ -247,44 +248,6 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public User disable(Long userId, String eTag) {
         return changeUserEnabledState(userId, eTag, false);
-    }
-
-    /**
-     * Assign chosen role to the user given by ID.
-     *
-     * @param userId User's ID to whom we want to assign a role
-     * @param roleName Chosen role's name
-     * @param eTag ETag value received from client
-     * @return Updated user entity
-     */
-    @Override
-    public User assignRole(Long userId, String roleName, String eTag) {
-        Role chosenRole = roleService.findByName(roleName);
-        User storedUser = userRepository.findOne(userId);
-        failIfNoRecordInDatabaseFound(storedUser, userId);
-        failIfEncounteredOutdatedEntity(eTag, storedUser);
-        storedUser.assignRole(chosenRole);
-
-        return userRepository.saveAndFlush(storedUser);
-    }
-
-    /**
-     * Retract chosen role from the user given by ID.
-     *
-     * @param userId User's ID to whom we want to assign a role
-     * @param roleName Chosen role's name
-     * @param eTag ETag value received from client
-     * @return Updated user entity
-     */
-    @Override
-    public User retractRole(Long userId, String roleName, String eTag) {
-        Role chosenRole = roleService.findByName(roleName);
-        User storedUser = userRepository.findOne(userId);
-        failIfNoRecordInDatabaseFound(storedUser, userId);
-        failIfEncounteredOutdatedEntity(eTag, storedUser);
-        storedUser.retractRole(chosenRole);
-
-        return userRepository.saveAndFlush(storedUser);
     }
 
     @Override

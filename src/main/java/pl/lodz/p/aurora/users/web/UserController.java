@@ -101,14 +101,14 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateAsAdmin(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+        userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
 
         return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateAsUnitLeader(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userService.updateAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+        userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
 
         return ResponseEntity.noContent().build();
     }
@@ -131,20 +131,6 @@ public class UserController extends BaseController {
     @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
     public ResponseEntity<UserDto> disableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
         userService.disable(userId, sanitizeReceivedETag(eTag));
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.PUT)
-    public ResponseEntity<UserDto> assignRoleToUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        userService.assignRole(userId, roleName, sanitizeReceivedETag(eTag));
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @RequestMapping(value = "admin/users/{userId}/role/{roleName}", method = RequestMethod.DELETE)
-    public ResponseEntity<UserDto> retractRoleFromUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId, @PathVariable String roleName) {
-        userService.retractRole(userId, roleName, sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

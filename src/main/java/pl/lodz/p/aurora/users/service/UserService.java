@@ -14,11 +14,10 @@ public interface UserService {
     Page<User> findAllByPage(Pageable pageable);
     User findByUsername(String username);
     User updateOwnAccount(String eTag, User user);
-    User updateAccount(String eTag, User user);
+
+    User updateOtherAccount(String eTag, User user);
     User enable(Long userId, String eTag);
     User disable(Long userId, String eTag);
-    User assignRole(Long userId, String roleName, String eTag);
-    User retractRole(Long userId, String roleName, String eTag);
     User updatePasswordAsAdmin(Long userId, String newPassword, String eTag);
     boolean updateOwnPassword(String username, String newPassword, String oldPassword, String eTag);
 }
