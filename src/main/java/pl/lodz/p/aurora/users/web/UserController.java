@@ -15,6 +15,7 @@ import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
+import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -45,7 +46,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
-    public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody CreateUserFormDto userDto) {
         UserDto savedUser = convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
 
         return ResponseEntity.ok().body(savedUser);
@@ -72,7 +73,7 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "unitleader/users/", method = RequestMethod.POST)
-    public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody CreateUserFormDto userDto) {
         UserDto savedUser = convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
 
         return ResponseEntity.ok().body(savedUser);

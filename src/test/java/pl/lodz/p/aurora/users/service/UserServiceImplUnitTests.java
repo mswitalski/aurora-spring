@@ -151,7 +151,7 @@ public class UserServiceImplUnitTests {
         assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
         assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
                 .isEqualTo(UserDto.class.getSimpleName());
-        assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
+        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
                 .isNotEmpty().contains("username");
     }
 
@@ -186,7 +186,7 @@ public class UserServiceImplUnitTests {
         assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
         assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
                 .isEqualTo(UserDto.class.getSimpleName());
-        assertThat(((UniqueConstraintViolationException) thrown).getFieldsNames())
+        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
                 .isNotEmpty().contains("email");
     }
 

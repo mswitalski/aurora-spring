@@ -12,15 +12,11 @@ import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
-import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Service class used for processing users account data.
@@ -51,7 +47,9 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User createAsAdmin(User user) {
-        return create(user);
+        user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
+
+        return save(user);
     }
 
     /**
@@ -64,10 +62,11 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User createAsUnitLeader(User user) {
-        Role role = roleService.findByName(defaultEmployeeRoleName);
-        user.assignRole(role);
+        user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
+        Role employeeRole = roleService.findByName(defaultEmployeeRoleName);
+        user.assignRole(employeeRole);
 
-        return create(user);
+        return save(user);
     }
 
     /**
@@ -78,44 +77,18 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
      * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
      */
-    private User create(User user) {
+    private User save(User user) {
         try {
             return userRepository.saveAndFlush(user);
 
         } catch (DataIntegrityViolationException exception) {
-            if (exception.getCause() instanceof org.hibernate.exception.ConstraintViolationException &&
-                    exception.getMessage().contains("constraint [null]")) {
-                throw new InvalidEntityStateException(user, exception);
-            }
-
-            throw new UniqueConstraintViolationException(
-                    exception, UserDto.class.getSimpleName(), findFieldsThatViolatedConstraints(user)
-            );
+            failOnUniqueConstraintViolation(exception);
 
         } catch (ConstraintViolationException exception) {
             throw new InvalidEntityStateException(user, exception);
         }
-    }
 
-    private Set<String> findFieldsThatViolatedConstraints(User user) {
-        Set<String> nonUniqueFieldsNames = new HashSet<>();
-
-        if (isUsernameAlreadyTaken(user.getUsername())) {
-            nonUniqueFieldsNames.add("username");
-        }
-
-        if (isEmailAlreadyTaken(user.getEmail())) {
-            nonUniqueFieldsNames.add("email");
-        }
-
-        return nonUniqueFieldsNames;
-    }
-
-    private boolean isUsernameAlreadyTaken(String username) {
-        return userRepository.findDistinctByUsername(username) != null;
-    }
-    private boolean isEmailAlreadyTaken(String email) {
-        return userRepository.findDistinctByEmail(email) != null;
+        return null;
     }
 
     /**
@@ -153,24 +126,13 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User updateOtherAccount(String eTag, User user) {
-        failOnNonUniqueEditedEmail(user);
         User storedUser = update(eTag, user);
         storedUser.setEmail(user.getEmail());
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
         storedUser.setRoles(user.getRoles());
 
-        return userRepository.saveAndFlush(storedUser);
-    }
-
-    private void failOnNonUniqueEditedEmail(User user) {
-        User userFoundByEmail = userRepository.findDistinctByEmail(user.getEmail());
-
-        if (userFoundByEmail != null && !userFoundByEmail.getUsername().equals(user.getUsername())) {
-            throw new UniqueConstraintViolationException(
-                    UserDto.class.getSimpleName(), new HashSet<>(Collections.singletonList("email"))
-            );
-        }
+        return save(storedUser);
     }
 
     /**
@@ -206,7 +168,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User updateOwnAccount(String eTag, User user) {
-        return userRepository.saveAndFlush(update(eTag, user));
+        return save(update(eTag, user));
     }
 
     /**

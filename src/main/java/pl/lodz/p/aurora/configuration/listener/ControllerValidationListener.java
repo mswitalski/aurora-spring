@@ -8,13 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -25,8 +29,8 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerValidationListener {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Translator translator;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public ControllerValidationListener(Translator translator) {
@@ -60,16 +64,10 @@ public class ControllerValidationListener {
     public List<ValidationMessageDto> processUniqueValidationError(UniqueConstraintViolationException exception) {
         logger.info("Data provided by user was not unique", exception);
         Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator
+                .translate(exception.getEntityName() + "." + exception.getFieldName() + ".Unique", locale);
 
-        return exception.getFieldsNames().stream()
-                .map(f -> constructValidationMessage(
-                        translator.translate(exception.getEntityName() + "." + f + ".Unique", locale),
-                        f
-                )).collect(Collectors.toList());
-    }
-
-    private ValidationMessageDto constructValidationMessage(String message, String fieldName) {
-        return new ValidationMessageDto(message, fieldName);
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, exception.getFieldName()));
     }
 
     @ExceptionHandler(InvalidEntityStateException.class)

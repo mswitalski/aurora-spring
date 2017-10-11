@@ -7,6 +7,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import pl.lodz.p.aurora.common.exception.InvalidApplicationConfigurationException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 
 /**
@@ -27,5 +28,11 @@ public class GlobalExceptionListener {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void processInvalidResourceRequest(InvalidResourceRequestedException exception) {
         logger.error("Client sent an request for non-existing resource", exception);
+    }
+
+    @ExceptionHandler(InvalidApplicationConfigurationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void processInvalidApplicationConfigurationException(InvalidApplicationConfigurationException exception) {
+        logger.error("An error occurred due to invalid application configuration", exception);
     }
 }

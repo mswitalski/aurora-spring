@@ -19,11 +19,17 @@ import java.util.stream.Collectors;
  * Entity class holding information about an user account.
  */
 @Entity
-@Table(name = "`user`", indexes = {
-        @Index(columnList = "name"),
-        @Index(columnList = "surname"),
-        @Index(columnList = "enabled")
-})
+@Table(name = "`user`",
+        indexes = {
+                @Index(columnList = "name"),
+                @Index(columnList = "surname"),
+                @Index(columnList = "enabled")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username", name = "unique_user_username"),
+                @UniqueConstraint(columnNames = "email", name = "unique_user_email")
+        }
+)
 public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     @Id
@@ -31,7 +37,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     @SequenceGenerator(name = "user_pk_sequence", sequenceName = "user_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, length = 20, unique = true, updatable = false)
+    @Column(nullable = false, length = 20, updatable = false)
     @NotNull
     @Size(min = 3, max = 20)
     private String username;
@@ -41,7 +47,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     @Size(min = 3, max = 60)
     private String password;
 
-    @Column(nullable = false, length = 40, unique = true)
+    @Column(nullable = false, length = 40)
     @Email
     @NotNull
     @Size(max = 40)
@@ -83,6 +89,18 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Duty.class)
+    @JoinTable(
+            name = "user_duty",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "duty_id", referencedColumnName = "id", nullable = false, updatable = false
+            )
+    )
+    private Set<Duty> duties = new HashSet<>();
+
     public User() {
     }
 
@@ -101,6 +119,10 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -114,10 +136,6 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public Long getId() {
@@ -212,6 +230,14 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         this.roles.remove(role);
     }
 
+    public Set<Duty> getDuties() {
+        return new HashSet<>(duties);
+    }
+
+    public void setDuties(Set<Duty> duties) {
+        this.duties = new HashSet<>(duties);
+    }
+
     @Override
     public User clone() {
         User clonedUser = new User();
@@ -225,6 +251,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         clonedUser.setGoals(this.goals);
         clonedUser.setEnabled(this.enabled);
         clonedUser.setRoles(new HashSet<>(roles));
+        clonedUser.setDuties(new HashSet<>(duties));
         clonedUser.setVersion(this.getVersion());
 
         return clonedUser;
