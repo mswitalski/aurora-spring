@@ -1,8 +1,8 @@
 package pl.lodz.p.aurora.users.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.service.RoleService;
@@ -23,7 +23,7 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping()
     public List<Role> findAll() {
         return roleService.findAll();
     }

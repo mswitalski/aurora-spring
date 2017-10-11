@@ -2,6 +2,8 @@ package pl.lodz.p.aurora.users.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.users.domain.entity.Role;
@@ -10,7 +12,7 @@ import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class RoleServiceImpl extends BaseService implements RoleService {
 
     private final RoleRepository roleRepository;

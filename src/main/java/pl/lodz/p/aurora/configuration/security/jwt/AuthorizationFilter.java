@@ -13,14 +13,16 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import pl.lodz.p.aurora.users.domain.dto.TokenClaimsDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
-import pl.lodz.p.aurora.users.domain.repository.UserRepository;
+import pl.lodz.p.aurora.users.service.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Security filter responsible for handling user authorization with JWT.
@@ -28,7 +30,7 @@ import java.util.*;
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private UserRepository userRepository;
+    private UserService userService;
     private TokenConfigurationData configurationData;
 
     public AuthorizationFilter(AuthenticationManager authManager) {
@@ -76,9 +78,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
      * @param request Received request
      */
     private void initializeDependencies(HttpServletRequest request) {
-        userRepository = WebApplicationContextUtils.
+        userService = WebApplicationContextUtils.
                 getWebApplicationContext(request.getServletContext()).
-                getBean(UserRepository.class);
+                getBean(UserService.class);
         configurationData = WebApplicationContextUtils.
                 getWebApplicationContext(request.getServletContext()).
                 getBean(TokenConfigurationData.class);
@@ -99,7 +101,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                     .parseClaimsJws(token.replace(configurationData.getTokenPrefix(), ""))
                     .getBody();
 
-            User storedUser = userRepository.findDistinctByUsername(claims.getSubject());
+            User storedUser = userService.findByUsername(claims.getSubject());
             TokenClaimsDto tokenClaimsDto = new TokenClaimsDto(
                     claims.get("enabled", Boolean.class),
                     processMisshapedRoles(claims.get("roles", ArrayList.class))

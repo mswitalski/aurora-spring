@@ -6,6 +6,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
@@ -22,6 +25,7 @@ import javax.validation.ConstraintViolationException;
  * Service class used for processing users account data.
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserServiceImpl extends BaseService implements UserService {
 
     @Value("${aurora.default.role.name}")
@@ -97,6 +101,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @return List of all users saved in data source
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<User> findAllByPage(Pageable pageable) {
         return userRepository.findAllByOrderBySurnameAscNameAsc(pageable);
     }
@@ -107,6 +112,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @return User with given username
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public User findByUsername(String username) {
         User storedUsed = userRepository.findDistinctByUsername(username);
         failIfNoRecordInDatabaseFound(storedUsed, username);

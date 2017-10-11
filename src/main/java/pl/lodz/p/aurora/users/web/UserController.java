@@ -45,7 +45,7 @@ public class UserController extends BaseController {
         this.translator = translator;
     }
 
-    @RequestMapping(value = "admin/users/", method = RequestMethod.POST)
+    @PostMapping(value = "admin/users/")
     public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody CreateUserFormDto userDto) {
         UserDto savedUser = convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
 
@@ -72,26 +72,26 @@ public class UserController extends BaseController {
         return modelMapper.map(userDto, User.class);
     }
 
-    @RequestMapping(value = "unitleader/users/", method = RequestMethod.POST)
+    @PostMapping(value = "unitleader/users/")
     public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody CreateUserFormDto userDto) {
         UserDto savedUser = convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
 
         return ResponseEntity.ok().body(savedUser);
     }
 
-    @RequestMapping(value = "users/", method = RequestMethod.GET)
+    @GetMapping(value = "users/")
     public ResponseEntity<Page<User>> findAll(Pageable pageable) {
         return ResponseEntity.ok().body(userService.findAllByPage(pageable));
     }
 
-    @RequestMapping(value = "user", method = RequestMethod.GET)
+    @GetMapping(value = "user")
     public ResponseEntity<UserDto> findLoggedUser() {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return respondWithUserDto(userService.findByUsername(loggedUser.getUsername()));
     }
 
-    @RequestMapping(value = "users/{username}", method = RequestMethod.GET)
+    @GetMapping(value = "users/{username}")
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
         return respondWithUserDto(userService.findByUsername(username));
     }
@@ -100,14 +100,14 @@ public class UserController extends BaseController {
         return ResponseEntity.ok().eTag(Long.toString(user.getVersion())).body(convertToDto(user));
     }
 
-    @RequestMapping(value = "admin/users/", method = RequestMethod.PUT)
+    @PutMapping(value = "admin/users/")
     public ResponseEntity<Void> updateAsAdmin(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
         userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
 
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "unitleader/users/", method = RequestMethod.PUT)
+    @PutMapping(value = "unitleader/users/")
     public ResponseEntity<Void> updateAsUnitLeader(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
         userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
 
@@ -115,28 +115,28 @@ public class UserController extends BaseController {
     }
 
     @PreAuthorize("#user.getUsername() == principal.username")
-    @RequestMapping(value = "users/", method = RequestMethod.PUT)
+    @PutMapping(value = "users/")
     public ResponseEntity<Void> updateOwnAccount(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
         userService.updateOwnAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
 
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "admin/users/{userId}/activation", method = RequestMethod.PUT)
+    @PutMapping(value = "admin/users/{userId}/activation")
     public ResponseEntity<Void> enableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
         userService.enable(userId, sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "admin/users/{userId}/deactivation", method = RequestMethod.PUT)
+    @PutMapping(value = "admin/users/{userId}/deactivation")
     public ResponseEntity<UserDto> disableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
         userService.disable(userId, sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "admin/users/{userId}/password", method = RequestMethod.PUT)
+    @PutMapping(value = "admin/users/{userId}/password")
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
             @RequestHeader("If-Match") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
     ) {
@@ -145,7 +145,7 @@ public class UserController extends BaseController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "users/password", method = RequestMethod.PUT)
+    @PutMapping(value = "users/password")
     public ResponseEntity<Object> updateOwnPassword(
             @RequestHeader("If-Match") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
     ) {

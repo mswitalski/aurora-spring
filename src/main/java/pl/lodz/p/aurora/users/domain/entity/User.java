@@ -89,17 +89,17 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Duty.class)
-    @JoinTable(
-            name = "user_duty",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "duty_id", referencedColumnName = "id", nullable = false, updatable = false
-            )
-    )
-    private Set<Duty> duties = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Duty.class)
+//    @JoinTable(
+//            name = "user_duty",
+//            joinColumns = @JoinColumn(
+//                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
+//            ),
+//            inverseJoinColumns = @JoinColumn(
+//                    name = "duty_id", referencedColumnName = "id", nullable = false, updatable = false
+//            )
+//    )
+//    private Set<Duty> duties = new HashSet<>();
 
     public User() {
     }
@@ -230,13 +230,13 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         this.roles.remove(role);
     }
 
-    public Set<Duty> getDuties() {
-        return new HashSet<>(duties);
-    }
-
-    public void setDuties(Set<Duty> duties) {
-        this.duties = new HashSet<>(duties);
-    }
+//    public Set<Duty> getDuties() {
+//        return new HashSet<>(duties);
+//    }
+//
+//    public void setDuties(Set<Duty> duties) {
+//        this.duties = new HashSet<>(duties);
+//    }
 
     @Override
     public User clone() {
@@ -251,7 +251,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         clonedUser.setGoals(this.goals);
         clonedUser.setEnabled(this.enabled);
         clonedUser.setRoles(new HashSet<>(roles));
-        clonedUser.setDuties(new HashSet<>(duties));
+//        clonedUser.setDuties(new HashSet<>(duties));
         clonedUser.setVersion(this.getVersion());
 
         return clonedUser;
