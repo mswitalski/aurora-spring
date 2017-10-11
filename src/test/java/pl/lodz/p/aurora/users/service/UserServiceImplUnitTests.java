@@ -254,17 +254,17 @@ public class UserServiceImplUnitTests {
 //
 //        return dummyUser;
 //    }
-
-
-    @Test(expected = InvalidResourceRequestedException.class)
-    public void failOnTryingToEnableNonExistingUser() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        when(userRepository.findOne(dummyUser.getId())).thenReturn(null);
-
-        // When-then
-        userService.enable(dummyUser.getId(), fakeETag);
-    }
+//
+//
+//    @Test(expected = InvalidResourceRequestedException.class)
+//    public void failOnTryingToEnableNonExistingUser() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        when(userRepository.findOne(dummyUser.getId())).thenReturn(null);
+//
+//        // When-then
+//        userService.enable(dummyUser.getId(), fakeETag);
+//    }
 
 //    @Test(expected = OutdatedEntityModificationException.class)
 //    public void failOnValidationETagHeaderWhileEnablingUser() {

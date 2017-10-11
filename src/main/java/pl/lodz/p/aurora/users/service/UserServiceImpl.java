@@ -131,14 +131,13 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
      */
     @Override
-    public User updateOtherAccount(String eTag, User user) {
+    public void updateOtherAccount(String eTag, User user) {
         User storedUser = update(eTag, user);
         storedUser.setEmail(user.getEmail());
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
         storedUser.setRoles(user.getRoles());
-
-        return save(storedUser);
+        save(storedUser);
     }
 
     /**
@@ -173,59 +172,17 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
      */
     @Override
-    public User updateOwnAccount(String eTag, User user) {
-        return save(update(eTag, user));
-    }
-
-    /**
-     * Enable user account.
-     *
-     * @param userId ID of user account to be enabled
-     * @param eTag ETag value received from client
-     * @return Updated user entity
-     */
-    @Override
-    public User enable(Long userId, String eTag) {
-        return changeUserEnabledState(userId, eTag, true);
-    }
-
-    /**
-     * Change account state of user chosen by id.
-     *
-     * @param userId ID of user account to be enabled
-     * @param eTag ETag value received from client
-     * @param state Desired state, enabled (true) or disabled (false)
-     * @return Updated user entity
-     */
-    private User changeUserEnabledState(Long userId, String eTag, boolean state) {
-        User storedUser = userRepository.findOne(userId);
-        failIfNoRecordInDatabaseFound(storedUser, userId);
-        failIfEncounteredOutdatedEntity(eTag, storedUser);
-        storedUser.setEnabled(state);
-
-        return userRepository.saveAndFlush(storedUser);
-    }
-
-    /**
-     * Disable user account.
-     *
-     * @param userId ID of user account to be disabled
-     * @param eTag ETag value received from client
-     * @return Updated user entity
-     */
-    @Override
-    public User disable(Long userId, String eTag) {
-        return changeUserEnabledState(userId, eTag, false);
+    public void updateOwnAccount(String eTag, User user) {
+        save(update(eTag, user));
     }
 
     @Override
-    public User updatePasswordAsAdmin(Long userId, String newPassword, String eTag) {
+    public void updatePasswordAsAdmin(Long userId, String newPassword, String eTag) {
         User storedUser = userRepository.findOne(userId);
         failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         storedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
-
-        return userRepository.saveAndFlush(storedUser);
+        userRepository.saveAndFlush(storedUser);
     }
 
     @Override
@@ -242,5 +199,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         userRepository.saveAndFlush(loggedUser);
 
         return true;
+    }
+
+    @Override
+    public void delete(Long userId, String eTag) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        userRepository.delete(storedUser);
     }
 }

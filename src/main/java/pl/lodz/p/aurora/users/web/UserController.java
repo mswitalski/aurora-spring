@@ -122,20 +122,6 @@ public class UserController extends BaseController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "admin/users/{userId}/activation")
-    public ResponseEntity<Void> enableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
-        userService.enable(userId, sanitizeReceivedETag(eTag));
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping(value = "admin/users/{userId}/deactivation")
-    public ResponseEntity<UserDto> disableUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
-        userService.disable(userId, sanitizeReceivedETag(eTag));
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping(value = "admin/users/{userId}/password")
     public ResponseEntity<UserDto> updatePasswordAsAdmin(
             @RequestHeader("If-Match") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
@@ -180,5 +166,12 @@ public class UserController extends BaseController {
                 formData.getNewPassword(),
                 formData.getCurrentPassword(),
                 sanitizeReceivedETag(eTag));
+    }
+
+    @DeleteMapping(value = "admin/users/{userId}")
+    public ResponseEntity<Void> deleteUser(@RequestHeader("If-Match") String eTag, @PathVariable Long userId) {
+        userService.delete(userId, eTag);
+
+        return ResponseEntity.ok().build();
     }
 }

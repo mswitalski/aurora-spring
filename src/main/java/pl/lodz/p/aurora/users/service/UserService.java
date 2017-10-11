@@ -13,11 +13,9 @@ public interface UserService {
     User createAsUnitLeader(User user);
     Page<User> findAllByPage(Pageable pageable);
     User findByUsername(String username);
-    User updateOwnAccount(String eTag, User user);
-
-    User updateOtherAccount(String eTag, User user);
-    User enable(Long userId, String eTag);
-    User disable(Long userId, String eTag);
-    User updatePasswordAsAdmin(Long userId, String newPassword, String eTag);
+    void updateOwnAccount(String eTag, User user);
+    void updateOtherAccount(String eTag, User user);
+    void updatePasswordAsAdmin(Long userId, String newPassword, String eTag);
     boolean updateOwnPassword(String username, String newPassword, String oldPassword, String eTag);
+    void delete(Long userId, String eTag);
 }
