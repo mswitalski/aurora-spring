@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.users.domain.entity;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +50,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     @Column(nullable = false, length = 40)
     @Email
+    @NotEmpty
     @NotNull
     @Size(max = 40)
     private String email;

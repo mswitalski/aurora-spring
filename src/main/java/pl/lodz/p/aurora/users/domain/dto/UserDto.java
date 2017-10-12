@@ -3,6 +3,7 @@ package pl.lodz.p.aurora.users.domain.dto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class UserDto implements Cloneable {
     private String username;
 
     @Email(message = "{UserDto.email.Email}")
+    @NotEmpty(message = "{Default.NotEmpty}")
     @NotNull(message = "{UserDto.email.NotNull}")
     @Size(max = 40, message = "{UserDto.email.Size}")
     private String email;

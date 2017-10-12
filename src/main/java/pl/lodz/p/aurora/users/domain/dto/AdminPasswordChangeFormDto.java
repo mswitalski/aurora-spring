@@ -8,6 +8,7 @@ public class AdminPasswordChangeFormDto {
     @NotNull(message = "{PasswordChangeFormDto.newPassword.NotNull}")
     @Size(min = 3, max = 60, message = "{PasswordChangeFormDto.newPassword.Size}")
     private String newPassword;
+
     @NotNull(message = "{PasswordChangeFormDto.newPasswordRepeated.NotNull}")
     @Size(min = 3, max = 60, message = "{PasswordChangeFormDto.newPasswordRepeated.Size}")
     private String newPasswordRepeated;
