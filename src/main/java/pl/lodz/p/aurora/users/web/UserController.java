@@ -1,6 +1,5 @@
 package pl.lodz.p.aurora.users.web;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.users.domain.converter.UserDtoToEntityConverter;
+import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
 import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
@@ -33,55 +34,40 @@ import java.util.Locale;
 public class UserController extends BaseController {
 
     private final UserServiceImpl userService;
-    private final ModelMapper modelMapper;
     private final Translator translator;
+    private final UserEntityToDtoConverter entityToDtoConverter;
+    private final UserDtoToEntityConverter dtoToEntityConverter;
 
     @Autowired
     public UserController(UserServiceImpl userService,
-                          ModelMapper modelMapper,
-                          Translator translator) {
+                          Translator translator,
+                          UserEntityToDtoConverter edConverter,
+                          UserDtoToEntityConverter deConverter) {
         this.userService = userService;
-        this.modelMapper = modelMapper;
         this.translator = translator;
+        this.entityToDtoConverter = edConverter;
+        this.dtoToEntityConverter = deConverter;
     }
 
     @PostMapping(value = "admin/users/")
     public ResponseEntity<UserDto> createAsAdmin(@Validated @RequestBody CreateUserFormDto userDto) {
-        UserDto savedUser = convertToDto(userService.createAsAdmin(convertToEntity(userDto)));
+        UserDto savedUser = entityToDtoConverter
+                .convert(userService.createAsAdmin(dtoToEntityConverter.convert(userDto)));
 
         return ResponseEntity.ok().body(savedUser);
     }
 
-    /**
-     * Convert given User entity to UserDto object.
-     *
-     * @param user Object containing data about a user
-     * @return UserDto object
-     */
-    private UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
-    }
-
-    /**
-     * Convert given UserDto object to User entity.
-     *
-     * @param userDto DTO object containing data about a user
-     * @return User entity
-     */
-    private User convertToEntity(UserDto userDto) {
-        return modelMapper.map(userDto, User.class);
-    }
-
     @PostMapping(value = "unitleader/users/")
     public ResponseEntity<UserDto> createAsUnitLeader(@Validated @RequestBody CreateUserFormDto userDto) {
-        UserDto savedUser = convertToDto(userService.createAsUnitLeader(convertToEntity(userDto)));
+        UserDto savedUser = entityToDtoConverter
+                .convert(userService.createAsUnitLeader(dtoToEntityConverter.convert(userDto)));
 
         return ResponseEntity.ok().body(savedUser);
     }
 
     @GetMapping(value = "users/")
-    public ResponseEntity<Page<User>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.findAllByPage(pageable));
+    public ResponseEntity<Page<UserDto>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPage(pageable).map(entityToDtoConverter));
     }
 
     @GetMapping(value = "user")
@@ -97,19 +83,19 @@ public class UserController extends BaseController {
     }
 
     private ResponseEntity<UserDto> respondWithUserDto(User user) {
-        return ResponseEntity.ok().eTag(Long.toString(user.getVersion())).body(convertToDto(user));
+        return ResponseEntity.ok().eTag(Long.toString(user.getVersion())).body(entityToDtoConverter.convert(user));
     }
 
     @PutMapping(value = "admin/users/")
     public ResponseEntity<Void> updateAsAdmin(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+        userService.updateOtherAccount(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "unitleader/users/")
     public ResponseEntity<Void> updateAsUnitLeader(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userService.updateOtherAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+        userService.updateOtherAccount(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
 
         return ResponseEntity.noContent().build();
     }
@@ -117,7 +103,7 @@ public class UserController extends BaseController {
     @PreAuthorize("#user.getUsername() == principal.username")
     @PutMapping(value = "users/")
     public ResponseEntity<Void> updateOwnAccount(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userService.updateOwnAccount(sanitizeReceivedETag(eTag), convertToEntity(user));
+        userService.updateOwnAccount(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
 
         return ResponseEntity.noContent().build();
     }
