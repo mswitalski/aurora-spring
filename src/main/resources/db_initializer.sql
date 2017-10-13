@@ -22,3 +22,18 @@ INSERT INTO PUBLIC.user_role VALUES (5, 'EMPLOYEE');
 INSERT INTO PUBLIC.user_role VALUES (6, 'ADMIN');
 INSERT INTO PUBLIC.user_role VALUES (6, 'UNIT_LEADER');
 INSERT INTO PUBLIC.user_role VALUES (6, 'EMPLOYEE');
+
+-- Add duties
+INSERT INTO PUBLIC.duty (id, name, version) VALUES (nextval('duty_id_sequence'), 'Ferro Product Owner', 0);
+INSERT INTO PUBLIC.duty (id, name, version) VALUES (nextval('duty_id_sequence'), 'Scrum Master', 0);
+INSERT INTO PUBLIC.duty (id, name, version) VALUES (nextval('duty_id_sequence'), 'Hibernate Guardian', 0);
+INSERT INTO PUBLIC.duty (id, name, version) VALUES (nextval('duty_id_sequence'), 'R200 Expert', 0);
+INSERT INTO PUBLIC.duty (id, name, version) VALUES (nextval('duty_id_sequence'), 'Maven Trainer', 0);
+
+-- Create relationships between users and duties
+INSERT INTO PUBLIC.user_duty VALUES (2, 1);
+INSERT INTO PUBLIC.user_duty VALUES (2, 2);
+INSERT INTO PUBLIC.user_duty VALUES (3, 2);
+INSERT INTO PUBLIC.user_duty VALUES (4, 3);
+INSERT INTO PUBLIC.user_duty VALUES (5, 4);
+INSERT INTO PUBLIC.user_duty VALUES (5, 5);

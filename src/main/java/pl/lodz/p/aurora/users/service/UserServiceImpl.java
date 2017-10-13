@@ -2,7 +2,6 @@ package pl.lodz.p.aurora.users.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,6 @@ import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
-
-import javax.validation.ConstraintViolationException;
 
 /**
  * Service class used for processing users account data.
@@ -53,7 +50,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     public User createAsAdmin(User user) {
         user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
 
-        return save(user);
+        return save(user, userRepository);
     }
 
     /**
@@ -70,29 +67,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         Role employeeRole = roleService.findByName(defaultEmployeeRoleName);
         user.assignRole(employeeRole);
 
-        return save(user);
-    }
-
-    /**
-     * Save given user to data source and return managed entity.
-     *
-     * @param user User object that we want to save to data source
-     * @return Managed users entity saved to data source
-     * @throws UniqueConstraintViolationException when provided entity violates unique constraints
-     * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
-     */
-    private User save(User user) {
-        try {
-            return userRepository.saveAndFlush(user);
-
-        } catch (DataIntegrityViolationException exception) {
-            failOnUniqueConstraintViolation(exception);
-
-        } catch (ConstraintViolationException exception) {
-            throw new InvalidEntityStateException(user, exception);
-        }
-
-        return null;
+        return save(user, userRepository);
     }
 
     /**
@@ -137,7 +112,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
         storedUser.setRoles(user.getRoles());
-        save(storedUser);
+        save(storedUser, userRepository);
     }
 
     /**
@@ -173,7 +148,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public void updateOwnAccount(String eTag, User user) {
-        save(update(eTag, user));
+        save(update(eTag, user), userRepository);
     }
 
     @Override

@@ -18,36 +18,37 @@ public class UserDto implements Cloneable {
 
     private Long id;
 
-    @NotNull(message = "{UserDto.username.NotNull}")
-    @Size(min = 3, max = 20, message = "{UserDto.username.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 20, message = "{Default.Size.MinMax}")
     private String username;
 
     @Email(message = "{UserDto.email.Email}")
     @NotEmpty(message = "{Default.NotEmpty}")
-    @NotNull(message = "{UserDto.email.NotNull}")
-    @Size(max = 40, message = "{UserDto.email.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(max = 40, message = "{Default.Size.Max}")
     private String email;
 
-    @NotNull(message = "{UserDto.name.NotNull}")
-    @Size(min = 3, max = 20, message = "{UserDto.name.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 20, message = "{Default.Size.MinMax}")
     private String name;
 
-    @NotNull(message = "{UserDto.surname.NotNull}")
-    @Size(min = 3, max = 30, message = "{UserDto.surname.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 30, message = "{Default.Size.MinMax}")
     private String surname;
 
-    @NotNull(message = "{UserDto.position.NotNull}")
-    @Size(min = 2, max = 40, message = "{UserDto.position.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 2, max = 40, message = "{Default.Size.MinMax}")
     private String position;
 
-    @NotNull(message = "{UserDto.goals.NotNull}")
-    @Size(max = 200, message = "{UserDto.goals.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(max = 200, message = "{Default.Size.Max}")
     private String goals = "";
 
-    @NotNull(message = "{UserDto.enabled.NotNull}")
+    @NotNull(message = "{Default.NotNull}")
     private boolean enabled = true;
 
     private Set<Role> roles = new HashSet<>();
+    private Set<DutyBasicDto> duties = new HashSet<>();
 
     public UserDto() {
     }
@@ -134,6 +135,14 @@ public class UserDto implements Cloneable {
 
     public void setRoles(Set<Role> roles) {
         this.roles = new HashSet<>(roles);
+    }
+
+    public Set<DutyBasicDto> getDuties() {
+        return new HashSet<>(this.duties);
+    }
+
+    public void setDuties(Set<DutyBasicDto> duties) {
+        this.duties = new HashSet<>(duties);
     }
 
     public int hashCode() {

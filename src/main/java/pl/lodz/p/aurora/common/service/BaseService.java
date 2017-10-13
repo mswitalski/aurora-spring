@@ -1,14 +1,14 @@
 package pl.lodz.p.aurora.common.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.JpaRepository;
 import pl.lodz.p.aurora.common.domain.entity.BaseEntity;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.common.exception.InvalidApplicationConfigurationException;
-import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
-import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
-import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
+import pl.lodz.p.aurora.common.exception.*;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
+import javax.validation.ConstraintViolationException;
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,5 +62,28 @@ public abstract class BaseService {
         throw new InvalidApplicationConfigurationException(
                 "Could not match any violated unique constraint in message",
                 exception.getCause().getCause());
+    }
+
+    /**
+     * Save given user to data source and return managed entity.
+     *
+     * @param user User object that we want to save to data source
+     * @param repository Repository for object that we want to save
+     * @return Managed users entity saved to data source
+     * @throws UniqueConstraintViolationException when provided entity violates unique constraints
+     * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
+     */
+    protected <T, ID extends Serializable> T save(T user, JpaRepository<T, ID> repository) {
+        try {
+            return repository.saveAndFlush(user);
+
+        } catch (DataIntegrityViolationException exception) {
+            failOnUniqueConstraintViolation(exception);
+
+        } catch (ConstraintViolationException exception) {
+            throw new InvalidEntityStateException(user, exception);
+        }
+
+        return null;
     }
 }

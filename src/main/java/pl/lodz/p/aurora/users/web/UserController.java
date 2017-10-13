@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.users.domain.converter.UserBasicDtoConverter;
 import pl.lodz.p.aurora.users.domain.converter.UserDtoToEntityConverter;
 import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
-import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
-import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
-import pl.lodz.p.aurora.users.domain.dto.PasswordChangeFormDto;
-import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.dto.*;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.UserServiceImpl;
 
@@ -37,16 +35,19 @@ public class UserController extends BaseController {
     private final Translator translator;
     private final UserEntityToDtoConverter entityToDtoConverter;
     private final UserDtoToEntityConverter dtoToEntityConverter;
+    private final UserBasicDtoConverter basicConverter;
 
     @Autowired
     public UserController(UserServiceImpl userService,
                           Translator translator,
                           UserEntityToDtoConverter edConverter,
-                          UserDtoToEntityConverter deConverter) {
+                          UserDtoToEntityConverter deConverter,
+                          UserBasicDtoConverter basicConverter) {
         this.userService = userService;
         this.translator = translator;
         this.entityToDtoConverter = edConverter;
         this.dtoToEntityConverter = deConverter;
+        this.basicConverter = basicConverter;
     }
 
     @PostMapping(value = "admin/users/")
@@ -66,8 +67,8 @@ public class UserController extends BaseController {
     }
 
     @GetMapping(value = "users/")
-    public ResponseEntity<Page<UserDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.findAllByPage(pageable).map(entityToDtoConverter));
+    public ResponseEntity<Page<UserBasicDto>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPage(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "user")

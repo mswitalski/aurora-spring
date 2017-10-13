@@ -5,12 +5,12 @@ import javax.validation.constraints.Size;
 
 public class AdminPasswordChangeFormDto {
 
-    @NotNull(message = "{PasswordChangeFormDto.newPassword.NotNull}")
-    @Size(min = 3, max = 60, message = "{PasswordChangeFormDto.newPassword.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 60, message = "{Default.Size.MinMax}")
     private String newPassword;
 
-    @NotNull(message = "{PasswordChangeFormDto.newPasswordRepeated.NotNull}")
-    @Size(min = 3, max = 60, message = "{PasswordChangeFormDto.newPasswordRepeated.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 60, message = "{Default.Size.MinMax}")
     private String newPasswordRepeated;
 
     public AdminPasswordChangeFormDto() {

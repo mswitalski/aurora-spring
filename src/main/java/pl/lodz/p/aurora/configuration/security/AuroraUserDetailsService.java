@@ -5,6 +5,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
@@ -12,9 +15,10 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
  * Service related to security that provides user account by given username.
  */
 @Component
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class AuroraUserDetailsService implements UserDetailsService {
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public AuroraUserDetailsService(UserRepository userRepository) {

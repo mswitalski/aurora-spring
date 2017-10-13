@@ -8,8 +8,8 @@ import java.util.Set;
 
 public class CreateUserFormDto extends UserDto {
 
-    @NotNull(message = "{CreateUserFormDto.password.NotNull}")
-    @Size(min = 3, max = 60, message = "{CreateUserFormDto.password.Size}")
+    @NotNull(message = "{Default.NotNull}")
+    @Size(min = 3, max = 60, message = "{Default.Size.MinMax}")
     private String password;
 
     public CreateUserFormDto() {
