@@ -14,6 +14,7 @@ import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
+import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
@@ -25,11 +26,11 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserServiceImpl extends BaseService implements UserService {
 
-    @Value("${aurora.default.role.name}")
-    private String defaultEmployeeRoleName;
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoderProvider passwordEncoderProvider;
+    @Value("${aurora.default.role.name}")
+    private String defaultEmployeeRoleName;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoderProvider passwordEncoderProvider) {
@@ -44,7 +45,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @param user User object that we want to save to data source
      * @return Managed users entity saved to data source
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
-     * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
+     * @throws InvalidEntityStateException        when entity has invalid state in spite of previously DTO validation
      */
     @Override
     public User createAsAdmin(User user) {
@@ -59,7 +60,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @param user User object that we want to save to data source
      * @return Managed users entity saved to data source
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
-     * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
+     * @throws InvalidEntityStateException        when entity has invalid state in spite of previously DTO validation
      */
     @Override
     public User createAsUnitLeader(User user) {
@@ -101,9 +102,9 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @param eTag ETag value received from client
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
-     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws InvalidResourceRequestedException   when client requested non-existing record from data source
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
-     * @throws UniqueConstraintViolationException when provided entity violates unique constraints
+     * @throws UniqueConstraintViolationException  when provided entity violates unique constraints
      */
     @Override
     public void updateOtherAccount(String eTag, User user) {
@@ -121,7 +122,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @param eTag ETag value received from client
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
-     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws InvalidResourceRequestedException   when client requested non-existing record from data source
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
      */
     private User update(String eTag, User user) {
@@ -143,7 +144,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      * @param eTag ETag value received from client
      * @param user Object holding modified user account data
      * @return Entity with modified data that was saved to data source
-     * @throws InvalidResourceRequestedException when client requested non-existing record from data source
+     * @throws InvalidResourceRequestedException   when client requested non-existing record from data source
      * @throws OutdatedEntityModificationException when client tried to perform an update with outdated data
      */
     @Override
@@ -182,5 +183,14 @@ public class UserServiceImpl extends BaseService implements UserService {
         failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         userRepository.delete(storedUser);
+    }
+
+    public Page<User> searchForUsers(UserSearchDto critieria, Pageable pageable) {
+        return this.userRepository.searchForUser(
+                critieria.getUsername(),
+                critieria.getName(),
+                critieria.getSurname(),
+                critieria.getEmail(),
+                pageable);
     }
 }

@@ -19,6 +19,8 @@ public class UserDtoToEntityConverter implements Converter<UserDto, User> {
 
     @Override
     public User convert(UserDto user) {
-        return modelMapper.map(user, User.class);
+        User convertedUser = modelMapper.map(user, User.class);
+
+        return convertedUser;
     }
 }

@@ -161,4 +161,9 @@ public class UserController extends BaseController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(value = "search/users/")
+    public ResponseEntity<Page<UserBasicDto>> searchForUsers(@RequestBody UserSearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok().body(userService.searchForUsers(criteria, pageable).map(basicConverter));
+    }
 }
