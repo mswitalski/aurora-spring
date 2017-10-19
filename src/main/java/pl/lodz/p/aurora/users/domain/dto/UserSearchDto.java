@@ -2,10 +2,10 @@ package pl.lodz.p.aurora.users.domain.dto;
 
 public class UserSearchDto {
 
-    private String name;
-    private String surname;
-    private String username;
-    private String email;
+    private String name = "";
+    private String surname = "";
+    private String username = "";
+    private String email = "";
 
     public UserSearchDto() {
     }

@@ -66,9 +66,14 @@ public class UserController extends BaseController {
         return ResponseEntity.ok().body(savedUser);
     }
 
-    @GetMapping(value = "users/")
-    public ResponseEntity<Page<UserBasicDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.findAllByPage(pageable).map(basicConverter));
+    @GetMapping(value = "admin/users/")
+    public ResponseEntity<Page<UserBasicDto>> findAllAsAdmin(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPageAsAdmin(pageable).map(basicConverter));
+    }
+
+    @GetMapping(value = "unitleader/users/")
+    public ResponseEntity<Page<UserBasicDto>> findAllAsUnitLeader(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPageAsUnitLeader(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "user")

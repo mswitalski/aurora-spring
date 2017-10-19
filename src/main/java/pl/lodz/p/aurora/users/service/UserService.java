@@ -14,7 +14,9 @@ public interface UserService {
 
     User createAsUnitLeader(User user);
 
-    Page<User> findAllByPage(Pageable pageable);
+    Page<User> findAllByPageAsAdmin(Pageable pageable);
+
+    Page<User> findAllByPageAsUnitLeader(Pageable pageable);
 
     User findByUsername(String username);
 

@@ -29,8 +29,10 @@ public class UserServiceImpl extends BaseService implements UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoderProvider passwordEncoderProvider;
-    @Value("${aurora.default.role.name}")
+    @Value("${aurora.default.role.employee.name}")
     private String defaultEmployeeRoleName;
+    @Value("${aurora.default.role.admin.name}")
+    private String defaultAdminRoleName;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoderProvider passwordEncoderProvider) {
@@ -78,8 +80,21 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
-    public Page<User> findAllByPage(Pageable pageable) {
+    public Page<User> findAllByPageAsAdmin(Pageable pageable) {
         return userRepository.findAllByOrderBySurnameAscNameAsc(pageable);
+    }
+
+    /**
+     * Find all users saved in data source that are not administrators.
+     *
+     * @return List of all users saved in data source
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    public Page<User> findAllByPageAsUnitLeader(Pageable pageable) {
+        Role adminRole = roleService.findByName(defaultAdminRoleName);
+
+        return userRepository.findAllExceptAdmins(adminRole, pageable);
     }
 
     /**

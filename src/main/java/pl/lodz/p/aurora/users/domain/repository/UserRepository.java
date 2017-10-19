@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 /**
@@ -16,6 +17,9 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByOrderBySurnameAscNameAsc(Pageable pageable);
+
+    @Query(value = "select u from User u where ?1 not member of u.roles")
+    Page<User> findAllExceptAdmins(Role role, Pageable pageable);
 
     User findDistinctByUsername(String username);
 
