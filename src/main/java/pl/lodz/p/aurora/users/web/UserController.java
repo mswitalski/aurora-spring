@@ -66,14 +66,9 @@ public class UserController extends BaseController {
         return ResponseEntity.ok().body(savedUser);
     }
 
-    @GetMapping(value = "admin/users/")
-    public ResponseEntity<Page<UserBasicDto>> findAllAsAdmin(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.findAllByPageAsAdmin(pageable).map(basicConverter));
-    }
-
-    @GetMapping(value = "unitleader/users/")
-    public ResponseEntity<Page<UserBasicDto>> findAllAsUnitLeader(Pageable pageable) {
-        return ResponseEntity.ok().body(userService.findAllByPageAsUnitLeader(pageable).map(basicConverter));
+    @GetMapping(value = "users/")
+    public ResponseEntity<Page<UserBasicDto>> findAllByPage(Pageable pageable) {
+        return ResponseEntity.ok().body(userService.findAllByPage(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "user")
@@ -168,7 +163,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(value = "search/users/")
-    public ResponseEntity<Page<UserBasicDto>> searchForUsers(@RequestBody UserSearchDto criteria, Pageable pageable) {
+    public ResponseEntity<Page<UserBasicDto>> searchForUsersAsAdmin(@RequestBody UserSearchDto criteria, Pageable pageable) {
         return ResponseEntity.ok().body(userService.searchForUsers(criteria, pageable).map(basicConverter));
     }
 }
