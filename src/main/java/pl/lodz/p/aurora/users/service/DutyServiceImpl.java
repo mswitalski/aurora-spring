@@ -85,6 +85,6 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Duty> searchForDuties(DutySearchDto critieria, Pageable pageable) {
-        return this.dutyRepository.findAllByNameIsLike(critieria.getName(), pageable);
+        return this.dutyRepository.findAllByNameContainingIgnoreCase(critieria.getName(), pageable);
     }
 }

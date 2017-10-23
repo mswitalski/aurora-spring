@@ -11,5 +11,5 @@ import pl.lodz.p.aurora.users.domain.entity.Duty;
 @Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
 public interface DutyRepository extends JpaRepository<Duty, Long> {
 
-    Page<Duty> findAllByNameIsLike(String name, Pageable pageable);
+    Page<Duty> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 }
