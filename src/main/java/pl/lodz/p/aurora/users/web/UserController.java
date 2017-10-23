@@ -163,7 +163,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(value = "search/users/")
-    public ResponseEntity<Page<UserBasicDto>> searchForUsersAsAdmin(@RequestBody UserSearchDto criteria, Pageable pageable) {
+    public ResponseEntity<Page<UserBasicDto>> searchForUsers(@RequestBody UserSearchDto criteria, Pageable pageable) {
         return ResponseEntity.ok().body(userService.searchForUsers(criteria, pageable).map(basicConverter));
     }
 }

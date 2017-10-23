@@ -4,11 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.users.domain.dto.DutySearchDto;
 import pl.lodz.p.aurora.users.domain.entity.Duty;
 import pl.lodz.p.aurora.users.domain.repository.DutyRepository;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class DutyServiceImpl extends BaseService implements DutyService {
 
     private final DutyRepository dutyRepository;
@@ -19,11 +24,13 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Duty> findAllByPage(Pageable pageable) {
         return dutyRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Duty findById(Long id) {
         return dutyRepository.findOne(id);
     }
@@ -73,5 +80,11 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     @Override
     public void deleteAsUnitLeader(String eTag, Long dutyId) {
         delete(eTag, dutyId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    public Page<Duty> searchForDuties(DutySearchDto critieria, Pageable pageable) {
+        return this.dutyRepository.findAllByNameIsLike(critieria.getName(), pageable);
     }
 }

@@ -19,6 +19,8 @@ import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
+import java.util.Collections;
+
 /**
  * Service class used for processing users account data.
  */
@@ -68,7 +70,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     public User createAsUnitLeader(User user) {
         user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
         Role employeeRole = roleService.findByName(defaultEmployeeRoleName);
-        user.assignRole(employeeRole);
+
+        // Roles received from the client must be completely disregarded
+        user.setRoles(Collections.singleton(employeeRole));
 
         return save(user, userRepository);
     }
@@ -187,6 +191,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         userRepository.delete(storedUser);
     }
 
+    @Override
     public Page<User> searchForUsers(UserSearchDto critieria, Pageable pageable) {
         return this.userRepository.searchForUser(
                 critieria.getUsername(),

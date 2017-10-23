@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.users.domain.converter.DutyBasicDtoConverter;
 import pl.lodz.p.aurora.users.domain.converter.DutyDtoToEntityConverter;
 import pl.lodz.p.aurora.users.domain.converter.DutyEntityToDtoConverter;
+import pl.lodz.p.aurora.users.domain.dto.DutyBasicDto;
 import pl.lodz.p.aurora.users.domain.dto.DutyDto;
+import pl.lodz.p.aurora.users.domain.dto.DutySearchDto;
 import pl.lodz.p.aurora.users.service.DutyService;
 
 /**
@@ -22,14 +25,17 @@ public class DutyController extends BaseController {
     private final DutyService dutyService;
     private final DutyEntityToDtoConverter entityToDtoConverter;
     private final DutyDtoToEntityConverter dtoToEntityConverter;
+    private final DutyBasicDtoConverter basicConverter;
 
     @Autowired
     public DutyController(DutyService dutyService,
                           DutyEntityToDtoConverter edConverter,
-                          DutyDtoToEntityConverter deConverter) {
+                          DutyDtoToEntityConverter deConverter,
+                          DutyBasicDtoConverter basicConverter) {
         this.dutyService = dutyService;
         this.entityToDtoConverter = edConverter;
         this.dtoToEntityConverter = deConverter;
+        this.basicConverter = basicConverter;
     }
 
     @PostMapping(value = "admin/duties/")
@@ -49,8 +55,8 @@ public class DutyController extends BaseController {
     }
 
     @GetMapping(value = "duties/")
-    public ResponseEntity<Page<DutyDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(dutyService.findAllByPage(pageable).map(entityToDtoConverter));
+    public ResponseEntity<Page<DutyBasicDto>> findAll(Pageable pageable) {
+        return ResponseEntity.ok().body(dutyService.findAllByPage(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "duties/{dutyId}")
@@ -84,5 +90,10 @@ public class DutyController extends BaseController {
         dutyService.deleteAsUnitLeader(eTag, dutyId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "search/duties/")
+    public ResponseEntity<Page<DutyBasicDto>> searchForDuties(@RequestBody DutySearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok().body(dutyService.searchForDuties(criteria, pageable).map(basicConverter));
     }
 }
