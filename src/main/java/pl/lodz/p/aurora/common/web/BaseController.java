@@ -1,5 +1,9 @@
 package pl.lodz.p.aurora.common.web;
 
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.ResponseEntity;
+import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+
 /**
  * An abstract controller that will serve as base for other controllers.
  */
@@ -13,5 +17,9 @@ public abstract class BaseController {
      */
     protected String sanitizeReceivedETag(String eTag) {
         return eTag.replaceAll("[^0-9-]", "");
+    }
+
+    protected <T, E extends VersionedEntity> ResponseEntity<T> respondWithConversion(E entity, Converter<E, T> converter) {
+        return ResponseEntity.ok().eTag(Long.toString(entity.getVersion())).body(converter.convert(entity));
     }
 }

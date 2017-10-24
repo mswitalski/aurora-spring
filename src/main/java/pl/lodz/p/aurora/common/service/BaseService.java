@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.lodz.p.aurora.common.domain.entity.BaseEntity;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
 import pl.lodz.p.aurora.common.exception.*;
-import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
@@ -49,14 +48,14 @@ public abstract class BaseService {
      * @throws InvalidApplicationConfigurationException when could not found the name of the field that violated unique
      *                                                  constraint
      */
-    protected void failOnUniqueConstraintViolation(DataIntegrityViolationException exception)
+    protected void failOnUniqueConstraintViolation(DataIntegrityViolationException exception, Object entity)
             throws UniqueConstraintViolationException, InvalidApplicationConfigurationException {
         String message = exception.getCause().getCause().getMessage();
         Pattern pattern = Pattern.compile("unique_([a-zA-Z]+)_([a-zA-Z]+)");
         Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) {
-            throw new UniqueConstraintViolationException(exception, User.class.getSimpleName(), matcher.group(2));
+            throw new UniqueConstraintViolationException(exception, entity.getClass().getSimpleName(), matcher.group(2));
         }
 
         throw new InvalidApplicationConfigurationException(
@@ -78,7 +77,7 @@ public abstract class BaseService {
             return repository.saveAndFlush(user);
 
         } catch (DataIntegrityViolationException exception) {
-            failOnUniqueConstraintViolation(exception);
+            failOnUniqueConstraintViolation(exception, user);
 
         } catch (ConstraintViolationException exception) {
             throw new InvalidEntityStateException(user, exception);

@@ -75,16 +75,12 @@ public class UserController extends BaseController {
     public ResponseEntity<UserDto> findLoggedUser() {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return respondWithUserDto(userService.findByUsername(loggedUser.getUsername()));
+        return respondWithConversion(userService.findByUsername(loggedUser.getUsername()), entityToDtoConverter);
     }
 
     @GetMapping(value = "users/{username}")
     public ResponseEntity<UserDto> findByUsername(@PathVariable String username) {
-        return respondWithUserDto(userService.findByUsername(username));
-    }
-
-    private ResponseEntity<UserDto> respondWithUserDto(User user) {
-        return ResponseEntity.ok().eTag(Long.toString(user.getVersion())).body(entityToDtoConverter.convert(user));
+        return respondWithConversion(userService.findByUsername(username), entityToDtoConverter);
     }
 
     @PutMapping(value = "admin/users/")

@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = "name", name = "unique_duty_name")
+})
 public class Duty extends VersionedEntity {
 
     @Id
