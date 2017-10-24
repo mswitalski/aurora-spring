@@ -236,6 +236,10 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         this.duties = new HashSet<>(duties);
     }
 
+    public void removeDuty(Duty duty) {
+        this.duties.remove(duty);
+    }
+
     @Override
     public User clone() {
         User clonedUser = new User();

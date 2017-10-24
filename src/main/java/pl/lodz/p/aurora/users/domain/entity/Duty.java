@@ -50,10 +50,15 @@ public class Duty extends VersionedEntity {
     }
 
     public Set<User> getUsers() {
-        return new HashSet<>(users);
+        return (users);
     }
 
     public void setUsers(Set<User> users) {
         this.users = new HashSet<>(users);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        this.users.forEach(user -> user.removeDuty(this));
     }
 }
