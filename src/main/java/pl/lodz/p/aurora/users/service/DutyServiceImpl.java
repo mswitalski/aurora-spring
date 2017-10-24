@@ -26,7 +26,7 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Duty> findAllByPage(Pageable pageable) {
-        return dutyRepository.findAll(pageable);
+        return dutyRepository.findAllByOrderByNameAsc(pageable);
     }
 
     @Override
@@ -47,7 +47,9 @@ public class DutyServiceImpl extends BaseService implements DutyService {
         failIfNoRecordInDatabaseFound(storedDuty, duty);
         failIfEncounteredOutdatedEntity(eTag, storedDuty);
 
-        save(duty, dutyRepository);
+        storedDuty.setName(duty.getName());
+
+        save(storedDuty, dutyRepository);
     }
 
     @Override
@@ -62,6 +64,6 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Duty> search(DutySearchDto critieria, Pageable pageable) {
-        return this.dutyRepository.findAllByNameContainingIgnoreCase(critieria.getName(), pageable);
+        return this.dutyRepository.search(critieria.getName(), pageable);
     }
 }

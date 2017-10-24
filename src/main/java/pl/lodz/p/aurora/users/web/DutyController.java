@@ -53,7 +53,7 @@ public class DutyController extends BaseController {
 
     @GetMapping(value = "duties/{dutyId}")
     public ResponseEntity<DutyDto> findById(@PathVariable Long dutyId) {
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(dutyService.findById(dutyId)));
+        return respondWithConversion(dutyService.findById(dutyId), entityToDtoConverter);
     }
 
     @PutMapping(value = "unitleader/duties/")
