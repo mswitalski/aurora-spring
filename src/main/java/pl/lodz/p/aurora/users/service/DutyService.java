@@ -12,11 +12,8 @@ public interface DutyService {
 
     Page<Duty> findAllByPage(Pageable pageable);
     Duty findById(Long id);
-    Duty createAsAdmin(Duty duty);
-    Duty createAsUnitLeader(Duty duty);
-    void updateAsAdmin(String eTag, Duty duty);
-    void updateAsUnitLeader(String eTag, Duty duty);
-    void deleteAsAdmin(String eTag, Long dutyId);
-    void deleteAsUnitLeader(String eTag, Long dutyId);
-    Page<Duty> searchForDuties(DutySearchDto critieria, Pageable pageable);
+    Duty create(Duty duty);
+    void update(String eTag, Duty duty);
+    void delete(String eTag, Long dutyId);
+    Page<Duty> search(DutySearchDto critieria, Pageable pageable);
 }

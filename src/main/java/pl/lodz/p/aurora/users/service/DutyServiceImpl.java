@@ -36,21 +36,12 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     }
 
     @Override
-    public Duty createAsAdmin(Duty duty) {
+    public Duty create(Duty duty) {
         return save(duty, dutyRepository);
     }
 
     @Override
-    public Duty createAsUnitLeader(Duty duty) {
-        return save(duty, dutyRepository);
-    }
-
-    @Override
-    public void updateAsAdmin(String eTag, Duty duty) {
-        update(eTag, duty);
-    }
-
-    private void update(String eTag, Duty duty) {
+    public void update(String eTag, Duty duty) {
         Duty storedDuty = dutyRepository.findOne(duty.getId());
 
         failIfNoRecordInDatabaseFound(storedDuty, duty);
@@ -60,16 +51,7 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     }
 
     @Override
-    public void updateAsUnitLeader(String eTag, Duty duty) {
-        update(eTag, duty);
-    }
-
-    @Override
-    public void deleteAsAdmin(String eTag, Long dutyId) {
-        delete(eTag, dutyId);
-    }
-
-    private void delete(String eTag, Long dutyId) {
+    public void delete(String eTag, Long dutyId) {
         Duty storedDuty = dutyRepository.findOne(dutyId);
 
         failIfNoRecordInDatabaseFound(storedDuty, dutyId);
@@ -78,13 +60,8 @@ public class DutyServiceImpl extends BaseService implements DutyService {
     }
 
     @Override
-    public void deleteAsUnitLeader(String eTag, Long dutyId) {
-        delete(eTag, dutyId);
-    }
-
-    @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
-    public Page<Duty> searchForDuties(DutySearchDto critieria, Pageable pageable) {
+    public Page<Duty> search(DutySearchDto critieria, Pageable pageable) {
         return this.dutyRepository.findAllByNameContainingIgnoreCase(critieria.getName(), pageable);
     }
 }

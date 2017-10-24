@@ -38,18 +38,10 @@ public class DutyController extends BaseController {
         this.basicConverter = basicConverter;
     }
 
-    @PostMapping(value = "admin/duties/")
-    public ResponseEntity<DutyDto> createAsAdmin(@Validated @RequestBody DutyDto userDto) {
-        DutyDto savedDuty = entityToDtoConverter
-                .convert(dutyService.createAsAdmin(dtoToEntityConverter.convert(userDto)));
-
-        return ResponseEntity.ok().body(savedDuty);
-    }
-
     @PostMapping(value = "unitleader/duties/")
-    public ResponseEntity<DutyDto> createAsUnitLeader(@Validated @RequestBody DutyDto userDto) {
+    public ResponseEntity<DutyDto> create(@Validated @RequestBody DutyDto userDto) {
         DutyDto savedDuty = entityToDtoConverter
-                .convert(dutyService.createAsUnitLeader(dtoToEntityConverter.convert(userDto)));
+                .convert(dutyService.create(dtoToEntityConverter.convert(userDto)));
 
         return ResponseEntity.ok().body(savedDuty);
     }
@@ -64,36 +56,22 @@ public class DutyController extends BaseController {
         return ResponseEntity.ok().body(entityToDtoConverter.convert(dutyService.findById(dutyId)));
     }
 
-    @PutMapping(value = "admin/duties/")
-    public ResponseEntity<Void> updateAsAdmin(@RequestHeader("If-Match") String eTag, @Validated @RequestBody DutyDto duty) {
-        dutyService.updateAsAdmin(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(duty));
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping(value = "unitleader/duties/")
-    public ResponseEntity<Void> updateAsUnitLeader(@RequestHeader("If-Match") String eTag, @Validated @RequestBody DutyDto duty) {
-        dutyService.updateAsUnitLeader(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(duty));
+    public ResponseEntity<Void> update(@RequestHeader("If-Match") String eTag, @Validated @RequestBody DutyDto duty) {
+        dutyService.update(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(duty));
 
         return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping(value = "admin/duties/{dutyId}")
-    public ResponseEntity<Void> deleteAsAdmin(@RequestHeader("If-Match") String eTag, @PathVariable Long dutyId) {
-        dutyService.deleteAsAdmin(eTag, dutyId);
-
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "unitleader/duties/{dutyId}")
-    public ResponseEntity<Void> deleteAsUnitLeader(@RequestHeader("If-Match") String eTag, @PathVariable Long dutyId) {
-        dutyService.deleteAsUnitLeader(eTag, dutyId);
+    public ResponseEntity<Void> delete(@RequestHeader("If-Match") String eTag, @PathVariable Long dutyId) {
+        dutyService.delete(eTag, dutyId);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "search/duties/")
-    public ResponseEntity<Page<DutyBasicDto>> searchForDuties(@RequestBody DutySearchDto criteria, Pageable pageable) {
-        return ResponseEntity.ok().body(dutyService.searchForDuties(criteria, pageable).map(basicConverter));
+    public ResponseEntity<Page<DutyBasicDto>> search(@RequestBody DutySearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok().body(dutyService.search(criteria, pageable).map(basicConverter));
     }
 }
