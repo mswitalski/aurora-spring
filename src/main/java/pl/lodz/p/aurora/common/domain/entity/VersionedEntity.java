@@ -53,6 +53,6 @@ public abstract class VersionedEntity extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return 117 * getId().hashCode() * getVersion().hashCode();
+        return 117 * getId().hashCode();
     }
 }
