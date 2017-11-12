@@ -5,20 +5,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataIntegrityViolationException;
-import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
-import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDataFactory;
-import pl.lodz.p.aurora.users.domain.dto.UserDto;
-import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
+import pl.lodz.p.aurora.users.service.common.UserServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -96,99 +90,99 @@ public class UserServiceImplUnitTests {
         // Then
         assertThat(returnedUser).isNotNull().isEqualTo(dummyUser);
     }
-
-    @Test
-    public void returnProperlyCreatedUserAsAdmin() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
-
-        // When
-        User savedUserEntity = userService.createAsAdmin(dummyUser);
-
-        // Then
-        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
-    }
-
-    @Test
-    public void returnProperlyCreatedUserAsUnitLeader() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        Role dummyRole = roleDataFactory.createSingle();
-        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
-        when(roleService.findByName(any())).thenReturn(dummyRole);
-
-        // When
-        User savedUserEntity = userService.createAsUnitLeader(dummyUser);
-
-        // Then
-        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
-        assertThat(savedUserEntity.getRoles()).isNotNull().contains(dummyRole);
-    }
-
-    @Test(expected = InvalidEntityStateException.class)
-    public void failToCreateUserWithNullFieldsAsAdmin() {
-        // Given
-        User dummyUser = new User();
-        when(userRepository.saveAndFlush(dummyUser)).thenThrow(javax.validation.ConstraintViolationException.class);
-
-        // Then
-        userService.createAsAdmin(dummyUser);
-    }
-
-    @Test
-    public void failIfCreatedUserHasNotUniqueUsernameAsAdmin() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
-        when(userRepository.findDistinctByUsername(anyString())).thenReturn(new User());
-        when(userRepository.findDistinctByEmail(anyString())).thenReturn(null);
-
-        // Expect
-        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
-
-        // Then
-        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
-        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
-                .isEqualTo(UserDto.class.getSimpleName());
-        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
-                .isNotEmpty().contains("username");
-    }
-
-    @Test
-    public void failIfCreatedUserIsAnInvalidEntityAsAdmin() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        org.hibernate.exception.ConstraintViolationException exceptionCause =
-                new org.hibernate.exception.ConstraintViolationException(null, null, null);
-        when(userRepository.saveAndFlush(any(User.class)))
-                .thenThrow(new DataIntegrityViolationException("constraint [null]", exceptionCause));
-
-        // Expect
-        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
-
-        // Then
-        assertThat(thrown).isInstanceOf(InvalidEntityStateException.class);
-    }
-
-    @Test
-    public void failIfCreatedUserHasNotUniqueEmailAddressAsAdmin() {
-        // Given
-        User dummyUser = userDataFactory.createSingle();
-        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
-        when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
-        when(userRepository.findDistinctByEmail(anyString())).thenReturn(new User());
-
-        // Expect
-        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
-
-        // Then
-        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
-        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
-                .isEqualTo(UserDto.class.getSimpleName());
-        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
-                .isNotEmpty().contains("email");
-    }
+//
+//    @Test
+//    public void returnProperlyCreatedUserAsAdmin() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+//
+//        // When
+//        User savedUserEntity = userService.createAsAdmin(dummyUser);
+//
+//        // Then
+//        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
+//    }
+//
+//    @Test
+//    public void returnProperlyCreatedUserAsUnitLeader() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        Role dummyRole = roleDataFactory.createSingle();
+//        when(userRepository.saveAndFlush(dummyUser)).thenReturn(dummyUser);
+//        when(roleService.findByName(any())).thenReturn(dummyRole);
+//
+//        // When
+//        User savedUserEntity = userService.createAsUnitLeader(dummyUser);
+//
+//        // Then
+//        assertThat(savedUserEntity).isNotNull().isEqualTo(dummyUser);
+//        assertThat(savedUserEntity.getRoles()).isNotNull().contains(dummyRole);
+//    }
+//
+//    @Test(expected = InvalidEntityStateException.class)
+//    public void failToCreateUserWithNullFieldsAsAdmin() {
+//        // Given
+//        User dummyUser = new User();
+//        when(userRepository.saveAndFlush(dummyUser)).thenThrow(javax.validation.ConstraintViolationException.class);
+//
+//        // Then
+//        userService.createAsAdmin(dummyUser);
+//    }
+//
+//    @Test
+//    public void failIfCreatedUserHasNotUniqueUsernameAsAdmin() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+//        when(userRepository.findDistinctByUsername(anyString())).thenReturn(new User());
+//        when(userRepository.findDistinctByEmail(anyString())).thenReturn(null);
+//
+//        // Expect
+//        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
+//
+//        // Then
+//        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
+//        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
+//                .isEqualTo(UserDto.class.getSimpleName());
+//        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
+//                .isNotEmpty().contains("username");
+//    }
+//
+//    @Test
+//    public void failIfCreatedUserIsAnInvalidEntityAsAdmin() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        org.hibernate.exception.ConstraintViolationException exceptionCause =
+//                new org.hibernate.exception.ConstraintViolationException(null, null, null);
+//        when(userRepository.saveAndFlush(any(User.class)))
+//                .thenThrow(new DataIntegrityViolationException("constraint [null]", exceptionCause));
+//
+//        // Expect
+//        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
+//
+//        // Then
+//        assertThat(thrown).isInstanceOf(InvalidEntityStateException.class);
+//    }
+//
+//    @Test
+//    public void failIfCreatedUserHasNotUniqueEmailAddressAsAdmin() {
+//        // Given
+//        User dummyUser = userDataFactory.createSingle();
+//        when(userRepository.saveAndFlush(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+//        when(userRepository.findDistinctByUsername(anyString())).thenReturn(null);
+//        when(userRepository.findDistinctByEmail(anyString())).thenReturn(new User());
+//
+//        // Expect
+//        Throwable thrown = catchThrowable(() -> userService.createAsAdmin(dummyUser));
+//
+//        // Then
+//        assertThat(thrown).isInstanceOf(UniqueConstraintViolationException.class);
+//        assertThat(((UniqueConstraintViolationException) thrown).getEntityName())
+//                .isEqualTo(UserDto.class.getSimpleName());
+//        assertThat(((UniqueConstraintViolationException) thrown).getFieldName())
+//                .isNotEmpty().contains("email");
+//    }
 
 //    @Test
 //    public void returnProperlyUpdatedUser() {
@@ -221,17 +215,17 @@ public class UserServiceImplUnitTests {
 //        // When-then
 //        userService.updateOtherAccount(invalidETag, userPassedToMethod);
 //    }
-
-    @Test(expected = InvalidResourceRequestedException.class)
-    public void failOnTryingToUpdateNonExistingUser() {
-        // Given
-        String invalidETag = "etag";
-        User dummyUser = userDataFactory.createSingle();
-        when(userRepository.findDistinctByUsername(dummyUser.getUsername())).thenReturn(null);
-
-        // When-then
-        userService.updateOtherAccount(invalidETag, dummyUser);
-    }
+//
+//    @Test(expected = InvalidResourceRequestedException.class)
+//    public void failOnTryingToUpdateNonExistingUser() {
+//        // Given
+//        String invalidETag = "etag";
+//        User dummyUser = userDataFactory.createSingle();
+//        when(userRepository.findDistinctByUsername(dummyUser.getUsername())).thenReturn(null);
+//
+//        // When-then
+//        userService.updateOtherAccount(invalidETag, dummyUser);
+//    }
 
 //    @Test
 //    public void returnUpdatedUserWithEnabledState() {

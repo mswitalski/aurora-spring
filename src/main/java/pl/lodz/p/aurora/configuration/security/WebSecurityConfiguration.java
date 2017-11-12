@@ -37,6 +37,28 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "api/v1/profile").hasAnyRole("ADMIN", "UNIT_LEADER", "EMPLOYEE")
+                .antMatchers(HttpMethod.PUT, "api/v1/profile").hasAnyRole("ADMIN", "UNIT_LEADER", "EMPLOYEE")
+                .antMatchers(HttpMethod.PUT, "api/v1/profile/password").hasAnyRole("ADMIN", "UNIT_LEADER", "EMPLOYEE")
+
+                .antMatchers(HttpMethod.GET, "api/v1/users/").hasAnyRole("ADMIN", "UNIT_LEADER")
+                .antMatchers(HttpMethod.GET, "api/v1/users/paged/").hasAnyRole("ADMIN", "UNIT_LEADER")
+                .antMatchers(HttpMethod.POST, "api/v1/users/search/").hasAnyRole("ADMIN", "UNIT_LEADER")
+                .antMatchers(HttpMethod.GET, "api/v1/users/**").hasAnyRole("ADMIN", "UNIT_LEADER")
+                .antMatchers(HttpMethod.POST, "api/v1/users/").hasAnyRole("ADMIN", "UNIT_LEADER")
+                .antMatchers(HttpMethod.PUT, "api/v1/users/**/password").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "api/v1/users/**").hasAnyRole("ADMIN", "UNIT_LEADER")
+
+
+
+
+
+
+
+
+
+
+
                 .antMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN")

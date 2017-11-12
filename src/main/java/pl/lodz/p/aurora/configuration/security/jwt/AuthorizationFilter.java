@@ -13,7 +13,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import pl.lodz.p.aurora.users.domain.dto.TokenClaimsDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
-import pl.lodz.p.aurora.users.service.UserService;
+import pl.lodz.p.aurora.users.service.common.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
