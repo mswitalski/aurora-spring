@@ -11,7 +11,7 @@ import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
-import pl.lodz.p.aurora.users.service.RoleService;
+import pl.lodz.p.aurora.users.service.common.RoleService;
 
 import java.util.Collections;
 

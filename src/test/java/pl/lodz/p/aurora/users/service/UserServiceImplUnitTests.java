@@ -10,6 +10,7 @@ import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.helper.UserDataFactory;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
+import pl.lodz.p.aurora.users.service.common.RoleService;
 import pl.lodz.p.aurora.users.service.common.UserServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;

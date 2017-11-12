@@ -9,6 +9,7 @@ import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
+import pl.lodz.p.aurora.users.service.common.RoleServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

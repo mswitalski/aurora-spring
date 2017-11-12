@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.users.service;
+package pl.lodz.p.aurora.users.service.common;
 
 import pl.lodz.p.aurora.users.domain.entity.Role;
 
@@ -10,5 +10,6 @@ import java.util.List;
 public interface RoleService {
 
     List<Role> findAll();
+
     Role findByName(String name);
 }
