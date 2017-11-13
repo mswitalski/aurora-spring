@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.users.service.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +12,7 @@ import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserAdminServiceImpl extends BaseService implements UserAdminService {
@@ -35,8 +37,16 @@ public class UserAdminServiceImpl extends BaseService implements UserAdminServic
     }
 
     @Override
-    public void update(String eTag, User user) {
-        User storedUser = userRepository.findDistinctByUsername(user.getUsername());
+    public void delete(Long userId, String eTag) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        userRepository.delete(storedUser);
+    }
+
+    @Override
+    public void update(Long userId, User user, String eTag) {
+        User storedUser = userRepository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);

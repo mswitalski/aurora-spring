@@ -35,17 +35,22 @@ public class UserAdminController extends BaseController {
         return ResponseEntity.ok().body(savedUser);
     }
 
+    @DeleteMapping(value = "{userId:[\\d]+}")
+    public ResponseEntity<UserDto> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
+        userAdminService.delete(userId, eTag);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping(value = "{userId:[\\d]+}")
-    public ResponseEntity<Void> update(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userAdminService.update(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
+    public ResponseEntity<Void> update(@PathVariable Long userId, @Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
+        userAdminService.update(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "{userId:[\\d]+}/password")
-    public ResponseEntity<UserDto> updatePassword(
-            @RequestHeader("If-Match") String eTag, @PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData
-    ) {
+    public ResponseEntity<UserDto> updatePassword(@PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
         userAdminService.updatePassword(userId, formData.getNewPassword(), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();

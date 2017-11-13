@@ -5,13 +5,7 @@ import org.springframework.data.domain.Pageable;
 import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
-import java.util.List;
-
 public interface UserService {
-
-    void delete(Long userId, String eTag);
-
-    List<User> findAll();
 
     Page<User> findAllByPage(Pageable pageable);
 

@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-@RequestMapping(value = "api/v1/profile", headers = "Requester-Role=ALL")
+@RequestMapping(value = "api/v1/profile", headers = "Requester-Role=ANY")
 @RestController
 public class UserProfileController extends BaseController {
 
@@ -51,16 +51,14 @@ public class UserProfileController extends BaseController {
 
     @PreAuthorize("#user.getUsername() == principal.username")
     @PutMapping
-    public ResponseEntity<Void> update(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
+    public ResponseEntity<Void> update(@Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
         profileService.update(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "password")
-    public ResponseEntity<Object> updatePassword(
-            @RequestHeader("If-Match") String eTag, @Validated @RequestBody PasswordChangeFormDto formData
-    ) {
+    public ResponseEntity<Object> updatePassword(@Validated @RequestBody PasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
         Locale locale = LocaleContextHolder.getLocale();
 
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.exception.InvalidApplicationConfigurationException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 
@@ -34,5 +35,11 @@ public class GlobalExceptionListener {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processInvalidApplicationConfigurationException(InvalidApplicationConfigurationException exception) {
         logger.error("An error occurred due to invalid application configuration", exception);
+    }
+
+    @ExceptionHandler(ActionForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public void processActionForbiddenException(ActionForbiddenException exception) {
+        logger.error("Client tries to do action that is forbidden for his privileges", exception);
     }
 }

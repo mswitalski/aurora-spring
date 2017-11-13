@@ -13,10 +13,7 @@ import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.service.common.UserService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@RequestMapping(value = "api/v1/users/", headers = "Requester-Role=ALL")
+@RequestMapping(value = "api/v1/users/", headers = "Requester-Role=ANY")
 @RestController
 public class UserController extends BaseController {
 
@@ -29,13 +26,6 @@ public class UserController extends BaseController {
         this.userService = userService;
         this.entityToDtoConverter = entityToDtoConverter;
         this.basicConverter = basicConverter;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserBasicDto>> findAll() {
-        return ResponseEntity
-                .ok()
-                .body(userService.findAll().stream().map(basicConverter::convert).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "paged/")

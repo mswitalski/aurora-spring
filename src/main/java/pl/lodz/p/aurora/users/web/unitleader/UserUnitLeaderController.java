@@ -34,9 +34,16 @@ public class UserUnitLeaderController extends BaseController {
         return ResponseEntity.ok().body(savedUser);
     }
 
+    @DeleteMapping(value = "{userId:[\\d]+}")
+    public ResponseEntity<UserDto> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
+        userUnitLeaderService.delete(userId, eTag);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping(value = "{userId:[\\d]+}")
-    public ResponseEntity<Void> update(@RequestHeader("If-Match") String eTag, @Validated @RequestBody UserDto user) {
-        userUnitLeaderService.update(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
+    public ResponseEntity<Void> update(@PathVariable Long userId, @Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
+        userUnitLeaderService.update(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

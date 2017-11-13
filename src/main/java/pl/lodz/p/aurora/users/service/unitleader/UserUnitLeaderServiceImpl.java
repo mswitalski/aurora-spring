@@ -2,10 +2,12 @@ package pl.lodz.p.aurora.users.service.unitleader;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.users.domain.entity.Role;
@@ -15,6 +17,7 @@ import pl.lodz.p.aurora.users.service.common.RoleService;
 
 import java.util.Collections;
 
+@PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLeaderService {
@@ -45,10 +48,28 @@ public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLe
     }
 
     @Override
-    public void update(String eTag, User user) {
-        User storedUser = userRepository.findDistinctByUsername(user.getUsername());
+    public void delete(Long userId, String eTag) {
+        User storedUser = userRepository.findOne(userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
+        failIfTriedToChangeNonEmployee(storedUser);
+        failIfEncounteredOutdatedEntity(eTag, storedUser);
+        userRepository.delete(storedUser);
+    }
+
+    private void failIfTriedToChangeNonEmployee(User user) {
+        Role employeeRole = roleService.findByName(defaultEmployeeRoleName);
+
+        if (user.getRoles().size() > 0 || user.getRoles().iterator().next().equals(employeeRole)) {
+            throw new ActionForbiddenException("Unit leader tried to change non employee user: " + user);
+        }
+    }
+
+    @Override
+    public void update(Long userId, User user, String eTag) {
+        User storedUser = userRepository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, user);
+        failIfTriedToChangeNonEmployee(storedUser);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
 
         storedUser.setName(user.getName());

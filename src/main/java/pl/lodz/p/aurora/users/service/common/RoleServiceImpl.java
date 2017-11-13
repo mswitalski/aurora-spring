@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.users.service.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +28,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
      *
      * @return List of all roles saved in data source
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public List<Role> findAll() {
         return roleRepository.findAll();
@@ -37,6 +39,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
      *
      * @return Role with given name
      */
+    @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
     @Override
     public Role findByName(String name) {
         Role storedRole = roleRepository.findByName(name);

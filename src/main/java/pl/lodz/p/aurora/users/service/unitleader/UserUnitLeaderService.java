@@ -6,5 +6,7 @@ public interface UserUnitLeaderService {
 
     User create(User user);
 
-    void update(String eTag, User user);
+    void delete(Long userId, String eTag);
+
+    void update(Long userId, User user, String eTag);
 }
