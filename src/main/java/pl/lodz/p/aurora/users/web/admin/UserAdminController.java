@@ -10,6 +10,7 @@ import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.AdminPasswordChangeFormDto;
 import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.admin.UserAdminService;
 
 @RequestMapping(value = "api/v1/users/", headers = "Requester-Role=ADMIN")
@@ -28,11 +29,11 @@ public class UserAdminController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@Validated @RequestBody CreateUserFormDto userDto) {
-        UserDto savedUser = entityToDtoConverter
-                .convert(userAdminService.create(dtoToEntityConverter.convert(userDto)));
+    public ResponseEntity<UserDto> create(@Validated @RequestBody CreateUserFormDto formData) {
+        User receivedUser = dtoToEntityConverter.convert(formData);
+        receivedUser.setPassword(formData.getPassword());
 
-        return ResponseEntity.ok().body(savedUser);
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(userAdminService.create(receivedUser)));
     }
 
     @DeleteMapping(value = "{userId:[\\d]+}")

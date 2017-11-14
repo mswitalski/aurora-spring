@@ -9,6 +9,7 @@ import pl.lodz.p.aurora.users.domain.converter.UserDtoToEntityConverter;
 import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.unitleader.UserUnitLeaderService;
 
 @RequestMapping(value = "api/v1/users/", headers = "Requester-Role=UNIT_LEADER")
@@ -27,11 +28,11 @@ public class UserUnitLeaderController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@Validated @RequestBody CreateUserFormDto userDto) {
-        UserDto savedUser = entityToDtoConverter
-                .convert(userUnitLeaderService.create(dtoToEntityConverter.convert(userDto)));
+    public ResponseEntity<UserDto> create(@Validated @RequestBody CreateUserFormDto formData) {
+        User receivedUser = dtoToEntityConverter.convert(formData);
+        receivedUser.setPassword(formData.getPassword());
 
-        return ResponseEntity.ok().body(savedUser);
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(userUnitLeaderService.create(receivedUser)));
     }
 
     @DeleteMapping(value = "{userId:[\\d]+}")
