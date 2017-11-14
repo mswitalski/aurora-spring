@@ -13,7 +13,6 @@ import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserServiceImpl extends BaseService implements UserService {
@@ -26,6 +25,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
     public Page<User> findAllByPage(Pageable pageable) {
         return userRepository.findAllByOrderBySurnameAscNameAsc(pageable);
     }
@@ -40,8 +40,14 @@ public class UserServiceImpl extends BaseService implements UserService {
         return storedUsed;
     }
 
+    /**
+     * Find user by given username.
+     * *IMPORTANT* Do not put any PreAuthorize/Secured contraints on this method!
+     *
+     * @param username Username of the user to be found
+     * @return Found user
+     */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
     public User findByUsername(String username) {
         User storedUsed = userRepository.findDistinctByUsername(username);
         failIfNoRecordInDatabaseFound(storedUsed, username);
@@ -50,6 +56,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
     public Page<User> search(UserSearchDto critieria, Pageable pageable) {
         return this.userRepository.searchForUser(
                 critieria.getUsername(),

@@ -1,7 +1,6 @@
 package pl.lodz.p.aurora.users.web.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * REST controller for managing any requests related to user roles in the system.
  */
-@RequestMapping(value = "api/v1/roles/", headers = "Requester-Role=ALL")
+@RequestMapping(value = "api/v1/roles/", headers = "Requester-Role=ADMIN")
 @RestController
 public class RoleAdminController {
 
@@ -26,7 +25,6 @@ public class RoleAdminController {
 
     @GetMapping()
     public List<Role> findAll() {
-        System.out.println("RESULT: " + SecurityContextHolder.getContext().getAuthentication().getName());
         return roleService.findAll();
     }
 }
