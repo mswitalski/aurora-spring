@@ -36,7 +36,7 @@ public class UserUnitLeaderController extends BaseController {
     }
 
     @DeleteMapping(value = "{userId:[\\d]+}")
-    public ResponseEntity<UserDto> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
         userUnitLeaderService.delete(userId, eTag);
 
         return ResponseEntity.noContent().build();

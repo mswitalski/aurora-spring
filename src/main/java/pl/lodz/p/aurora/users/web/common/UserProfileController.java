@@ -58,7 +58,7 @@ public class UserProfileController extends BaseController {
     }
 
     @PutMapping(value = "password")
-    public ResponseEntity<Object> updatePassword(@Validated @RequestBody PasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
+    public ResponseEntity<List<ValidationMessageDto>> updatePassword(@Validated @RequestBody PasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
         Locale locale = LocaleContextHolder.getLocale();
 
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
@@ -75,7 +75,7 @@ public class UserProfileController extends BaseController {
         }
     }
 
-    private ResponseEntity<Object> preparePasswordChangeErrorResponse(String translationKey, String fieldName, Locale locale) {
+    private ResponseEntity<List<ValidationMessageDto>> preparePasswordChangeErrorResponse(String translationKey, String fieldName, Locale locale) {
         List<ValidationMessageDto> errorMessage =
                 Collections.singletonList(new ValidationMessageDto(translator.translate(translationKey, locale), fieldName));
 

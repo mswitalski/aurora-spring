@@ -37,7 +37,7 @@ public class UserAdminController extends BaseController {
     }
 
     @DeleteMapping(value = "{userId:[\\d]+}")
-    public ResponseEntity<UserDto> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
         userAdminService.delete(userId, eTag);
 
         return ResponseEntity.noContent().build();
@@ -51,7 +51,7 @@ public class UserAdminController extends BaseController {
     }
 
     @PutMapping(value = "{userId:[\\d]+}/password")
-    public ResponseEntity<UserDto> updatePassword(@PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
+    public ResponseEntity<Void> updatePassword(@PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
         userAdminService.updatePassword(userId, formData.getNewPassword(), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
