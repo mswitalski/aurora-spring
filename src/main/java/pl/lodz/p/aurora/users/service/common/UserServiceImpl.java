@@ -33,8 +33,8 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
     public User findById(Long userId) {
-        System.out.println("IN SERVICE");
         User storedUsed = userRepository.findOne(userId);
+
         failIfNoRecordInDatabaseFound(storedUsed, userId);
 
         return storedUsed;
@@ -50,6 +50,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public User findByUsername(String username) {
         User storedUsed = userRepository.findDistinctByUsername(username);
+
         failIfNoRecordInDatabaseFound(storedUsed, username);
 
         return storedUsed;

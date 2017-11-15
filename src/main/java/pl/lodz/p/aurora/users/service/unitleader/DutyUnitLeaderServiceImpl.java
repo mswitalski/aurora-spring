@@ -55,7 +55,11 @@ public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLe
 
     @Override
     public Duty findById(Long id) {
-        return dutyRepository.findOne(id);
+        Duty storedDuty = dutyRepository.findOne(id);
+
+        failIfNoRecordInDatabaseFound(storedDuty, id);
+
+        return storedDuty;
     }
 
     @Override

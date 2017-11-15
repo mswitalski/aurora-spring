@@ -43,6 +43,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     @Override
     public Role findByName(String name) {
         Role storedRole = roleRepository.findByName(name);
+
         failIfNoRecordInDatabaseFound(storedRole, name);
 
         return storedRole;

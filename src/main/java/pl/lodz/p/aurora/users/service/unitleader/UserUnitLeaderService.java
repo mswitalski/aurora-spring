@@ -9,4 +9,6 @@ public interface UserUnitLeaderService {
     void delete(Long userId, String eTag);
 
     void update(Long userId, User user, String eTag);
+
+    void updateDuties(Long userId, User user, String eTag);
 }

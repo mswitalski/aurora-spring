@@ -48,4 +48,11 @@ public class UserUnitLeaderController extends BaseController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping(value = "{userId:[\\d]+}/duties/")
+    public ResponseEntity<Void> updateDuties(@PathVariable Long userId, @Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
+        userUnitLeaderService.updateDuties(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
+    }
 }
