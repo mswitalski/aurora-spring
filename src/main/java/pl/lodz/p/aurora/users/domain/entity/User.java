@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.skills.domain.entity.UserSkill;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,13 +23,13 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "`user`",
         indexes = {
-                @Index(columnList = "name"),
-                @Index(columnList = "surname"),
-                @Index(columnList = "enabled")
+            @Index(columnList = "name", name = "index_user_name"),
+            @Index(columnList = "surname", name = "index_user_surname"),
+            @Index(columnList = "enabled", name = "index_user_enabled")
         },
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username", name = "unique_user_username"),
-                @UniqueConstraint(columnNames = "email", name = "unique_user_email")
+            @UniqueConstraint(columnNames = "username", name = "unique_user_username"),
+            @UniqueConstraint(columnNames = "email", name = "unique_user_email")
         }
 )
 public class User extends VersionedEntity implements Cloneable, UserDetails {
@@ -102,6 +103,9 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
             )
     )
     private Set<Duty> duties = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserSkill> skills = new HashSet<>();
 
     public User() {
     }
@@ -238,6 +242,14 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     public void removeDuty(Duty duty) {
         this.duties.remove(duty);
+    }
+
+    public Set<UserSkill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<UserSkill> skills) {
+        this.skills = skills;
     }
 
     @Override

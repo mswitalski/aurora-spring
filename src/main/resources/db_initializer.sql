@@ -37,3 +37,37 @@ INSERT INTO PUBLIC.user_duty VALUES (3, 2);
 INSERT INTO PUBLIC.user_duty VALUES (4, 3);
 INSERT INTO PUBLIC.user_duty VALUES (5, 4);
 INSERT INTO PUBLIC.user_duty VALUES (5, 5);
+
+-- Add skills
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Java 8', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Design patterns', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'IPv4 protocol', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Python 3', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Git', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'English', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'German', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'HTML', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Maven', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'C++', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Unity 3D', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'Linux', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'SQL', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'PHP', 0);
+INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'C#', 0);
+
+-- Create relationships between users and skills
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'NONE', 'no leader explanation', 'BEGINNER', 'no self explanation', 1, 2, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 2, 2, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 3, 2, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'BEGINNER', 'no leader explanation', 'BEGINNER', 'no self explanation', 4, 2, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'BEGINNER', 'no self explanation', 5, 3, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'EXPERT', 'no leader explanation', 'BEGINNER', 'no self explanation', 6, 3, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 7, 3, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'BEGINNER', 'no leader explanation', 'BEGINNER', 'no self explanation', 8, 3, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'BEGINNER', 'no leader explanation', 'BEGINNER', 'no self explanation', 9, 3, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 10, 4, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'BEGINNER', 'no leader explanation', 'BEGINNER', 'no self explanation', 11, 4, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'BEGINNER', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 12, 4, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 13, 5, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 14, 5, 0);
+INSERT INTO PUBLIC.user_skill (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('userskill_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 15, 5, 0);

@@ -14,7 +14,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class UserServiceImpl extends BaseService implements UserService {
 
     private final UserRepository userRepository;
@@ -33,11 +33,11 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
     public User findById(Long userId) {
-        User storedUsed = userRepository.findOne(userId);
+        User storedUser = userRepository.findOne(userId);
 
-        failIfNoRecordInDatabaseFound(storedUsed, userId);
+        failIfNoRecordInDatabaseFound(storedUser, userId);
 
-        return storedUsed;
+        return storedUser;
     }
 
     /**
@@ -49,17 +49,17 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User findByUsername(String username) {
-        User storedUsed = userRepository.findDistinctByUsername(username);
+        User storedUser = userRepository.findDistinctByUsername(username);
 
-        failIfNoRecordInDatabaseFound(storedUsed, username);
+        failIfNoRecordInDatabaseFound(storedUser, username);
 
-        return storedUsed;
+        return storedUser;
     }
 
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
     public Page<User> search(UserSearchDto critieria, Pageable pageable) {
-        return this.userRepository.searchForUser(
+        return this.userRepository.search(
                 critieria.getUsername(),
                 critieria.getName(),
                 critieria.getSurname(),

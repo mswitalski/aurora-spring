@@ -51,7 +51,7 @@ public abstract class BaseService {
     protected void failOnUniqueConstraintViolation(DataIntegrityViolationException exception, Object entity)
             throws UniqueConstraintViolationException, InvalidApplicationConfigurationException {
         String message = exception.getCause().getCause().getMessage();
-        Pattern pattern = Pattern.compile("unique_([a-zA-Z]+)_([a-zA-Z]+)");
+        Pattern pattern = Pattern.compile("unique_([a-zA-Z-]+)_([a-zA-Z-]+)");
         Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) {
