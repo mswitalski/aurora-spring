@@ -104,7 +104,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     )
     private Set<Duty> duties = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Evaluation> skills = new HashSet<>();
 
     public User() {

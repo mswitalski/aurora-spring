@@ -42,7 +42,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     /**
      * Find user by given username.
-     * *IMPORTANT* Do not put any PreAuthorize/Secured contraints on this method!
+     * *IMPORTANT* Do not put any PreAuthorize/Secured constraints on this method!
      *
      * @param username Username of the user to be found
      * @return Found user

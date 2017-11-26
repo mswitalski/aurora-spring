@@ -30,7 +30,7 @@ public class Skill extends VersionedEntity {
     @Size(max = 50)
     private String name;
 
-    @OneToMany(mappedBy = "skill")
+    @OneToMany(mappedBy = "skill", cascade = CascadeType.REMOVE)
     private Set<Evaluation> users = new HashSet<>();
 
     public Skill() {

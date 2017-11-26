@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.skills.web.unitleader;
+package pl.lodz.p.aurora.skills.web.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

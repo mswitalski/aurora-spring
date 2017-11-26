@@ -33,7 +33,7 @@ public class SkillServiceImpl implements SkillService {
 
     @Override
     public Page<Skill> findAllByPage(Pageable pageable) {
-        return skillRepository.findAll(pageable);
+        return skillRepository.findAllByOrderByNameAsc(pageable);
     }
 
     @Override
