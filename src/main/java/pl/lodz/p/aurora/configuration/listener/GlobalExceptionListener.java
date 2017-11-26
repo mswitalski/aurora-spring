@@ -40,6 +40,6 @@ public class GlobalExceptionListener {
     @ExceptionHandler(ActionForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public void processActionForbiddenException(ActionForbiddenException exception) {
-        logger.error("Client tries to do action that is forbidden for his privileges", exception);
+        logger.error("Client tried to do action that is forbidden with his privileges", exception);
     }
 }

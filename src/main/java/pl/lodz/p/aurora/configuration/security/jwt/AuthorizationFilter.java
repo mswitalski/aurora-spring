@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.configuration.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.users.domain.dto.TokenClaimsDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -62,13 +64,18 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (authentication == null) {
+            response.setStatus(401);
 
-        if (request.getMethod().equals(HttpMethod.GET.name())) {
-            response.addHeader("Access-Control-Expose-Headers", "ETag");
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            if (request.getMethod().equals(HttpMethod.GET.name())) {
+                response.addHeader("Access-Control-Expose-Headers", "ETag");
+            }
+
+            filterChain.doFilter(request, response);
         }
-        
-        filterChain.doFilter(request, response);
     }
 
     /**
@@ -96,22 +103,28 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(configurationData.getTokenHeader());
 
         if (token != null) {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(configurationData.getTokenSecretKey())
-                    .parseClaimsJws(token.replace(configurationData.getTokenPrefix(), ""))
-                    .getBody();
+            try {
+                Claims claims = Jwts.parser()
+                        .setSigningKey(configurationData.getTokenSecretKey())
+                        .parseClaimsJws(token.replace(configurationData.getTokenPrefix(), ""))
+                        .getBody();
+                User storedUser = userService.findByUsername(claims.getSubject());
+                TokenClaimsDto tokenClaimsDto = new TokenClaimsDto(
+                        claims.get("enabled", Boolean.class),
+                        processMisshapedRoles(claims.get("roles", ArrayList.class))
+                );
 
-            User storedUser = userService.findByUsername(claims.getSubject());
-            TokenClaimsDto tokenClaimsDto = new TokenClaimsDto(
-                    claims.get("enabled", Boolean.class),
-                    processMisshapedRoles(claims.get("roles", ArrayList.class))
-            );
+                if (areTokenClaimsValid(storedUser, tokenClaimsDto)) {
+                    return new UsernamePasswordAuthenticationToken(storedUser, null, storedUser.getAuthorities());
 
-            if (areTokenClaimsValid(storedUser, tokenClaimsDto)) {
-                return new UsernamePasswordAuthenticationToken(storedUser, null, storedUser.getAuthorities());
+                } else {
+                    logger.info("The subject in provided token does not exist");
+                }
 
-            } else {
-                logger.warn("The subject in provided token does not exist");
+            } catch (ExpiredJwtException ex) {
+                logger.info("User tried to authorize with expired JWT token", ex);
+            } catch (InvalidResourceRequestedException ex) {
+                logger.info("User tried to authorize with JWT token that points to non-existent user", ex);
             }
         }
 
