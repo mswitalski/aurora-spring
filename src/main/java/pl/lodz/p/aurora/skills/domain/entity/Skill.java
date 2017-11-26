@@ -31,7 +31,7 @@ public class Skill extends VersionedEntity {
     private String name;
 
     @OneToMany(mappedBy = "skill")
-    private Set<UserSkill> users = new HashSet<>();
+    private Set<Evaluation> users = new HashSet<>();
 
     public Skill() {
     }
@@ -53,11 +53,11 @@ public class Skill extends VersionedEntity {
         this.name = name;
     }
 
-    public Set<UserSkill> getUsers() {
+    public Set<Evaluation> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UserSkill> users) {
+    public void setUsers(Set<Evaluation> users) {
         this.users = users;
     }
 }

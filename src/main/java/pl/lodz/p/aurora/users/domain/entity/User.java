@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.skills.domain.entity.UserSkill;
+import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -105,7 +105,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     private Set<Duty> duties = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<UserSkill> skills = new HashSet<>();
+    private Set<Evaluation> skills = new HashSet<>();
 
     public User() {
     }
@@ -244,11 +244,11 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
         this.duties.remove(duty);
     }
 
-    public Set<UserSkill> getSkills() {
+    public Set<Evaluation> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<UserSkill> skills) {
+    public void setSkills(Set<Evaluation> skills) {
         this.skills = skills;
     }
 

@@ -9,12 +9,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "skill_id"}, name = "unique_userskill_pair")})
-public class UserSkill extends VersionedEntity {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "skill_id"}, name = "unique_evaluation_pair")})
+public class Evaluation extends VersionedEntity {
 
     @Id
-    @GeneratedValue(generator = "userskill_pk_sequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "userskill_pk_sequence", sequenceName = "userskill_id_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "evaluation_pk_sequence", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "evaluation_pk_sequence", sequenceName = "evaluation_id_sequence", allocationSize = 1)
     private Long id;
 
     @ManyToOne
