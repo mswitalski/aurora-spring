@@ -1,9 +1,7 @@
 package pl.lodz.p.aurora.users.domain.converter;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
+import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.users.domain.dto.DutyBasicDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -11,21 +9,13 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
-public class UserEntityToDtoConverter implements Converter<User, UserDto> {
+public class UserEntityToDtoConverter extends BaseConverter implements Converter<User, UserDto> {
 
-    private final ModelMapper modelMapper;
-    private final DutyBasicDtoConverter dutyConverter;
-
-    @Autowired
-    public UserEntityToDtoConverter(ModelMapper modelMapper, DutyBasicDtoConverter dutyConverter) {
-        this.modelMapper = modelMapper;
-        this.dutyConverter = dutyConverter;
-    }
+    private final DutyBasicDtoConverter dutyConverter = new DutyBasicDtoConverter();
 
     @Override
     public UserDto convert(User user) {
-        UserDto convertedUser = modelMapper.map(user, UserDto.class);
+        UserDto convertedUser = mapper.map(user, UserDto.class);
         convertedUser.setDuties(prepareDuties(user));
 
         return convertedUser;

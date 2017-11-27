@@ -5,10 +5,10 @@ import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.skills.domain.dto.SkillDto;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
 
-public class SkillEntityToDtoConverter extends BaseConverter implements Converter<Skill, SkillDto> {
+public class SkillDtoToEntityConverter extends BaseConverter implements Converter<SkillDto, Skill> {
 
     @Override
-    public SkillDto convert(Skill skill) {
-        return mapper.map(skill, SkillDto.class);
+    public Skill convert(SkillDto skill) {
+        return mapper.map(skill, Skill.class);
     }
 }

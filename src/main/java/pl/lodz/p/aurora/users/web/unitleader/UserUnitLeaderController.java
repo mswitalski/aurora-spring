@@ -17,14 +17,12 @@ import pl.lodz.p.aurora.users.service.unitleader.UserUnitLeaderService;
 public class UserUnitLeaderController extends BaseController {
 
     private final UserUnitLeaderService userUnitLeaderService;
-    private final UserEntityToDtoConverter entityToDtoConverter;
-    private final UserDtoToEntityConverter dtoToEntityConverter;
+    private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
+    private final UserDtoToEntityConverter dtoToEntityConverter = new UserDtoToEntityConverter();
 
     @Autowired
-    public UserUnitLeaderController(UserUnitLeaderService userUnitLeaderService, UserEntityToDtoConverter entityToDtoConverter, UserDtoToEntityConverter dtoToEntityConverter) {
+    public UserUnitLeaderController(UserUnitLeaderService userUnitLeaderService) {
         this.userUnitLeaderService = userUnitLeaderService;
-        this.entityToDtoConverter = entityToDtoConverter;
-        this.dtoToEntityConverter = dtoToEntityConverter;
     }
 
     @PostMapping

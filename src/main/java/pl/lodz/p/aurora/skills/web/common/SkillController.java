@@ -15,12 +15,11 @@ import pl.lodz.p.aurora.skills.service.common.SkillService;
 public class SkillController {
 
     private final SkillService skillService;
-    private final SkillBasicDtoConverter basicDtoConverter;
+    private final SkillBasicDtoConverter basicDtoConverter = new SkillBasicDtoConverter();
 
     @Autowired
-    public SkillController(SkillService skillService, SkillBasicDtoConverter basicDtoConverter) {
+    public SkillController(SkillService skillService) {
         this.skillService = skillService;
-        this.basicDtoConverter = basicDtoConverter;
     }
 
     @GetMapping(value = "paged/")

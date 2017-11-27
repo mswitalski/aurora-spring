@@ -30,16 +30,14 @@ public class UserProfileController extends BaseController {
     private final ProfileService profileService;
     private final UserService userService;
     private final Translator translator;
-    private final UserEntityToDtoConverter entityToDtoConverter;
-    private final UserDtoToEntityConverter dtoToEntityConverter;
+    private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
+    private final UserDtoToEntityConverter dtoToEntityConverter = new UserDtoToEntityConverter();
 
     @Autowired
-    public UserProfileController(ProfileService profileService, UserService userService, Translator translator, UserEntityToDtoConverter entityToDtoConverter, UserDtoToEntityConverter dtoToEntityConverter) {
+    public UserProfileController(ProfileService profileService, UserService userService, Translator translator) {
         this.profileService = profileService;
         this.userService = userService;
         this.translator = translator;
-        this.entityToDtoConverter = entityToDtoConverter;
-        this.dtoToEntityConverter = dtoToEntityConverter;
     }
 
     @GetMapping

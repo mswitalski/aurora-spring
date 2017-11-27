@@ -26,19 +26,13 @@ import java.util.stream.Collectors;
 public class DutyUnitLeaderController extends BaseController {
 
     private final DutyUnitLeaderService dutyService;
-    private final DutyEntityToDtoConverter entityToDtoConverter;
-    private final DutyDtoToEntityConverter dtoToEntityConverter;
-    private final DutyBasicDtoConverter basicConverter;
+    private final DutyEntityToDtoConverter entityToDtoConverter = new DutyEntityToDtoConverter();
+    private final DutyDtoToEntityConverter dtoToEntityConverter = new DutyDtoToEntityConverter();
+    private final DutyBasicDtoConverter basicConverter = new DutyBasicDtoConverter();
 
     @Autowired
-    public DutyUnitLeaderController(DutyUnitLeaderService dutyService,
-                                    DutyEntityToDtoConverter edConverter,
-                                    DutyDtoToEntityConverter deConverter,
-                                    DutyBasicDtoConverter basicConverter) {
+    public DutyUnitLeaderController(DutyUnitLeaderService dutyService) {
         this.dutyService = dutyService;
-        this.entityToDtoConverter = edConverter;
-        this.dtoToEntityConverter = deConverter;
-        this.basicConverter = basicConverter;
     }
 
     @PostMapping

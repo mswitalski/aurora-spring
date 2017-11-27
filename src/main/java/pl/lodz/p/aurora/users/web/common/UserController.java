@@ -18,14 +18,12 @@ import pl.lodz.p.aurora.users.service.common.UserService;
 public class UserController extends BaseController {
 
     private final UserService userService;
-    private final UserEntityToDtoConverter entityToDtoConverter;
-    private final UserBasicDtoConverter basicConverter;
+    private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
+    private final UserBasicDtoConverter basicConverter = new UserBasicDtoConverter();
 
     @Autowired
-    public UserController(UserService userService, UserEntityToDtoConverter entityToDtoConverter, UserBasicDtoConverter basicConverter) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.entityToDtoConverter = entityToDtoConverter;
-        this.basicConverter = basicConverter;
     }
 
     @GetMapping(value = "paged/")

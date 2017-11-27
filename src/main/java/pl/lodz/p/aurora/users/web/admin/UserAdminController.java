@@ -18,14 +18,12 @@ import pl.lodz.p.aurora.users.service.admin.UserAdminService;
 public class UserAdminController extends BaseController {
 
     private final UserAdminService userAdminService;
-    private final UserEntityToDtoConverter entityToDtoConverter;
-    private final UserDtoToEntityConverter dtoToEntityConverter;
+    private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
+    private final UserDtoToEntityConverter dtoToEntityConverter = new UserDtoToEntityConverter();
 
     @Autowired
-    public UserAdminController(UserAdminService userAdminService, UserEntityToDtoConverter entityToDtoConverter, UserDtoToEntityConverter dtoToEntityConverter) {
+    public UserAdminController(UserAdminService userAdminService) {
         this.userAdminService = userAdminService;
-        this.entityToDtoConverter = entityToDtoConverter;
-        this.dtoToEntityConverter = dtoToEntityConverter;
     }
 
     @PostMapping
