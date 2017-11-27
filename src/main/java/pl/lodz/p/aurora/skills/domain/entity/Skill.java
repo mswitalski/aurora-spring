@@ -24,7 +24,7 @@ public class Skill extends VersionedEntity {
     @SequenceGenerator(name = "skill_pk_sequence", sequenceName = "skill_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, length = 20, updatable = false)
+    @Column(nullable = false, length = 20)
     @NotNull
     @NotEmpty
     @Size(max = 50)

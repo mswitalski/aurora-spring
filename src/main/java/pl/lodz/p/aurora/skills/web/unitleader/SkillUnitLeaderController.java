@@ -43,10 +43,10 @@ public class SkillUnitLeaderController extends BaseController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PutMapping(value = "{skillId:[\\d]+}")
-//    public ResponseEntity<Void> update(@PathVariable Long skillId, @Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
-//        skillService.update(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
-//
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping(value = "{skillId:[\\d]+}")
+    public ResponseEntity<Void> update(@PathVariable Long skillId, @Validated @RequestBody SkillDto skill, @RequestHeader("If-Match") String eTag) {
+        skillService.update(skillId, dtoToEntityConverter.convert(skill), sanitizeReceivedETag(eTag));
+
+        return ResponseEntity.noContent().build();
+    }
 }

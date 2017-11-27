@@ -53,6 +53,6 @@ public class SkillUnitLeaderServiceImpl extends BaseService implements SkillUnit
         failIfNoRecordInDatabaseFound(storedSkill, skillId);
         failIfEncounteredOutdatedEntity(eTag, storedSkill);
         storedSkill.setName(skill.getName());
-        save(skill, skillRepository);
+        save(storedSkill, skillRepository);
     }
 }
