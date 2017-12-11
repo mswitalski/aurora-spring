@@ -12,6 +12,8 @@ import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 import pl.lodz.p.aurora.skills.domain.repository.EvaluationRepository;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
+import java.util.List;
+
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
@@ -45,6 +47,10 @@ public class EvaluationServiceImpl extends BaseService implements EvaluationServ
         if (!evaluation.getUser().equals(employee)) {
             throw new ActionForbiddenException("Employee tried to change not his evaluation for user: " + evaluation.getUser().getUsername());
         }
+    }
+
+    public List<Evaluation> findEmployeeEvaluations(User employee) {
+        return evaluationRepository.findAllByUser(employee);
     }
 
     @Override

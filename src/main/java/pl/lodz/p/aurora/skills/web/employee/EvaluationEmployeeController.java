@@ -14,6 +14,9 @@ import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 import pl.lodz.p.aurora.skills.service.employee.EvaluationService;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequestMapping(value = "api/v1/evaluations/", headers = "Requester-Role=EMPLOYEE")
 @RestController
 public class EvaluationEmployeeController extends BaseController {
@@ -43,6 +46,15 @@ public class EvaluationEmployeeController extends BaseController {
         evaluationService.delete(evaluationId, employee, eTag);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "my/")
+    public ResponseEntity<List<EvaluationDto>> findEmployeeEvaluations() {
+        User employee = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Evaluation> employeeEvaluations = evaluationService.findEmployeeEvaluations(employee);
+
+        return ResponseEntity.ok()
+                .body(employeeEvaluations.stream().map(entityToDtoConverter::convert).collect(Collectors.toList()));
     }
 
     @PutMapping(value = "{evaluationId:[\\d]+}")
