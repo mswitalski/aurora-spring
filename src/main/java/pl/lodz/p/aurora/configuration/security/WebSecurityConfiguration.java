@@ -73,6 +73,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "api/v1/skills/**").hasRole("UNIT_LEADER")
                 .antMatchers(HttpMethod.PUT, "api/v1/skills/**").hasRole("UNIT_LEADER")
 
+                // Evaluation
+                .antMatchers(HttpMethod.POST, "api/v1/evaluations/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.DELETE, "api/v1/evaluations/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.PUT, "api/v1/evaluations/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+
                 // The rest of the configuration
                 .anyRequest().authenticated()
                 .and().csrf().disable()

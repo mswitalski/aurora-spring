@@ -31,9 +31,9 @@ public class SkillUnitLeaderController extends BaseController {
 
     @PostMapping
     public ResponseEntity<SkillDto> create(@Validated @RequestBody SkillDto formData) {
-        Skill receivedUser = dtoToEntityConverter.convert(formData);
+        Skill receivedSkill = dtoToEntityConverter.convert(formData);
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(skillService.create(receivedUser)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(skillService.create(receivedSkill)));
     }
 
     @DeleteMapping(value = "{skillId:[\\d]+}")

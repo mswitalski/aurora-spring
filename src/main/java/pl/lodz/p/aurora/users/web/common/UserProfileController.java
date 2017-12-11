@@ -47,7 +47,7 @@ public class UserProfileController extends BaseController {
         return respondWithConversion(userService.findById(loggedUser.getId()), entityToDtoConverter);
     }
 
-    @PreAuthorize("#user.getUsername() == principal.username")
+    @PreAuthorize("#user.username == principal.username")
     @PutMapping
     public ResponseEntity<Void> update(@Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
         profileService.update(sanitizeReceivedETag(eTag), dtoToEntityConverter.convert(user));
