@@ -10,6 +10,9 @@ import pl.lodz.p.aurora.skills.domain.dto.SkillBasicDto;
 import pl.lodz.p.aurora.skills.domain.dto.SkillSearchDto;
 import pl.lodz.p.aurora.skills.service.common.SkillService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequestMapping(value = "api/v1/skills/", headers = "Requester-Role=ANY")
 @RestController
 public class SkillController {
@@ -20,6 +23,11 @@ public class SkillController {
     @Autowired
     public SkillController(SkillService skillService) {
         this.skillService = skillService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SkillBasicDto>> findAll() {
+        return ResponseEntity.ok().body(skillService.findAll().stream().map(basicDtoConverter::convert).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "paged/")
