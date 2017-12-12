@@ -37,16 +37,6 @@ public class SkillUnitLeaderServiceImpl extends BaseService implements SkillUnit
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
-    public Skill findById(Long skillId) {
-        Skill storedSkill = skillRepository.findOne(skillId);
-
-        failIfNoRecordInDatabaseFound(storedSkill, skillId);
-
-        return storedSkill;
-    }
-
-    @Override
     public void update(Long skillId, Skill skill, String eTag) {
         Skill storedSkill = skillRepository.findOne(skillId);
 

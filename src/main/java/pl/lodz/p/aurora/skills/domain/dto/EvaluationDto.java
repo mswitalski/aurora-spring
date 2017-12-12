@@ -16,11 +16,11 @@ public class EvaluationDto {
 
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
-    private String selfExplanation;
+    private String selfExplanation = "";
 
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
-    private String leaderExplanation;
+    private String leaderExplanation = "";
 
     public Long getId() {
         return id;

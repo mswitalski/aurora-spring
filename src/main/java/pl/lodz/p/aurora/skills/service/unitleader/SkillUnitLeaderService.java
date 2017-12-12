@@ -8,7 +8,5 @@ public interface SkillUnitLeaderService {
 
     void delete(Long skillId, String eTag);
 
-    Skill findById(Long skillId);
-
     void update(Long skillId, Skill skill, String eTag);
 }

@@ -3,7 +3,7 @@ package pl.lodz.p.aurora.skills.web.employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
@@ -13,9 +13,6 @@ import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 import pl.lodz.p.aurora.skills.service.employee.EvaluationService;
 import pl.lodz.p.aurora.users.domain.entity.User;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping(value = "api/v1/evaluations/", headers = "Requester-Role=EMPLOYEE")
 @RestController
@@ -33,28 +30,22 @@ public class EvaluationEmployeeController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<EvaluationDto> create(@Validated @RequestBody EvaluationDto formData) {
+    public ResponseEntity<EvaluationDto> create(@Validated @RequestBody EvaluationDto formData, @AuthenticationPrincipal User activeUser) {
         Evaluation receivedEvaluation = dtoToEntityConverter.convert(formData);
-        User employee = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(evaluationService.create(receivedEvaluation, employee)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(evaluationService.create(receivedEvaluation, activeUser)));
     }
 
     @DeleteMapping(value = "{evaluationId:[\\d]+}")
-    public ResponseEntity<Void> delete(@PathVariable Long evaluationId, @RequestHeader("If-Match") String eTag) {
-        User employee = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        evaluationService.delete(evaluationId, employee, eTag);
+    public ResponseEntity<Void> delete(@PathVariable Long evaluationId, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
+        evaluationService.delete(evaluationId, activeUser, eTag);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(value = "my/")
-    public ResponseEntity<List<EvaluationDto>> findEmployeeEvaluations() {
-        User employee = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Evaluation> employeeEvaluations = evaluationService.findEmployeeEvaluations(employee);
-
-        return ResponseEntity.ok()
-                .body(employeeEvaluations.stream().map(entityToDtoConverter::convert).collect(Collectors.toList()));
+    @GetMapping(value = "{evaluationId:[\\d]+}")
+    public ResponseEntity<EvaluationDto> findById(@PathVariable Long evaluationId, @AuthenticationPrincipal User activeUser) {
+        return respondWithConversion(evaluationService.findById(evaluationId, activeUser), entityToDtoConverter);
     }
 
     @PutMapping(value = "{evaluationId:[\\d]+}")

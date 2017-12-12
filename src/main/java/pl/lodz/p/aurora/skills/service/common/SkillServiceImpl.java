@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.skills.domain.dto.SkillSearchDto;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
 import pl.lodz.p.aurora.skills.domain.repository.SkillRepository;
@@ -17,7 +18,7 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
-public class SkillServiceImpl implements SkillService {
+public class SkillServiceImpl extends BaseService implements SkillService {
 
     private final SkillRepository skillRepository;
 
@@ -34,6 +35,16 @@ public class SkillServiceImpl implements SkillService {
     @Override
     public Page<Skill> findAllByPage(Pageable pageable) {
         return skillRepository.findAllByOrderByNameAsc(pageable);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    public Skill findById(Long skillId) {
+        Skill storedSkill = skillRepository.findOne(skillId);
+
+        failIfNoRecordInDatabaseFound(storedSkill, skillId);
+
+        return storedSkill;
     }
 
     @Override

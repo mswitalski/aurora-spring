@@ -5,7 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
@@ -41,10 +41,9 @@ public class UserProfileController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<UserDto> findLoggedUser() {
-        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<UserDto> findLoggedUser(@AuthenticationPrincipal User activeUser) {
 
-        return respondWithConversion(userService.findById(loggedUser.getId()), entityToDtoConverter);
+        return respondWithConversion(userService.findById(activeUser.getId()), entityToDtoConverter);
     }
 
     @PreAuthorize("#user.username == principal.username")
@@ -56,16 +55,14 @@ public class UserProfileController extends BaseController {
     }
 
     @PutMapping(value = "password")
-    public ResponseEntity<List<ValidationMessageDto>> updatePassword(@Validated @RequestBody PasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
+    public ResponseEntity<List<ValidationMessageDto>> updatePassword(@Validated @RequestBody PasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
         Locale locale = LocaleContextHolder.getLocale();
 
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
             return preparePasswordChangeErrorResponse("PasswordChangeFormDto.newPasswordRepeated.Invalid", "new-password-repeated", locale);
         }
 
-        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (wasUserPasswordUpdated(eTag, loggedUser.getUsername(), formData)) {
+        if (wasUserPasswordUpdated(eTag, activeUser.getUsername(), formData)) {
             return ResponseEntity.noContent().build();
 
         } else {

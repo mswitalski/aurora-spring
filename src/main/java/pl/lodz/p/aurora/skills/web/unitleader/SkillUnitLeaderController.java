@@ -9,18 +9,21 @@ import pl.lodz.p.aurora.skills.domain.converter.SkillDtoToEntityConverter;
 import pl.lodz.p.aurora.skills.domain.converter.SkillEntityToDtoConverter;
 import pl.lodz.p.aurora.skills.domain.dto.SkillDto;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
+import pl.lodz.p.aurora.skills.service.common.SkillService;
 import pl.lodz.p.aurora.skills.service.unitleader.SkillUnitLeaderService;
 
 @RequestMapping(value = "api/v1/skills/", headers = "Requester-Role=UNIT_LEADER")
 @RestController
 public class SkillUnitLeaderController extends BaseController {
     
-    private final SkillUnitLeaderService skillService;
+    private final SkillUnitLeaderService skillUnitLeaderService;
+    private final SkillService skillService;
     private final SkillEntityToDtoConverter entityToDtoConverter = new SkillEntityToDtoConverter();
     private final SkillDtoToEntityConverter dtoToEntityConverter = new SkillDtoToEntityConverter();
 
     @Autowired
-    public SkillUnitLeaderController(SkillUnitLeaderService skillService) {
+    public SkillUnitLeaderController(SkillUnitLeaderService skillUnitLeaderService, SkillService skillService) {
+        this.skillUnitLeaderService = skillUnitLeaderService;
         this.skillService = skillService;
     }
 
@@ -33,19 +36,19 @@ public class SkillUnitLeaderController extends BaseController {
     public ResponseEntity<SkillDto> create(@Validated @RequestBody SkillDto formData) {
         Skill receivedSkill = dtoToEntityConverter.convert(formData);
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(skillService.create(receivedSkill)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(skillUnitLeaderService.create(receivedSkill)));
     }
 
     @DeleteMapping(value = "{skillId:[\\d]+}")
     public ResponseEntity<Void> delete(@PathVariable Long skillId, @RequestHeader("If-Match") String eTag) {
-        skillService.delete(skillId, eTag);
+        skillUnitLeaderService.delete(skillId, eTag);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "{skillId:[\\d]+}")
     public ResponseEntity<Void> update(@PathVariable Long skillId, @Validated @RequestBody SkillDto skill, @RequestHeader("If-Match") String eTag) {
-        skillService.update(skillId, dtoToEntityConverter.convert(skill), sanitizeReceivedETag(eTag));
+        skillUnitLeaderService.update(skillId, dtoToEntityConverter.convert(skill), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

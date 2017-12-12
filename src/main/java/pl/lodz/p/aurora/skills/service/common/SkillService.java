@@ -13,5 +13,7 @@ public interface SkillService {
 
     Page<Skill> findAllByPage(Pageable pageable);
 
+    Skill findById(Long skillId);
+
     Page<Skill> search(SkillSearchDto criteria, Pageable pageable);
 }

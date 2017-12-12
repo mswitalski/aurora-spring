@@ -34,12 +34,12 @@ public class Evaluation extends VersionedEntity {
     @Column(nullable = false, length = 200)
     @NotNull
     @Size(max = 200)
-    private String selfExplanation;
+    private String selfExplanation = "";
 
     @Column(nullable = false, length = 200)
     @NotNull
     @Size(max = 200)
-    private String leaderExplanation;
+    private String leaderExplanation = "";
 
     @Override
     public Long getId() {

@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
+import pl.lodz.p.aurora.skills.domain.other.SkillLevel;
 import pl.lodz.p.aurora.skills.domain.repository.EvaluationRepository;
+import pl.lodz.p.aurora.skills.service.common.SkillService;
 import pl.lodz.p.aurora.users.domain.entity.User;
-
-import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
@@ -20,15 +20,19 @@ import java.util.List;
 public class EvaluationServiceImpl extends BaseService implements EvaluationService {
 
     private final EvaluationRepository evaluationRepository;
+    private final SkillService skillService;
 
     @Autowired
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository) {
+    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, SkillService skillService) {
         this.evaluationRepository = evaluationRepository;
+        this.skillService = skillService;
     }
 
     @Override
     public Evaluation create(Evaluation evaluation, User employee) {
         evaluation.setUser(employee);
+        evaluation.setSkill(skillService.findById(evaluation.getSkill().getId()));
+        evaluation.setLeaderEvaluation(SkillLevel.NOT_EVALUATED);
 
         return save(evaluation, evaluationRepository);
     }
@@ -44,13 +48,18 @@ public class EvaluationServiceImpl extends BaseService implements EvaluationServ
     }
 
     private void failIfTriedToDeleteNotOwnedEvaluation(User employee, Evaluation evaluation) {
-        if (!evaluation.getUser().equals(employee)) {
-            throw new ActionForbiddenException("Employee tried to change not his evaluation for user: " + evaluation.getUser().getUsername());
+        if (!evaluation.getUser().getId().equals(employee.getId())) {
+            throw new ActionForbiddenException("Employee tried to change not his evaluation: " + evaluation);
         }
     }
 
-    public List<Evaluation> findEmployeeEvaluations(User employee) {
-        return evaluationRepository.findAllByUser(employee);
+    public Evaluation findById(Long evaluationId, User employee) {
+        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+
+        failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
+        failIfTriedToDeleteNotOwnedEvaluation(employee, storedEvaluation);
+
+        return storedEvaluation;
     }
 
     @Override
