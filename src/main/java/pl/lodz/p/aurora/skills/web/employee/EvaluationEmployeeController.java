@@ -48,8 +48,8 @@ public class EvaluationEmployeeController extends BaseController {
 
     @PutMapping(value = "{evaluationId:[\\d]+}")
     @PreAuthorize("#evaluation.user.username == principal.username")
-    public ResponseEntity<Void> update(@PathVariable Long evaluationId, @Validated @RequestBody EvaluationDto evaluation, @RequestHeader("If-Match") String eTag) {
-        evaluationService.update(evaluationId, dtoToEntityConverter.convert(evaluation), sanitizeReceivedETag(eTag));
+    public ResponseEntity<Void> update(@PathVariable Long evaluationId, @Validated @RequestBody EvaluationDto evaluation, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
+        evaluationService.update(evaluationId, dtoToEntityConverter.convert(evaluation), sanitizeReceivedETag(eTag), activeUser);
 
         return ResponseEntity.noContent().build();
     }

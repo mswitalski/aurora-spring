@@ -11,5 +11,5 @@ public interface EvaluationEmployeeService {
 
     Evaluation findById(Long evaluationId, User employee);
 
-    void update(Long evaluationId, Evaluation evaluation, String eTag);
+    void update(Long evaluationId, Evaluation evaluation, String eTag, User employee);
 }

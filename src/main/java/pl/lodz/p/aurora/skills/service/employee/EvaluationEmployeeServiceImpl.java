@@ -66,10 +66,11 @@ public class EvaluationEmployeeServiceImpl extends BaseService implements Evalua
     }
 
     @Override
-    public void update(Long evaluationId, Evaluation evaluation, String eTag) {
+    public void update(Long evaluationId, Evaluation evaluation, String eTag, User employee) {
         Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
+        failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
         storedEvaluation.setSelfEvaluation(evaluation.getSelfEvaluation());
         storedEvaluation.setSelfExplanation(evaluation.getSelfExplanation());
