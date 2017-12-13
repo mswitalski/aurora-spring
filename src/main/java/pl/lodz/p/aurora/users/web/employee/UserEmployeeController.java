@@ -22,12 +22,11 @@ import java.util.stream.Collectors;
 public class UserEmployeeController extends BaseController {
 
     private final UserService userService;
-    private final EvaluationEntityToDtoConverter entityToDtoConverter;
+    private final EvaluationEntityToDtoConverter entityToDtoConverter = new EvaluationEntityToDtoConverter();
 
     @Autowired
     public UserEmployeeController(UserService userService) {
         this.userService = userService;
-        this.entityToDtoConverter = new EvaluationEntityToDtoConverter();
     }
 
     @GetMapping(value = "{userId:[\\d]+}/evaluations/")
