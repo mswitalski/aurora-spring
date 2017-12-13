@@ -19,14 +19,12 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 public class EvaluationEmployeeController extends BaseController {
 
     private final EvaluationService evaluationService;
-    private final EvaluationDtoToEntityConverter dtoToEntityConverter;
-    private final EvaluationEntityToDtoConverter entityToDtoConverter;
+    private final EvaluationDtoToEntityConverter dtoToEntityConverter = new EvaluationDtoToEntityConverter();
+    private final EvaluationEntityToDtoConverter entityToDtoConverter = new EvaluationEntityToDtoConverter();
 
     @Autowired
     public EvaluationEmployeeController(EvaluationService evaluationService) {
         this.evaluationService = evaluationService;
-        this.dtoToEntityConverter = new EvaluationDtoToEntityConverter();
-        this.entityToDtoConverter = new EvaluationEntityToDtoConverter();
     }
 
     @PostMapping

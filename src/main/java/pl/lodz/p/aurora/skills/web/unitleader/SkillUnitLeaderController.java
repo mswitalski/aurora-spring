@@ -1,13 +1,18 @@
 package pl.lodz.p.aurora.skills.web.unitleader;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.skills.domain.converter.SkillBasicDtoConverter;
 import pl.lodz.p.aurora.skills.domain.converter.SkillDtoToEntityConverter;
 import pl.lodz.p.aurora.skills.domain.converter.SkillEntityToDtoConverter;
+import pl.lodz.p.aurora.skills.domain.dto.SkillBasicDto;
 import pl.lodz.p.aurora.skills.domain.dto.SkillDto;
+import pl.lodz.p.aurora.skills.domain.dto.SkillSearchDto;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
 import pl.lodz.p.aurora.skills.service.common.SkillService;
 import pl.lodz.p.aurora.skills.service.unitleader.SkillUnitLeaderService;
@@ -20,6 +25,7 @@ public class SkillUnitLeaderController extends BaseController {
     private final SkillService skillService;
     private final SkillEntityToDtoConverter entityToDtoConverter = new SkillEntityToDtoConverter();
     private final SkillDtoToEntityConverter dtoToEntityConverter = new SkillDtoToEntityConverter();
+    private final SkillBasicDtoConverter basicDtoConverter = new SkillBasicDtoConverter();
 
     @Autowired
     public SkillUnitLeaderController(SkillUnitLeaderService skillUnitLeaderService, SkillService skillService) {
@@ -51,5 +57,15 @@ public class SkillUnitLeaderController extends BaseController {
         skillUnitLeaderService.update(skillId, dtoToEntityConverter.convert(skill), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "paged/")
+    public ResponseEntity<Page<SkillBasicDto>> findAllByPage(Pageable pageable) {
+        return ResponseEntity.ok().body(skillUnitLeaderService.findAllByPage(pageable).map(basicDtoConverter));
+    }
+
+    @PostMapping(value = "search/")
+    public ResponseEntity<Page<SkillBasicDto>> search(@RequestBody SkillSearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok().body(skillUnitLeaderService.search(criteria, pageable).map(basicDtoConverter));
     }
 }
