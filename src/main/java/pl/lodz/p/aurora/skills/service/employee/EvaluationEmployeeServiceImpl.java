@@ -17,13 +17,13 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
-public class EvaluationServiceImpl extends BaseService implements EvaluationService {
+public class EvaluationEmployeeServiceImpl extends BaseService implements EvaluationEmployeeService {
 
     private final EvaluationRepository evaluationRepository;
     private final SkillService skillService;
 
     @Autowired
-    public EvaluationServiceImpl(EvaluationRepository evaluationRepository, SkillService skillService) {
+    public EvaluationEmployeeServiceImpl(EvaluationRepository evaluationRepository, SkillService skillService) {
         this.evaluationRepository = evaluationRepository;
         this.skillService = skillService;
     }
@@ -33,6 +33,7 @@ public class EvaluationServiceImpl extends BaseService implements EvaluationServ
         evaluation.setUser(employee);
         evaluation.setSkill(skillService.findById(evaluation.getSkill().getId()));
         evaluation.setLeaderEvaluation(SkillLevel.NOT_EVALUATED);
+        evaluation.setLeaderExplanation("");
 
         return save(evaluation, evaluationRepository);
     }
@@ -42,22 +43,24 @@ public class EvaluationServiceImpl extends BaseService implements EvaluationServ
         Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
-        failIfTriedToDeleteNotOwnedEvaluation(employee, storedEvaluation);
+        failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
         evaluationRepository.delete(evaluationId);
     }
 
-    private void failIfTriedToDeleteNotOwnedEvaluation(User employee, Evaluation evaluation) {
+    private void failIfTriedToAccessNotOwnedEvaluation(User employee, Evaluation evaluation) {
         if (!evaluation.getUser().getId().equals(employee.getId())) {
             throw new ActionForbiddenException("Employee tried to change not his evaluation: " + evaluation);
         }
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Evaluation findById(Long evaluationId, User employee) {
         Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
-        failIfTriedToDeleteNotOwnedEvaluation(employee, storedEvaluation);
+        failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
 
         return storedEvaluation;
     }
