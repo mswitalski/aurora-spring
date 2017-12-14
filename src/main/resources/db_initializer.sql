@@ -55,7 +55,7 @@ INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'
 INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'PHP', 0);
 INSERT INTO PUBLIC.skill (id, name, version) VALUES (nextval('skill_id_sequence'), 'C#', 0);
 
--- Create relationships between users and skills
+-- Create relationships described as evaluations
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'NONE', 'no leader explanation', 'BEGINNER', 'no self explanation', 1, 2, 0);
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 2, 2, 0);
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 3, 2, 0);
@@ -71,3 +71,11 @@ INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_e
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'INTERMEDIATE', 'no leader explanation', 'INTERMEDIATE', 'no self explanation', 13, 5, 0);
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 14, 5, 0);
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 15, 5, 0);
+
+-- Create relationships described as mentors
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 2, 2);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, false, 0, 2, 3);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 3, 7);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 4, 10);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 5, 14);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), false, true, 0, 5, 15);

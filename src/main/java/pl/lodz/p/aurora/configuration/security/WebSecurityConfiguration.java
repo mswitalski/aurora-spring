@@ -75,11 +75,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "api/v1/skills/**").hasRole("UNIT_LEADER")
                 .antMatchers(HttpMethod.PUT, "api/v1/skills/**").hasRole("UNIT_LEADER")
 
-                // Evaluation
+                // Evaluations
                 .antMatchers(HttpMethod.POST, "api/v1/evaluations/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.DELETE, "api/v1/evaluations/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.PUT, "api/v1/evaluations/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.GET, "api/v1/evaluations/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+
+                // Mentors
+                .antMatchers(HttpMethod.GET, "api/v1/mentors/paged/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.GET, "api/v1/mentors/search/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.GET, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.POST, "api/v1/mentors/").hasRole("EMPLOYEE")
+                .antMatchers(HttpMethod.DELETE, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.PUT, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+
 
                 // The rest of the configuration
                 .anyRequest().authenticated()

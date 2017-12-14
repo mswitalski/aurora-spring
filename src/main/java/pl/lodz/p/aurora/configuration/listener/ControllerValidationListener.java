@@ -17,6 +17,7 @@ import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
+import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,5 +81,15 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public void processOutdatedEntityModification(OutdatedEntityModificationException exception) {
         logger.error(exception.getMessage(), exception);
+    }
+
+    @ExceptionHandler(IncompetentMentorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<ValidationMessageDto> processIncompetentMentor(IncompetentMentorException exception) {
+        logger.error(exception.getMessage(), exception);
+        Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator.translate("Mentor.skill.insufficientLevel", locale);
+
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, "skill"));
     }
 }
