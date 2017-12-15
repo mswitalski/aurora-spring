@@ -1,6 +1,8 @@
 package pl.lodz.p.aurora.mentors.service.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.domain.repository.MentorRepository;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
@@ -71,6 +74,25 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
         if (!mentor.getUser().getId().equals(employee.getId())) {
             throw new ActionForbiddenException("Employee tried to change not his mentor: " + mentor);
         }
+    }
+
+    @Override
+    public Page<Mentor> findAllByPage(Pageable pageable) {
+        return mentorRepository.findAllByActiveTrueAndApprovedTrue(pageable);
+    }
+
+    @Override
+    public Mentor findById(Long mentorId) {
+        Mentor storedMentor = mentorRepository.findByIdAndActiveTrueAndApprovedTrue(mentorId);
+
+        failIfNoRecordInDatabaseFound(storedMentor, mentorId);
+
+        return storedMentor;
+    }
+
+    @Override
+    public Page<Mentor> search(MentorSearchDto criteria, Pageable pageable) {
+        return mentorRepository.searchActive(criteria.getSkill(), pageable);
     }
 
     @Override

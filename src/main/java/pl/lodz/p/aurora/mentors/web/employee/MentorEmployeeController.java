@@ -1,6 +1,8 @@
 package pl.lodz.p.aurora.mentors.web.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +11,7 @@ import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorDtoToEntityConverter;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorEntityToDtoConverter;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorDto;
+import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.service.employee.MentorEmployeeService;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -38,6 +41,21 @@ public class MentorEmployeeController extends BaseController {
         service.delete(mentorId, activeUser, eTag);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "paged/")
+    public ResponseEntity<Page<MentorDto>> findAllByPage(Pageable pageable) {
+        return ResponseEntity.ok(service.findAllByPage(pageable).map(entityToDtoConverter));
+    }
+
+    @GetMapping(value = "{mentorId:[\\d]+}")
+    public ResponseEntity<MentorDto> findById(@PathVariable Long mentorId) {
+        return respondWithConversion(service.findById(mentorId), entityToDtoConverter);
+    }
+
+    @GetMapping(value = "search/")
+    public ResponseEntity<Page<MentorDto>> search(@RequestBody MentorSearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok(service.search(criteria, pageable).map(entityToDtoConverter));
     }
 
     @PutMapping(value = "{mentorId:[\\d]+}")
