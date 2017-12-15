@@ -1,13 +1,11 @@
 package pl.lodz.p.aurora.mentors.domain.dto;
 
-import pl.lodz.p.aurora.skills.domain.dto.SkillBasicDto;
-import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
+import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 
 public class MentorDto {
 
     private Long id;
-    private UserBasicDto user;
-    private SkillBasicDto skill;
+    private EvaluationDto evaluation;
     private boolean approved = false;
     private boolean active = true;
 
@@ -19,20 +17,12 @@ public class MentorDto {
         this.id = id;
     }
 
-    public UserBasicDto getUser() {
-        return user;
+    public EvaluationDto getEvaluation() {
+        return evaluation;
     }
 
-    public void setUser(UserBasicDto user) {
-        this.user = user;
-    }
-
-    public SkillBasicDto getSkill() {
-        return skill;
-    }
-
-    public void setSkill(SkillBasicDto skill) {
-        this.skill = skill;
+    public void setEvaluation(EvaluationDto evaluation) {
+        this.evaluation = evaluation;
     }
 
     public boolean isApproved() {

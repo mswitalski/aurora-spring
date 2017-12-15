@@ -73,9 +73,9 @@ INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_e
 INSERT INTO PUBLIC.evaluation (id, leader_evaluation, leader_explanation, self_evaluation, self_explanation, skill_id, user_id, version) VALUES (nextval('evaluation_id_sequence'), 'EXPERT', 'no leader explanation', 'EXPERT', 'no self explanation', 15, 5, 0);
 
 -- Create relationships described as mentors
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 2, 2);
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, false, 0, 2, 3);
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 3, 7);
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 4, 10);
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 5, 14);
-INSERT INTO PUBLIC.mentor (id, approved, active, version, user_id, skill_id) VALUES (nextval('mentor_id_sequence'), false, true, 0, 5, 15);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 2);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, false, 0, 3);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 7);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 10);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 14);
+INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), false, true, 0, 15);

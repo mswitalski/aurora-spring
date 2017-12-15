@@ -1,8 +1,7 @@
 package pl.lodz.p.aurora.mentors.domain.entity;
 
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.skills.domain.entity.Skill;
-import pl.lodz.p.aurora.users.domain.entity.User;
+import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,13 +15,9 @@ public class Mentor extends VersionedEntity {
     @SequenceGenerator(name = "mentor_pk_sequence", sequenceName = "mentor_id_sequence", allocationSize = 1)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "skill_id", nullable = false, updatable = false)
-    private Skill skill;
+    @OneToOne
+    @JoinColumn(name = "evaluation_id", nullable = false, updatable = false)
+    private Evaluation evaluation;
 
     @Column(nullable = false)
     @NotNull
@@ -41,22 +36,6 @@ public class Mentor extends VersionedEntity {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Skill getSkill() {
-        return skill;
-    }
-
-    public void setSkill(Skill skill) {
-        this.skill = skill;
-    }
-
     public boolean isApproved() {
         return approved;
     }
@@ -71,5 +50,13 @@ public class Mentor extends VersionedEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Evaluation getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
     }
 }

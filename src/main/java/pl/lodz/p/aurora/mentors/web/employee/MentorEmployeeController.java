@@ -53,7 +53,7 @@ public class MentorEmployeeController extends BaseController {
         return respondWithConversion(service.findById(mentorId), entityToDtoConverter);
     }
 
-    @GetMapping(value = "search/")
+    @PostMapping(value = "search/")
     public ResponseEntity<Page<MentorDto>> search(@RequestBody MentorSearchDto criteria, Pageable pageable) {
         return ResponseEntity.ok(service.search(criteria, pageable).map(entityToDtoConverter));
     }

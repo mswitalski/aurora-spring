@@ -15,12 +15,9 @@ import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.domain.repository.MentorRepository;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
-import pl.lodz.p.aurora.skills.domain.entity.Skill;
 import pl.lodz.p.aurora.skills.domain.other.SkillLevel;
-import pl.lodz.p.aurora.skills.service.common.SkillService;
+import pl.lodz.p.aurora.skills.service.employee.EvaluationEmployeeService;
 import pl.lodz.p.aurora.users.domain.entity.User;
-
-import java.util.Optional;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
@@ -28,35 +25,33 @@ import java.util.Optional;
 public class MentorEmployeeServiceImpl extends BaseService implements MentorEmployeeService {
 
     private final MentorRepository mentorRepository;
-    private final SkillService skillService;
+    private final EvaluationEmployeeService evaluationService;
 
     @Autowired
-    public MentorEmployeeServiceImpl(MentorRepository mentorRepository, SkillService skillService) {
+    public MentorEmployeeServiceImpl(MentorRepository mentorRepository, EvaluationEmployeeService evaluationService) {
         this.mentorRepository = mentorRepository;
-        this.skillService = skillService;
+        this.evaluationService = evaluationService;
     }
 
     @Override
     public Mentor create(Mentor mentor, User employee) {
-        Skill storedSkill = skillService.findById(mentor.getSkill().getId());
+        Evaluation storedEvaluation = evaluationService.findById(mentor.getEvaluation().getId(), employee);
 
-        failOnIncompetentUser(employee, storedSkill);
-        mentor.setSkill(storedSkill);
-        mentor.setUser(employee);
+        failOnIncompetentUser(employee, storedEvaluation);
+        mentor.setEvaluation(storedEvaluation);
         mentor.setApproved(false);
         mentor.setActive(true);
 
         return save(mentor, mentorRepository);
     }
 
-    private void failOnIncompetentUser(User employee, Skill skill) {
-        Optional<Evaluation> first = employee.getSkills().stream()
-                .filter(evaluation -> evaluation.getSkill().equals(skill)).findFirst();
+    private void failOnIncompetentUser(User employee, Evaluation evaluation) {
+        SkillLevel level = evaluation.getLeaderEvaluation();
 
-        if (!first.isPresent() || first.get().getLeaderEvaluation() != SkillLevel.EXPERT
-                || first.get().getLeaderEvaluation() != SkillLevel.INTERMEDIATE) {
+        if (level != SkillLevel.EXPERT && level != SkillLevel.INTERMEDIATE) {
             throw new IncompetentMentorException("Employee " + employee.getUsername()
-                    + " tried to become a mentor in " + skill.getName() + " but had insufficient level of the skill");
+                    + " tried to become a mentor in " + evaluation.getSkill().getName()
+                    + " but had insufficient level of the skill");
         }
     }
 
@@ -71,7 +66,7 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
     }
 
     private void failIfTriedToAccessNotOwnedMentor(User employee, Mentor mentor) {
-        if (!mentor.getUser().getId().equals(employee.getId())) {
+        if (!mentor.getEvaluation().getUser().getId().equals(employee.getId())) {
             throw new ActionForbiddenException("Employee tried to change not his mentor: " + mentor);
         }
     }

@@ -83,7 +83,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // Mentors
                 .antMatchers(HttpMethod.GET, "api/v1/mentors/paged/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
-                .antMatchers(HttpMethod.GET, "api/v1/mentors/search/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.POST, "api/v1/mentors/search/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.GET, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.POST, "api/v1/mentors/").hasRole("EMPLOYEE")
                 .antMatchers(HttpMethod.DELETE, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
