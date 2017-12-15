@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.mentors.domain.converter.MentorEntityToDtoConverter;
+import pl.lodz.p.aurora.mentors.domain.dto.MentorDto;
+import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.skills.domain.converter.EvaluationEntityToDtoConverter;
 import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
@@ -22,7 +25,8 @@ import java.util.stream.Collectors;
 public class UserEmployeeController extends BaseController {
 
     private final UserService userService;
-    private final EvaluationEntityToDtoConverter entityToDtoConverter = new EvaluationEntityToDtoConverter();
+    private final EvaluationEntityToDtoConverter eEntityToDtoConverter = new EvaluationEntityToDtoConverter();
+    private final MentorEntityToDtoConverter mEntityToDtoConverter = new MentorEntityToDtoConverter();
 
     @Autowired
     public UserEmployeeController(UserService userService) {
@@ -35,6 +39,17 @@ public class UserEmployeeController extends BaseController {
         List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(userId).getSkills());
 
         return ResponseEntity.ok()
-                .body(employeeEvaluations.stream().map(entityToDtoConverter::convert).collect(Collectors.toList()));
+                .body(employeeEvaluations.stream().map(eEntityToDtoConverter::convert).collect(Collectors.toList()));
+    }
+
+    @GetMapping(value = "{userId:[\\d]+}/mentoring/")
+    @PreAuthorize("#userId == principal.id")
+    public ResponseEntity<List<MentorDto>> findEmployeeMentorActivity(@PathVariable Long userId) {
+        List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(userId).getSkills());
+        List<Mentor> employeeMentorActivity = employeeEvaluations.stream().map(Evaluation::getMentor)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(employeeMentorActivity.stream().map(mEntityToDtoConverter::convert).collect(Collectors.toList()));
     }
 }

@@ -59,7 +59,7 @@ public class MentorEmployeeController extends BaseController {
     }
 
     @PutMapping(value = "{mentorId:[\\d]+}")
-    @PreAuthorize("#mentor.user.username == principal.username")
+    @PreAuthorize("#mentor.evaluation.user.username == principal.username")
     public ResponseEntity<Void> update(@PathVariable Long mentorId, @RequestBody MentorDto mentor, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
         service.update(mentorId, dtoToEntityConverter.convert(mentor), sanitizeReceivedETag(eTag), activeUser);
 
