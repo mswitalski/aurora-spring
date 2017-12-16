@@ -49,8 +49,8 @@ public class MentorEmployeeController extends BaseController {
     }
 
     @GetMapping(value = "{mentorId:[\\d]+}")
-    public ResponseEntity<MentorDto> findById(@PathVariable Long mentorId) {
-        return respondWithConversion(service.findById(mentorId), entityToDtoConverter);
+    public ResponseEntity<MentorDto> findById(@PathVariable Long mentorId, @AuthenticationPrincipal User activeUser) {
+        return respondWithConversion(service.findById(mentorId, activeUser), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")

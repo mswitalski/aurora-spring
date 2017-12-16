@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
+import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
@@ -77,12 +78,21 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
     }
 
     @Override
-    public Mentor findById(Long mentorId) {
-        Mentor storedMentor = mentorRepository.findByIdAndActiveTrueAndApprovedTrue(mentorId);
+    public Mentor findById(Long mentorId, User employee) {
+        Mentor storedMentor = mentorRepository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
+        failIfAccessedSomebodyElsesDormantMentor(storedMentor, employee);
 
         return storedMentor;
+    }
+
+    private void failIfAccessedSomebodyElsesDormantMentor(Mentor mentor, User employee) {
+        if (!mentor.getEvaluation().getUser().getId().equals(employee.getId()) &&
+                (!mentor.isActive() || !mentor.isApproved())) {
+            throw new InvalidResourceRequestedException("User " + employee
+                    + " tries to access somebody else's dormant mentor: " + mentor);
+        }
     }
 
     @Override

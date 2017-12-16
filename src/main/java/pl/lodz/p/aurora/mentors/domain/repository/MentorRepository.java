@@ -19,6 +19,4 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     Page<Mentor> searchActive(String skillName, Pageable pageable);
 
     Page<Mentor> findAllByActiveTrueAndApprovedTrue(Pageable pageable);
-
-    Mentor findByIdAndActiveTrueAndApprovedTrue(Long id);
 }

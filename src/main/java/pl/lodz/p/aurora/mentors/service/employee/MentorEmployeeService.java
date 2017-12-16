@@ -14,7 +14,7 @@ public interface MentorEmployeeService {
 
     Page<Mentor> findAllByPage(Pageable pageable);
 
-    Mentor findById(Long mentorId);
+    Mentor findById(Long mentorId, User employee);
 
     Page<Mentor> search(MentorSearchDto criteria, Pageable pageable);
 

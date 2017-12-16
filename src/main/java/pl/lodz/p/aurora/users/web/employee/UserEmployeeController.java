@@ -3,6 +3,7 @@ package pl.lodz.p.aurora.users.web.employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,12 @@ import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.skills.domain.converter.EvaluationEntityToDtoConverter;
 import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
+import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.common.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestMapping(value = "api/v1/users/", headers = "Requester-Role=EMPLOYEE")
@@ -42,11 +45,10 @@ public class UserEmployeeController extends BaseController {
                 .body(employeeEvaluations.stream().map(eEntityToDtoConverter::convert).collect(Collectors.toList()));
     }
 
-    @GetMapping(value = "{userId:[\\d]+}/mentoring/")
-    @PreAuthorize("#userId == principal.id")
-    public ResponseEntity<List<MentorDto>> findEmployeeMentorActivity(@PathVariable Long userId) {
-        List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(userId).getSkills());
-        List<Mentor> employeeMentorActivity = employeeEvaluations.stream().map(Evaluation::getMentor)
+    @GetMapping(value = "me/mentoring/")
+    public ResponseEntity<List<MentorDto>> findEmployeeMentorActivity(@AuthenticationPrincipal User activeUser) {
+        List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(activeUser.getId()).getSkills());
+        List<Mentor> employeeMentorActivity = employeeEvaluations.stream().map(Evaluation::getMentor).filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok()
