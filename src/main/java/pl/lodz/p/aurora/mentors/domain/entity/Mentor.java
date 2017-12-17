@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"evaluation_id"}, name = "unique_mentor_evaluation")})
 public class Mentor extends VersionedEntity {
 
     @Id
