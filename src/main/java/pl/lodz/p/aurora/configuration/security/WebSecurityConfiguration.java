@@ -85,11 +85,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Mentors
                 .antMatchers(HttpMethod.GET, "api/v1/mentors/paged/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.POST, "api/v1/mentors/search/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
+                .antMatchers(HttpMethod.GET, "api/v1/mentors/**/feedback/").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.GET, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.POST, "api/v1/mentors/").hasRole("EMPLOYEE")
                 .antMatchers(HttpMethod.DELETE, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
                 .antMatchers(HttpMethod.PUT, "api/v1/mentors/**").hasAnyRole("EMPLOYEE", "UNIT_LEADER")
 
+                // Feedback
+                .antMatchers(HttpMethod.POST, "api/v1/feedback/").hasRole("EMPLOYEE")
+                .antMatchers(HttpMethod.DELETE, "api/v1/feedback/**").hasRole("UNIT_LEADER")
 
                 // The rest of the configuration
                 .anyRequest().authenticated()

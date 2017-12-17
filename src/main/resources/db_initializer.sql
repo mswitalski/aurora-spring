@@ -79,3 +79,11 @@ INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES 
 INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 10);
 INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 14);
 INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), false, true, 0, 15);
+
+-- Create relationships described as feedbacks
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '1 day', 1, 1);
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '5 day', 2, 3);
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, false, 'some feedback', current_timestamp - interval '10 day', 2, 4);
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '30 day', 3, 5);
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '11 day', 4, 2);
+INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '42 day', 4, 1);

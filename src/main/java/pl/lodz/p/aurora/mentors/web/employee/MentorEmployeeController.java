@@ -8,13 +8,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.mentors.domain.converter.FeedbackEntityToDtoConverter;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorDtoToEntityConverter;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorEntityToDtoConverter;
+import pl.lodz.p.aurora.mentors.domain.dto.FeedbackDto;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorDto;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
+import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.service.employee.MentorEmployeeService;
 import pl.lodz.p.aurora.users.domain.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping(value = "api/v1/mentors/", headers = "Requester-Role=EMPLOYEE")
 @RestController
@@ -23,6 +30,7 @@ public class MentorEmployeeController extends BaseController {
     private final MentorEmployeeService service;
     private final MentorDtoToEntityConverter dtoToEntityConverter = new MentorDtoToEntityConverter();
     private final MentorEntityToDtoConverter entityToDtoConverter = new MentorEntityToDtoConverter();
+    private final FeedbackEntityToDtoConverter fEntityToDtoConverter = new FeedbackEntityToDtoConverter ();
 
     @Autowired
     public MentorEmployeeController(MentorEmployeeService service) {
@@ -64,5 +72,13 @@ public class MentorEmployeeController extends BaseController {
         service.update(mentorId, dtoToEntityConverter.convert(mentor), sanitizeReceivedETag(eTag), activeUser);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "{mentorId:[\\d]+}/feedback/")
+    public ResponseEntity<List<FeedbackDto>> findMentorFeedback(@PathVariable Long mentorId, @AuthenticationPrincipal User activeUser) {
+        Mentor requestedMentor = service.findById(mentorId, activeUser);
+        List<Feedback> feedback = new ArrayList<>(requestedMentor.getFeedback());
+
+        return ResponseEntity.ok(feedback.stream().map(fEntityToDtoConverter::convert).collect(Collectors.toList()));
     }
 }

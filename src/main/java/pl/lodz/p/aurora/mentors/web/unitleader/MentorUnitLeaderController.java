@@ -6,20 +6,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.mentors.domain.converter.FeedbackEntityToDtoConverter;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorDtoToEntityConverter;
 import pl.lodz.p.aurora.mentors.domain.converter.MentorEntityToDtoConverter;
+import pl.lodz.p.aurora.mentors.domain.dto.FeedbackDto;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorDto;
 import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
+import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
+import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.service.unitleader.MentorUnitLeaderService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping(value = "api/v1/mentors/", headers = "Requester-Role=UNIT_LEADER")
 @RestController
 public class MentorUnitLeaderController extends BaseController {
 
-
     private final MentorUnitLeaderService service;
     private final MentorDtoToEntityConverter dtoToEntityConverter = new MentorDtoToEntityConverter();
     private final MentorEntityToDtoConverter entityToDtoConverter = new MentorEntityToDtoConverter();
+    private final FeedbackEntityToDtoConverter fEntityToDtoConverter = new FeedbackEntityToDtoConverter ();
 
     @Autowired
     public MentorUnitLeaderController(MentorUnitLeaderService service) {
@@ -53,5 +61,13 @@ public class MentorUnitLeaderController extends BaseController {
         service.update(mentorId, dtoToEntityConverter.convert(mentor), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "{mentorId:[\\d]+}/feedback/")
+    public ResponseEntity<List<FeedbackDto>> findMentorFeedback(@PathVariable Long mentorId) {
+        Mentor requestedMentor = service.findById(mentorId);
+        List<Feedback> feedback = new ArrayList<>(requestedMentor.getFeedback());
+
+        return ResponseEntity.ok(feedback.stream().map(fEntityToDtoConverter::convert).collect(Collectors.toList()));
     }
 }

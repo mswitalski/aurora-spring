@@ -18,6 +18,7 @@ import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
+import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,5 +92,15 @@ public class ControllerValidationListener {
         String translatedMessage = translator.translate("Mentor.skill.insufficientLevel", locale);
 
         return Collections.singletonList(new ValidationMessageDto(translatedMessage, "skill"));
+    }
+
+    @ExceptionHandler(SelfFeedbackException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<ValidationMessageDto> processSelfFeedback(SelfFeedbackException exception) {
+        logger.error(exception.getMessage(), exception);
+        Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator.translate("Feedback.user.selfFeedback", locale);
+
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, "user"));
     }
 }

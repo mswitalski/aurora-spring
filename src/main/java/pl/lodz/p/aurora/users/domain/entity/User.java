@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 
 import javax.persistence.*;
@@ -106,6 +107,9 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Evaluation> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Feedback> feedback = new HashSet<>();
 
     public User() {
     }
@@ -245,11 +249,19 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     }
 
     public Set<Evaluation> getSkills() {
-        return skills;
+        return new HashSet<>(this.skills);
     }
 
     public void setSkills(Set<Evaluation> skills) {
-        this.skills = skills;
+        this.skills = new HashSet<>(skills);
+    }
+
+    public Set<Feedback> getFeedback() {
+        return new HashSet<>(this.feedback);
+    }
+
+    public void setFeedback(Set<Feedback> feedback) {
+        this.feedback = new HashSet<>(feedback);
     }
 
     @Override

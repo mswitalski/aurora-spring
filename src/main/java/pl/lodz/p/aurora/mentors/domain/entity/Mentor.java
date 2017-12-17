@@ -5,6 +5,8 @@ import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
@@ -26,6 +28,9 @@ public class Mentor extends VersionedEntity {
     @Column(nullable = false)
     @NotNull
     private boolean active;
+
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.REMOVE)
+    private Set<Feedback> feedback = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -58,5 +63,13 @@ public class Mentor extends VersionedEntity {
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public Set<Feedback> getFeedback() {
+        return new HashSet<>(this.feedback);
+    }
+
+    public void setFeedback(Set<Feedback> feedback) {
+        this.feedback = new HashSet<>(feedback);
     }
 }
