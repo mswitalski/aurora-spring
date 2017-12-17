@@ -1,7 +1,6 @@
 package pl.lodz.p.aurora.mentors.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 
 import javax.validation.constraints.NotNull;
@@ -30,7 +29,6 @@ public class FeedbackDto {
         this.id = id;
     }
 
-    @JsonIgnore
     public MentorDto getMentor() {
         return mentor;
     }

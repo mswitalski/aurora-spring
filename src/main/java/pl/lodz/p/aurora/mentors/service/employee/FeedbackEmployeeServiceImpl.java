@@ -11,7 +11,11 @@ import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.domain.repository.FeedbackRepository;
 import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
+import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
 import pl.lodz.p.aurora.users.domain.entity.User;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
@@ -32,6 +36,7 @@ public class FeedbackEmployeeServiceImpl extends BaseService implements Feedback
         Mentor storedMentor = mentorService.findById(feedback.getMentor().getId(), employee);
 
         failOnProvidingFeedbackForOwnMentor(storedMentor, employee);
+        failOnMoreThanOneFeedbackPerDay(storedMentor, employee);
         feedback.setMentor(storedMentor);
         feedback.setUser(employee);
         feedback.setCreateDateTime(null);
@@ -42,6 +47,16 @@ public class FeedbackEmployeeServiceImpl extends BaseService implements Feedback
     private void failOnProvidingFeedbackForOwnMentor(Mentor mentor, User employee) {
         if (mentor.getEvaluation().getUser().getId().equals(employee.getId())) {
             throw new SelfFeedbackException("User " + employee + " tried to give himself a feedback on mentoring");
+        }
+    }
+
+    private void failOnMoreThanOneFeedbackPerDay(Mentor mentor, User employee) {
+        List<Feedback> feedback = repository.findAllByMentorAndUser(mentor, employee);
+
+        if (feedback.stream().anyMatch(f -> f.getUser().getId().equals(employee.getId())
+                && f.getCreateDateTime().toLocalDate().equals(LocalDate.now()))) {
+            throw new TooFrequentFeedbackException("User " + employee
+                    + " tried to give more than one feedback per day for mentor " + mentor);
         }
     }
 }

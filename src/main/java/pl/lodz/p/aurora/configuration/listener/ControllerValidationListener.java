@@ -19,6 +19,7 @@ import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
 import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
+import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
 
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +87,7 @@ public class ControllerValidationListener {
 
     @ExceptionHandler(IncompetentMentorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public List<ValidationMessageDto> processIncompetentMentor(IncompetentMentorException exception) {
         logger.error(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
@@ -96,10 +98,22 @@ public class ControllerValidationListener {
 
     @ExceptionHandler(SelfFeedbackException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public List<ValidationMessageDto> processSelfFeedback(SelfFeedbackException exception) {
         logger.error(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Feedback.user.selfFeedback", locale);
+
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, "user"));
+    }
+
+    @ExceptionHandler(TooFrequentFeedbackException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public List<ValidationMessageDto> processTooFrequentFeedback(TooFrequentFeedbackException exception) {
+        logger.error(exception.getMessage(), exception);
+        Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator.translate("Feedback.createDateTime.onePerDay", locale);
 
         return Collections.singletonList(new ValidationMessageDto(translatedMessage, "user"));
     }

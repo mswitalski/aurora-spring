@@ -6,7 +6,6 @@ import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.mentors.domain.dto.FeedbackDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
-import pl.lodz.p.aurora.users.domain.entity.User;
 
 public class FeedbackDtoToEntityConverter extends BaseConverter implements Converter<FeedbackDto, Feedback> {
 
@@ -22,7 +21,6 @@ public class FeedbackDtoToEntityConverter extends BaseConverter implements Conve
     public Feedback convert(FeedbackDto dto) {
         Feedback convertedFeedback = typeMap.map(dto);
         convertedFeedback.setMentor(mapper.map(dto.getMentor(), Mentor.class));
-        convertedFeedback.setUser(mapper.map(dto.getUser(), User.class));
 
         return convertedFeedback;
     }
