@@ -22,6 +22,7 @@ import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
 import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
 import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
 
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -118,6 +119,17 @@ public class ControllerValidationListener {
         String translatedMessage = translator.translate("Feedback.createDateTime.onePerDay", locale);
 
         return Collections.singletonList(new ValidationMessageDto(translatedMessage, "user"));
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public List<ValidationMessageDto> processDateTimeParse(DateTimeParseException exception) {
+        logger.error(exception.getMessage(), exception);
+        Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator.translate("DateTime.invalidFormat", locale);
+
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, "date"));
     }
 
     @ExceptionHandler(InvalidDateTimeException.class)

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.trainings.domain.repository.TrainingRepository;
 import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
@@ -67,7 +68,7 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
 
     @Override
     public Page<Training> findAllByPage(Pageable pageable) {
-        return repository.findAll(pageable);
+        return repository.findAllByOrderByStartDateTimeDesc(pageable);
     }
 
     @Override
@@ -77,6 +78,15 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         failIfNoRecordInDatabaseFound(storedTraining, trainingId);
 
         return storedTraining;
+    }
+
+    @Override
+    public Page<Training> search(TrainingSearchDto criteria, Pageable pageable) {
+        return repository.search(criteria.getName(),
+                criteria.getType(),
+                criteria.getLocation(),
+                criteria.getStartDate(),
+                pageable);
     }
 
     @Override

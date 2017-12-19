@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
+import pl.lodz.p.aurora.trainings.domain.converter.TrainingBasicDtoConverter;
 import pl.lodz.p.aurora.trainings.domain.converter.TrainingDtoToEntityConverter;
 import pl.lodz.p.aurora.trainings.domain.converter.TrainingEntityToDtoConverter;
+import pl.lodz.p.aurora.trainings.domain.dto.TrainingBasicDto;
 import pl.lodz.p.aurora.trainings.domain.dto.TrainingDto;
+import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.trainings.service.unitleader.TrainingUnitLeaderService;
 
@@ -20,6 +23,7 @@ public class TrainingUnitLeaderController extends BaseController {
     private final TrainingUnitLeaderService service;
     private final TrainingEntityToDtoConverter entityToDtoConverter = new TrainingEntityToDtoConverter();
     private final TrainingDtoToEntityConverter dtoToEntityConverter = new TrainingDtoToEntityConverter();
+    private final TrainingBasicDtoConverter basicConverter = new TrainingBasicDtoConverter();
 
     @Autowired
     public TrainingUnitLeaderController(TrainingUnitLeaderService service) {
@@ -41,13 +45,18 @@ public class TrainingUnitLeaderController extends BaseController {
     }
 
     @GetMapping(value = "paged/")
-    public ResponseEntity<Page<TrainingDto>> findAllByPage(Pageable pageable) {
-        return ResponseEntity.ok(service.findAllByPage(pageable).map(entityToDtoConverter));
+    public ResponseEntity<Page<TrainingBasicDto>> findAllByPage(Pageable pageable) {
+        return ResponseEntity.ok(service.findAllByPage(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "{trainingId:[\\d]+}")
     public ResponseEntity<TrainingDto> findById(@PathVariable Long trainingId) {
         return respondWithConversion(service.findById(trainingId), entityToDtoConverter);
+    }
+
+    @PostMapping(value = "search/")
+    public ResponseEntity<Page<TrainingBasicDto>> search(@RequestBody TrainingSearchDto criteria, Pageable pageable) {
+        return ResponseEntity.ok(service.search(criteria, pageable).map(basicConverter));
     }
 
     @PutMapping(value = "{trainingId:[\\d]+}")

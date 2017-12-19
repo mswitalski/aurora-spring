@@ -83,9 +83,11 @@ public class TrainingDto {
     }
 
     public void setStartDateTime(String startDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        startDateTime = startDateTime.replace('T', ' ');
-        this.startDateTime = LocalDateTime.parse(startDateTime, formatter);
+        if (startDateTime != null && !startDateTime.isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            startDateTime = startDateTime.replace('T', ' ');
+            this.startDateTime = LocalDateTime.parse(startDateTime, formatter);
+        }
     }
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -98,9 +100,11 @@ public class TrainingDto {
     }
 
     public void setEndDateTime(String endDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        endDateTime = endDateTime.replace('T', ' ');
-        this.startDateTime = LocalDateTime.parse(endDateTime, formatter);
+        if (endDateTime != null && !endDateTime.isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            endDateTime = endDateTime.replace('T', ' ');
+            this.endDateTime = LocalDateTime.parse(endDateTime, formatter);
+        }
     }
 
     public boolean isInternal() {
