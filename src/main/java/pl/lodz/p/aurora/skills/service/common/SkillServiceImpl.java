@@ -30,7 +30,6 @@ public class SkillServiceImpl extends BaseService implements SkillService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Skill findById(Long skillId) {
         Skill storedSkill = skillRepository.findOne(skillId);
 

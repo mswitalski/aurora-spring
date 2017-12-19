@@ -80,10 +80,42 @@ INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES 
 INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), true, true, 0, 14);
 INSERT INTO PUBLIC.mentor (id, approved, active, version, evaluation_id) VALUES (nextval('mentor_id_sequence'), false, true, 0, 15);
 
--- Create relationships described as feedbacks
+-- Create relationships described as feedback
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '1 day', 1, 1);
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '5 day', 2, 3);
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, false, 'some feedback', current_timestamp - interval '10 day', 2, 4);
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '30 day', 3, 5);
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '11 day', 4, 2);
 INSERT INTO PUBLIC.feedback (id, version, satisfied, student_feedback, create_date_time, mentor_id, user_id) VALUES (nextval('feedback_id_sequence'), 0, true, 'some feedback', current_timestamp - interval '42 day', 4, 1);
+
+-- Create trainings
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Maven training', 'Workshop', 'Conference room 209', true, current_date - interval '1 day' + interval '9 hour', current_date - interval '1 day' + interval '12 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'JPA/Hibernate training', 'Workshop', 'Conference room 403', true, current_date - interval '5 day' + interval '12 hour', current_date - interval '5 day' + interval '16 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Introduction to collections in C#', 'Presentation', 'Conference room 521', true, current_date - interval '10 day' + interval '8 hour', current_date - interval '10 day' + interval '16 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Advanced features of GIT', 'Workshop', 'Conference room 217', true, current_date + interval '1 day' + interval '8 hour', current_date + interval '1 day' + interval '14 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Self improvement for everybody', 'Workshop', 'Kraków, Piaseczna 5', false, current_date + interval '3 day' + interval '14 hour', current_date + interval '3 day' + interval '16 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'How to use new coffee machine', 'Presentation', 'Conference room 311', true, current_date + interval '5 day' + interval '10 hour', current_date + interval '5 day' + interval '12 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Migration from PHP5 to PHP7', 'Presentation', 'Conference room 203', true, current_date + interval '5 day' + interval '9 hour', current_date + interval '5 day' + interval '12 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Linux administration', 'Workshop', 'Conference room 403', true, current_date + interval '6 day' + interval '11 hour', current_date + interval '6 day' + interval '15 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'Java9 features', 'Presentation', 'Conference room 209', true, current_date - interval '8 day' + interval '8 hour', current_date - interval '8 day' + interval '10 hour', 'some description');
+INSERT INTO PUBLIC.training (id, version, name, type, location, internal, start_date_time, end_date_time, description) VALUES (nextval('training_id_sequence'), 0, 'SQL Injections and how to prevent them', 'Workshop', 'Conference room 311', true, current_date + interval '10 day' + interval '10 hour', current_date + interval '10 day' + interval '13 hour', 'some description');
+
+-- Create relationships between trainings and users
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (1, 1);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (1, 3);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (1, 5);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (2, 2);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (2, 4);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (2, 6);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (3, 3);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (3, 5);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (3, 7);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (4, 4);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (4, 6);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (4, 8);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (5, 5);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (5, 7);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (5, 9);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 6);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 8);
+INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 10);

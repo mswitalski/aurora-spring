@@ -20,7 +20,9 @@ import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
 import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
 import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
+import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -116,5 +118,28 @@ public class ControllerValidationListener {
         String translatedMessage = translator.translate("Feedback.createDateTime.onePerDay", locale);
 
         return Collections.singletonList(new ValidationMessageDto(translatedMessage, "user"));
+    }
+
+    @ExceptionHandler(InvalidDateTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public List<ValidationMessageDto> processInvalidDateTime(InvalidDateTimeException exception) {
+        List<ValidationMessageDto> messages = new ArrayList<>();
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if (exception.getErrors().contains(InvalidDateTimeException.ERROR.START_BEFORE_NOW)) {
+            String translatedMessage = translator.translate("Training.startDateTime.beforeNow", locale);
+            messages.add(new ValidationMessageDto(translatedMessage, "startDateTime"));
+        }
+        if (exception.getErrors().contains(InvalidDateTimeException.ERROR.END_BEFORE_NOW)) {
+            String translatedMessage = translator.translate("Training.endDateTime.beforeNow", locale);
+            messages.add(new ValidationMessageDto(translatedMessage, "endDateTime"));
+        }
+        if (exception.getErrors().contains(InvalidDateTimeException.ERROR.START_BEFORE_EQUAL_END)) {
+            String translatedMessage = translator.translate("Training.endDateTime.beforeEqualStart", locale);
+            messages.add(new ValidationMessageDto(translatedMessage, "endDateTime"));
+        }
+
+        return messages;
     }
 }

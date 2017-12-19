@@ -1,0 +1,98 @@
+package pl.lodz.p.aurora.trainings.service.unitleader;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.trainings.domain.entity.Training;
+import pl.lodz.p.aurora.trainings.domain.repository.TrainingRepository;
+import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
+@Service
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+public class TrainingUnitLeaderServiceImpl extends BaseService implements TrainingUnitLeaderService {
+
+    private final TrainingRepository repository;
+
+    @Autowired
+    public TrainingUnitLeaderServiceImpl(TrainingRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public Training create(Training training) {
+        failIfInvalidDateTimes(training);
+
+        return save(training, repository);
+    }
+
+    private void failIfInvalidDateTimes(Training training) {
+        LocalDateTime start = training.getStartDateTime();
+        LocalDateTime end = training.getEndDateTime();
+        Set<InvalidDateTimeException.ERROR> errors = new HashSet<>();
+
+        if (start.isBefore(LocalDateTime.now())) {
+            errors.add(InvalidDateTimeException.ERROR.START_BEFORE_NOW);
+        }
+        if (end.isBefore(LocalDateTime.now())) {
+            errors.add(InvalidDateTimeException.ERROR.END_BEFORE_NOW);
+        }
+        if (start.isBefore(end) || start.isEqual(end)) {
+            errors.add(InvalidDateTimeException.ERROR.START_BEFORE_EQUAL_END);
+        }
+
+        if (!errors.isEmpty()) {
+            throw new InvalidDateTimeException("Unit leader tried to create a training with invalid date(s)", errors);
+        }
+    }
+
+    @Override
+    public void delete(Long trainingId, String eTag) {
+        Training storedTraining = repository.findOne(trainingId);
+
+        failIfNoRecordInDatabaseFound(storedTraining, trainingId);
+        failIfEncounteredOutdatedEntity(eTag, storedTraining);
+        repository.delete(trainingId);
+    }
+
+    @Override
+    public Page<Training> findAllByPage(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
+    public Training findById(Long trainingId) {
+        Training storedTraining = repository.findOne(trainingId);
+
+        failIfNoRecordInDatabaseFound(storedTraining, trainingId);
+
+        return storedTraining;
+    }
+
+    @Override
+    public void update(Long trainingId, Training training, String eTag) {
+        Training storedTraining = repository.findOne(trainingId);
+
+        failIfNoRecordInDatabaseFound(storedTraining, trainingId);
+        failIfInvalidDateTimes(training);
+        storedTraining.setName(training.getName());
+        storedTraining.setType(training.getType());
+        storedTraining.setLocation(training.getLocation());
+        storedTraining.setStartDateTime(training.getStartDateTime());
+        storedTraining.setEndDateTime(training.getEndDateTime());
+        storedTraining.setInternal(training.isInternal());
+        storedTraining.setDescription(training.getDescription());
+        storedTraining.setUsers(training.getUsers());
+        save(storedTraining, repository);
+    }
+}

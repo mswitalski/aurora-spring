@@ -61,7 +61,7 @@ public class FeedbackDto {
         this.studentFeedback = studentFeedback;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public LocalDateTime getCreateDateTime() {
         return createDateTime;
     }

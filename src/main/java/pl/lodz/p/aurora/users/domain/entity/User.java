@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
 import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
+import pl.lodz.p.aurora.trainings.domain.entity.Training;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -110,6 +111,18 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Feedback> feedback = new HashSet<>();
+
+    @ManyToMany(targetEntity = Training.class)
+    @JoinTable(
+            name = "user_training",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "training_id", referencedColumnName = "id", nullable = false, updatable = false
+            )
+    )
+    private Set<Training> trainings = new HashSet<>();
 
     public User() {
     }
@@ -262,6 +275,18 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
     public void setFeedback(Set<Feedback> feedback) {
         this.feedback = new HashSet<>(feedback);
+    }
+
+    public Set<Training> getTrainings() {
+        return new HashSet<>(trainings);
+    }
+
+    public void setTrainings(Set<Training> trainings) {
+        this.trainings = new HashSet<>(trainings);
+    }
+
+    public void removeTraining(Training training) {
+        this.trainings.remove(training);
     }
 
     @Override
