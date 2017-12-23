@@ -85,7 +85,6 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         return repository.search(criteria.getName(),
                 criteria.getType(),
                 criteria.getLocation(),
-                criteria.getStartDate(),
                 pageable);
     }
 

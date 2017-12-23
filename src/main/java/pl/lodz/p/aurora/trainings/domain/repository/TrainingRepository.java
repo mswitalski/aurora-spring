@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
@@ -29,7 +28,7 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     Page<Training> findAllFinishedByUser(User user, Pageable pageable);
 
     @Query(value = "select t from Training t where lower(t.name) like concat('%', lower(?1), '%') and lower(t.type) " +
-            "like concat('%', lower(?2), '%') and lower(t.location) like concat('%', lower(?3), '%') and " +
-            "function('date', t.startDateTime) = ?4 order by t.startDateTime desc")
-    Page<Training> search(String name, String type, String location, LocalDate startDate, Pageable pageable);
+            "like concat('%', lower(?2), '%') and lower(t.location) like concat('%', lower(?3), '%') " +
+            "order by t.startDateTime desc")
+    Page<Training> search(String name, String type, String location, Pageable pageable);
 }
