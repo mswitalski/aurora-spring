@@ -147,7 +147,7 @@ public class ControllerValidationListener {
             String translatedMessage = translator.translate("Training.endDateTime.beforeNow", locale);
             messages.add(new ValidationMessageDto(translatedMessage, "endDateTime"));
         }
-        if (exception.getErrors().contains(InvalidDateTimeException.ERROR.START_BEFORE_EQUAL_END)) {
+        if (exception.getErrors().contains(InvalidDateTimeException.ERROR.END_BEFORE_EQUAL_START)) {
             String translatedMessage = translator.translate("Training.endDateTime.beforeEqualStart", locale);
             messages.add(new ValidationMessageDto(translatedMessage, "endDateTime"));
         }

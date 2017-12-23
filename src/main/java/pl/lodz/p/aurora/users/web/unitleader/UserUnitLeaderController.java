@@ -8,9 +8,11 @@ import pl.lodz.p.aurora.common.web.BaseController;
 import pl.lodz.p.aurora.skills.domain.converter.EvaluationEntityToDtoConverter;
 import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
+import pl.lodz.p.aurora.users.domain.converter.UserBasicDtoConverter;
 import pl.lodz.p.aurora.users.domain.converter.UserDtoToEntityConverter;
 import pl.lodz.p.aurora.users.domain.converter.UserEntityToDtoConverter;
 import pl.lodz.p.aurora.users.domain.dto.CreateUserFormDto;
+import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.common.UserService;
@@ -27,6 +29,7 @@ public class UserUnitLeaderController extends BaseController {
     private final UserUnitLeaderService userUnitLeaderService;
     private final UserService userService;
     private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
+    private final UserBasicDtoConverter basicConverter = new UserBasicDtoConverter();
     private final UserDtoToEntityConverter dtoToEntityConverter = new UserDtoToEntityConverter();
     private final EvaluationEntityToDtoConverter evalEntityToDtoConverter = new EvaluationEntityToDtoConverter();
 
@@ -49,6 +52,12 @@ public class UserUnitLeaderController extends BaseController {
         userUnitLeaderService.delete(userId, eTag);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "all/")
+    public ResponseEntity<List<UserBasicDto>> findAll() {
+        return ResponseEntity.ok(this.userUnitLeaderService.findAll()
+                .stream().map(basicConverter::convert).collect(Collectors.toList()));
     }
 
     @PutMapping(value = "{userId:[\\d]+}")

@@ -10,7 +10,7 @@ public class InvalidDateTimeException extends RuntimeException {
     public enum ERROR {
         START_BEFORE_NOW,
         END_BEFORE_NOW,
-        START_BEFORE_EQUAL_END
+        END_BEFORE_EQUAL_START
     }
 
     public InvalidDateTimeException(String message, Set<ERROR> errors) {

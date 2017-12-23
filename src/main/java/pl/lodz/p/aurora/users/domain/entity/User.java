@@ -112,16 +112,7 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<Feedback> feedback = new HashSet<>();
 
-    @ManyToMany(targetEntity = Training.class)
-    @JoinTable(
-            name = "user_training",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "training_id", referencedColumnName = "id", nullable = false, updatable = false
-            )
-    )
+    @ManyToMany(mappedBy = "users")
     private Set<Training> trainings = new HashSet<>();
 
     public User() {

@@ -17,6 +17,7 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 import pl.lodz.p.aurora.users.service.common.RoleService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,11 @@ public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLe
         failIfTriedToChangeNonEmployee(storedUser);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
         userRepository.delete(storedUser);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return this.userRepository.findAll();
     }
 
     private void failIfTriedToChangeNonEmployee(User user) {

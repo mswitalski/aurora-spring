@@ -58,7 +58,16 @@ public class Training extends VersionedEntity {
     @Size(max = 500)
     private String description;
 
-    @ManyToMany(mappedBy = "trainings")
+    @ManyToMany(targetEntity = User.class)
+    @JoinTable(
+            name = "user_training",
+            joinColumns = @JoinColumn(
+                    name = "training_id", referencedColumnName = "id", nullable = false, updatable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id", nullable = false, updatable = false
+            )
+    )
     private Set<User> users = new HashSet<>();
 
     @Override

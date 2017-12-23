@@ -39,6 +39,11 @@ public class TrainingDto {
     @NotNull(message = "{Default.NotNull}")
     private boolean internal = true;
 
+    @NotNull(message = "{Default.NotNull}")
+    @NotEmpty(message = "{Default.NotEmpty}")
+    @Size(max = 500, message = "{Default.Size.Max}")
+    private String description;
+
     private Set<UserBasicDto> users = new HashSet<>();
 
     public Long getId() {
@@ -121,5 +126,13 @@ public class TrainingDto {
 
     public void setUsers(Set<UserBasicDto> users) {
         this.users = users;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

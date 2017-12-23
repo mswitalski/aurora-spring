@@ -13,10 +13,12 @@ import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.trainings.domain.repository.TrainingRepository;
 import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
+import pl.lodz.p.aurora.users.service.common.UserService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
@@ -24,10 +26,12 @@ import java.util.Set;
 public class TrainingUnitLeaderServiceImpl extends BaseService implements TrainingUnitLeaderService {
 
     private final TrainingRepository repository;
+    private final UserService userService;
 
     @Autowired
-    public TrainingUnitLeaderServiceImpl(TrainingRepository repository) {
+    public TrainingUnitLeaderServiceImpl(TrainingRepository repository, UserService userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Override
@@ -48,8 +52,8 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         if (end.isBefore(LocalDateTime.now())) {
             errors.add(InvalidDateTimeException.ERROR.END_BEFORE_NOW);
         }
-        if (start.isBefore(end) || start.isEqual(end)) {
-            errors.add(InvalidDateTimeException.ERROR.START_BEFORE_EQUAL_END);
+        if (end.isBefore(start) || start.isEqual(end)) {
+            errors.add(InvalidDateTimeException.ERROR.END_BEFORE_EQUAL_START);
         }
 
         if (!errors.isEmpty()) {
@@ -101,7 +105,7 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         storedTraining.setEndDateTime(training.getEndDateTime());
         storedTraining.setInternal(training.isInternal());
         storedTraining.setDescription(training.getDescription());
-        storedTraining.setUsers(training.getUsers());
+        storedTraining.setUsers(training.getUsers().stream().map(u -> userService.findById(u.getId())).collect(Collectors.toSet()));
         save(storedTraining, repository);
     }
 }
