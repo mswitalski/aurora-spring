@@ -54,7 +54,6 @@ public class ControllerValidationListener {
     @ResponseBody
     public List<ValidationMessageDto> processBeanValidationError(MethodArgumentNotValidException exception) {
         logger.info("Data provided by user did not pass validation phase", exception);
-
         BindingResult bindingResult = exception.getBindingResult();
 
         return bindingResult.getFieldErrors().stream().map(this::constructValidationMessage).collect(Collectors.toList());
@@ -68,7 +67,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processUniqueValidationError(UniqueConstraintViolationException exception) {
-        logger.info("Data provided by user was not unique", exception);
+        logger.info(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator
                 .translate(exception.getEntityName() + "." + exception.getFieldName() + ".Unique", locale);
@@ -79,20 +78,20 @@ public class ControllerValidationListener {
     @ExceptionHandler(InvalidEntityStateException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processInvalidEntityState(InvalidEntityStateException exception) {
-        logger.error("Application tried to save entity with invalid state", exception);
+        logger.error(exception.getMessage(), exception);
     }
 
     @ExceptionHandler(OutdatedEntityModificationException.class)
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public void processOutdatedEntityModification(OutdatedEntityModificationException exception) {
-        logger.error(exception.getMessage(), exception);
+        logger.info(exception.getMessage(), exception);
     }
 
     @ExceptionHandler(IncompetentMentorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processIncompetentMentor(IncompetentMentorException exception) {
-        logger.error(exception.getMessage(), exception);
+        logger.info(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Mentor.skill.insufficientLevel", locale);
 
@@ -103,7 +102,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processSelfFeedback(SelfFeedbackException exception) {
-        logger.error(exception.getMessage(), exception);
+        logger.info(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Feedback.user.selfFeedback", locale);
 
@@ -114,7 +113,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processTooFrequentFeedback(TooFrequentFeedbackException exception) {
-        logger.error(exception.getMessage(), exception);
+        logger.info(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Feedback.createDateTime.onePerDay", locale);
 
@@ -125,7 +124,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processDateTimeParse(DateTimeParseException exception) {
-        logger.error(exception.getMessage(), exception);
+        logger.info(exception.getMessage(), exception);
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("DateTime.invalidFormat", locale);
 

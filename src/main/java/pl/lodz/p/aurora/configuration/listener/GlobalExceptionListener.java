@@ -22,24 +22,24 @@ public class GlobalExceptionListener {
     @ExceptionHandler(ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void processInvalidClientRequest(ServletRequestBindingException exception) {
-        logger.error("Client sent an invalid request", exception);
+        logger.info("Client sent an invalid request", exception);
     }
 
     @ExceptionHandler(InvalidResourceRequestedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void processInvalidResourceRequest(InvalidResourceRequestedException exception) {
-        logger.error("Client sent an request for non-existing resource", exception);
+        logger.info(exception.getMessage(), exception);
     }
 
     @ExceptionHandler(InvalidApplicationConfigurationException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processInvalidApplicationConfigurationException(InvalidApplicationConfigurationException exception) {
-        logger.error("An error occurred due to invalid application configuration", exception);
+        logger.error(exception.getMessage(), exception);
     }
 
     @ExceptionHandler(ActionForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public void processActionForbiddenException(ActionForbiddenException exception) {
-        logger.error("Client tried to do action that is forbidden with his privileges", exception);
+        logger.warn("Client tried to do action that is forbidden with his privileges", exception);
     }
 }

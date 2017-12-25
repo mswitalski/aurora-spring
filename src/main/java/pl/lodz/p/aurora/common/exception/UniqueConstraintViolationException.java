@@ -17,15 +17,6 @@ public class UniqueConstraintViolationException extends RuntimeException {
         this.fieldName = fieldName;
     }
 
-    public UniqueConstraintViolationException(Throwable cause, String entityName) {
-        super(
-                "Unique constraint was violated in entity " + entityName + " on unknown field",
-                cause
-        );
-        this.entityName = entityName;
-        this.fieldName = null;
-    }
-
     public String getEntityName() {
         return entityName;
     }
