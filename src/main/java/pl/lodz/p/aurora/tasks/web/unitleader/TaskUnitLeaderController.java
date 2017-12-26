@@ -15,7 +15,7 @@ import pl.lodz.p.aurora.tasks.service.unitleader.TaskUnitLeaderService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping(value = "api/v1/users/", headers = "Requester-Role=ANY")
+@RequestMapping(value = "api/v1/users/", headers = "Requester-Role=UNIT_LEADER")
 @RestController
 public class TaskUnitLeaderController extends BaseController {
 
