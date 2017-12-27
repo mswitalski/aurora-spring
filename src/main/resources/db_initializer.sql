@@ -119,3 +119,14 @@ INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (5, 9);
 INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 6);
 INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 8);
 INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (6, 10);
+
+-- Create tasks
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, null, null, 'Read book about Linux administration');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, null, current_timestamp - interval '5 day', 'Sign myself for the IIA Conference');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp - interval '2 day', null, 'Write new blog entry');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp + interval '8 hour', null, 'Learn basics of Angular 4');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp + interval '1 day', null, 'Inform my leader about planned holidays');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp + interval '2 day', null, 'Find some mentor for C#');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp - interval '5 day', current_timestamp - interval '4 day', 'Finish implementing Juboo library');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp - interval '8 day', current_timestamp - interval '6 day', 'Test the new Unreal Engine 4');
+INSERT INTO PUBLIC.task (id, version, user_id, deadline_date, done_date, content) VALUES (nextval('task_id_sequence'), 0, 6, current_timestamp - interval '10 day', current_timestamp - interval '2 day', 'Upload my tutorial to YouTube');

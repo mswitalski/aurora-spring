@@ -6,10 +6,10 @@ import java.time.LocalDate;
 
 public class StatisticsDto {
 
-    private Integer planned;
-    private Integer overdue;
-    private Integer doneLastWeek;
-    private Integer doneLastMonth;
+    private Integer planned = 0;
+    private Integer overdue = 0;
+    private Integer doneLastWeek = 0;
+    private Integer doneLastMonth = 0;
 
     public Integer getPlanned() {
         return planned;
