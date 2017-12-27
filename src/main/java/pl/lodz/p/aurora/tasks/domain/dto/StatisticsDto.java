@@ -42,7 +42,8 @@ public class StatisticsDto {
             if (task.getDoneDate().isAfter(lastWeek) || task.getDoneDate().isEqual(lastWeek)) {
                 this.doneLastWeek++;
 
-            } else if (task.getDoneDate().isAfter(lastMonth) || task.getDoneDate().isEqual(lastMonth)) {
+            }
+            if (task.getDoneDate().isAfter(lastMonth) || task.getDoneDate().isEqual(lastMonth)) {
                 this.doneLastMonth++;
             }
         }
