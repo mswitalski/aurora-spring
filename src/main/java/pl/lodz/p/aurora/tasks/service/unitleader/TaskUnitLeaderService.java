@@ -1,5 +1,7 @@
 package pl.lodz.p.aurora.tasks.service.unitleader;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 
@@ -9,7 +11,7 @@ public interface TaskUnitLeaderService {
 
     List<Task> findUsersAllUndoneTasks(Long userId);
 
-    List<Task> findUsersDoneTaskFromLastWeek(Long userId);
+    Page<Task> findUsersDoneTasks(Long userId, Pageable pageable);
 
     StatisticsDto calculateUsersStatistics(Long userId);
 }

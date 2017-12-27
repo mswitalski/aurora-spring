@@ -1,6 +1,8 @@
 package pl.lodz.p.aurora.tasks.web.unitleader;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,9 +36,8 @@ public class TaskUnitLeaderController extends BaseController {
     }
 
     @GetMapping(value = "{userId:[\\d]+}/tasks/done/")
-    public ResponseEntity<List<TaskDto>> findUsersDoneTaskFromLastWeek(@PathVariable Long userId) {
-        return ResponseEntity.ok(this.service.findUsersDoneTaskFromLastWeek(userId)
-                .stream().map(converter::convert).collect(Collectors.toList()));
+    public ResponseEntity<Page<TaskDto>> findUsersDoneTaskFromLastWeek(@PathVariable Long userId, Pageable pageable) {
+        return ResponseEntity.ok(this.service.findUsersDoneTasks(userId, pageable).map(converter));
     }
 
     @GetMapping(value = "{userId:[\\d]+}/tasks/statistics")

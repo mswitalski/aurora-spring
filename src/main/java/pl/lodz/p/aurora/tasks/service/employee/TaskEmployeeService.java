@@ -1,5 +1,7 @@
 package pl.lodz.p.aurora.tasks.service.employee;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -12,9 +14,11 @@ public interface TaskEmployeeService {
 
     Task create(Task task, User employee);
 
+    Task findById(Long taskId, User employee);
+
     List<Task> findUsersAllUndoneTasks(User employee);
 
-    List<Task> findUsersDoneTaskFromLastWeek(User employee);
+    Page<Task> findUsersDoneTasks(User employee, Pageable pageable);
 
     void delete(Long taskId, User employee, String eTag);
 

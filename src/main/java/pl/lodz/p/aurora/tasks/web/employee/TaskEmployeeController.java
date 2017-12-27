@@ -1,8 +1,9 @@
 package pl.lodz.p.aurora.tasks.web.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.aurora.common.web.BaseController;
@@ -30,6 +31,11 @@ public class TaskEmployeeController extends BaseController {
         this.service = service;
     }
 
+    @GetMapping(value = "tasks/{taskId:[\\d]+}")
+    public ResponseEntity<TaskDto> findById(@PathVariable Long taskId, @AuthenticationPrincipal User activeUser) {
+        return respondWithConversion(service.findById(taskId, activeUser), entityToDtoConverter);
+    }
+
     @GetMapping(value = "users/me/tasks/undone/")
     public ResponseEntity<List<TaskDto>> findUsersAllUndoneTasks(@AuthenticationPrincipal User activeUser) {
         return ResponseEntity.ok(this.service.findUsersAllUndoneTasks(activeUser)
@@ -37,9 +43,8 @@ public class TaskEmployeeController extends BaseController {
     }
 
     @GetMapping(value = "users/me/tasks/done/")
-    public ResponseEntity<List<TaskDto>> findUsersDoneTaskFromLastWeek(@AuthenticationPrincipal User activeUser) {
-        return ResponseEntity.ok(this.service.findUsersDoneTaskFromLastWeek(activeUser)
-                .stream().map(entityToDtoConverter::convert).collect(Collectors.toList()));
+    public ResponseEntity<Page<TaskDto>> findUsersDoneTaskFromLastWeek(Pageable pageable, @AuthenticationPrincipal User activeUser) {
+        return ResponseEntity.ok(this.service.findUsersDoneTasks(activeUser, pageable).map(entityToDtoConverter));
     }
 
     @GetMapping(value = "users/me/tasks/statistics")
@@ -62,7 +67,6 @@ public class TaskEmployeeController extends BaseController {
     }
 
     @PutMapping(value = "tasks/{taskId:[\\d]+}")
-    @PreAuthorize("#task.user.username == principal.username")
     public ResponseEntity<Void> update(@PathVariable Long taskId, @RequestBody TaskDto task, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
         service.update(taskId, dtoToEntityConverter.convert(task), sanitizeReceivedETag(eTag), activeUser);
 

@@ -1,6 +1,8 @@
 package pl.lodz.p.aurora.tasks.service.unitleader;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -13,7 +15,6 @@ import pl.lodz.p.aurora.tasks.domain.repository.TaskRepository;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.service.common.UserService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
@@ -38,10 +39,10 @@ public class TaskUnitLeaderServiceImpl extends BaseService implements TaskUnitLe
     }
 
     @Override
-    public List<Task> findUsersDoneTaskFromLastWeek(Long userId) {
+    public Page<Task> findUsersDoneTasks(Long userId, Pageable pageable) {
         User storedUser = userService.findById(userId);
 
-        return repository.findUsersDoneTasks(storedUser, LocalDate.now());
+        return repository.findUsersDoneTasks(storedUser, pageable);
     }
 
     @Override

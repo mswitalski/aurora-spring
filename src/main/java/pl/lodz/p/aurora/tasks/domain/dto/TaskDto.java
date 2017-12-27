@@ -2,7 +2,6 @@ package pl.lodz.p.aurora.tasks.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotEmpty;
-import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 public class TaskDto {
 
     private Long id;
-    private UserBasicDto user;
 
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
@@ -28,14 +26,6 @@ public class TaskDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public UserBasicDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserBasicDto user) {
-        this.user = user;
     }
 
     public String getContent() {

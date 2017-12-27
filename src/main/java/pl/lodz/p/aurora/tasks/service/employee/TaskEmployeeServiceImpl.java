@@ -1,6 +1,8 @@
 package pl.lodz.p.aurora.tasks.service.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -13,7 +15,6 @@ import pl.lodz.p.aurora.tasks.domain.entity.Task;
 import pl.lodz.p.aurora.tasks.domain.repository.TaskRepository;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
@@ -46,13 +47,28 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
     }
 
     @Override
+    public Task findById(Long taskId, User employee) {
+        Task storedTask = repository.findOne(taskId);
+
+        failIfTriedToAccessNotOwnedTask(employee, storedTask);
+
+        return storedTask;
+    }
+
+    private void failIfTriedToAccessNotOwnedTask(User employee, Task task) {
+        if (!task.getUser().getId().equals(employee.getId())) {
+            throw new ActionForbiddenException("Employee tried to change not his task: " + task);
+        }
+    }
+
+    @Override
     public List<Task> findUsersAllUndoneTasks(User employee) {
         return repository.findAllUsersUndoneTasks(employee);
     }
 
     @Override
-    public List<Task> findUsersDoneTaskFromLastWeek(User employee) {
-        return repository.findUsersDoneTasks(employee, LocalDate.now());
+    public Page<Task> findUsersDoneTasks(User employee, Pageable pageable) {
+        return repository.findUsersDoneTasks(employee, pageable);
     }
 
     @Override
@@ -64,12 +80,6 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
         failIfTriedToAccessNotOwnedTask(employee, storedTask);
         failIfEncounteredOutdatedEntity(eTag, storedTask);
         repository.delete(taskId);
-    }
-
-    private void failIfTriedToAccessNotOwnedTask(User employee, Task task) {
-        if (!task.getUser().getId().equals(employee.getId())) {
-            throw new ActionForbiddenException("Employee tried to change not his task: " + task);
-        }
     }
 
     @Override
