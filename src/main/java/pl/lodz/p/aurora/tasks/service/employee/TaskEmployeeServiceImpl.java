@@ -13,8 +13,11 @@ import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 import pl.lodz.p.aurora.tasks.domain.repository.TaskRepository;
+import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
@@ -42,6 +45,7 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
     public Task create(Task task, User employee) {
         task.setUser(employee);
+        task.setDoneDate(null);
 
         return save(task, repository);
     }
@@ -78,8 +82,15 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
 
         failIfNoRecordInDatabaseFound(storedTask, taskId);
         failIfTriedToAccessNotOwnedTask(employee, storedTask);
+        failIfTriedToDeleteDoneTask(storedTask);
         failIfEncounteredOutdatedEntity(eTag, storedTask);
         repository.delete(taskId);
+    }
+
+    private void failIfTriedToDeleteDoneTask(Task task) {
+        if (task.getDoneDate() != null) {
+            throw new ActionForbiddenException("Employee tried to delete done task: " + task);
+        }
     }
 
     @Override
@@ -90,9 +101,29 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
         failIfNoRecordInDatabaseFound(storedTask, taskId);
         failIfTriedToAccessNotOwnedTask(employee, storedTask);
         failIfEncounteredOutdatedEntity(eTag, storedTask);
-        storedTask.setContent(task.getContent());
-        storedTask.setDeadlineDate(task.getDeadlineDate());
-        storedTask.setDoneDate(task.getDoneDate());
+
+        if (storedTask.getDoneDate() == null) {
+            failIfInvalidDateTimes(task.getDeadlineDate(), storedTask.getDeadlineDate(), task.getDoneDate());
+            storedTask.setContent(task.getContent());
+            storedTask.setDeadlineDate(task.getDeadlineDate());
+            storedTask.setDoneDate(processDoneDate(task.getDoneDate()));
+        }
+
         save(storedTask, repository);
+    }
+
+    private void failIfInvalidDateTimes(LocalDate newDeadlineDate, LocalDate oldDeadlineDate, LocalDate doneDone) {
+        if (newDeadlineDate != null &&
+                oldDeadlineDate != null &&
+                doneDone == null &&
+                newDeadlineDate.compareTo(LocalDate.now()) < 0) {
+            throw new InvalidDateTimeException(
+                    "Employee tried to set a task's deadline date with invalid value",
+                    Collections.singleton(InvalidDateTimeException.ERROR.DATE_BEFORE_TODAY));
+        }
+    }
+
+    private LocalDate processDoneDate(LocalDate dateFromDto) {
+        return dateFromDto != null ? LocalDate.now() : null;
     }
 }

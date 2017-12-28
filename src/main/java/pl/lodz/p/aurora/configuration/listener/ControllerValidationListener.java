@@ -20,6 +20,7 @@ import pl.lodz.p.aurora.common.util.Translator;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
 import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
 import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
+import pl.lodz.p.aurora.tasks.exception.InvalidDateException;
 import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
 
 import java.time.format.DateTimeParseException;
@@ -149,6 +150,21 @@ public class ControllerValidationListener {
         if (exception.getErrors().contains(InvalidDateTimeException.ERROR.END_BEFORE_EQUAL_START)) {
             String translatedMessage = translator.translate("Training.endDateTime.beforeEqualStart", locale);
             messages.add(new ValidationMessageDto(translatedMessage, "endDateTime"));
+        }
+
+        return messages;
+    }
+
+    @ExceptionHandler(InvalidDateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public List<ValidationMessageDto> processInvalidDate(InvalidDateException exception) {
+        List<ValidationMessageDto> messages = new ArrayList<>();
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if (exception.getErrors().contains(InvalidDateException.ERROR.DATE_BEFORE_TODAY)) {
+            String translatedMessage = translator.translate("Task.deadlineDate.dateBeforeToday", locale);
+            messages.add(new ValidationMessageDto(translatedMessage, "deadlineDate"));
         }
 
         return messages;
