@@ -13,7 +13,7 @@ import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 import pl.lodz.p.aurora.tasks.domain.repository.TaskRepository;
-import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
+import pl.lodz.p.aurora.tasks.exception.InvalidDateException;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.time.LocalDate;
@@ -117,9 +117,9 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
                 oldDeadlineDate != null &&
                 doneDone == null &&
                 newDeadlineDate.compareTo(LocalDate.now()) < 0) {
-            throw new InvalidDateTimeException(
+            throw new InvalidDateException(
                     "Employee tried to set a task's deadline date with invalid value",
-                    Collections.singleton(InvalidDateTimeException.ERROR.DATE_BEFORE_TODAY));
+                    Collections.singleton(InvalidDateException.ERROR.DATE_BEFORE_TODAY));
         }
     }
 
