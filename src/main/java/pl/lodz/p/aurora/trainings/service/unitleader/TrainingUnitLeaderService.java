@@ -7,9 +7,9 @@ import pl.lodz.p.aurora.trainings.domain.entity.Training;
 
 public interface TrainingUnitLeaderService {
 
-    Training create(Training training);
+    Training create(Training training, String outlookAuthToken);
 
-    void delete(Long trainingId, String eTag);
+    void delete(Long trainingId, String eTag, String outlookAuthToken);
 
     Page<Training> findAllByPage(Pageable pageable);
 
@@ -17,5 +17,5 @@ public interface TrainingUnitLeaderService {
 
     Page<Training> search(TrainingSearchDto criteria, Pageable pageable);
 
-    void update(Long trainingId, Training training, String eTag);
+    void update(Long trainingId, Training training, String eTag, String outlookAuthToken);
 }

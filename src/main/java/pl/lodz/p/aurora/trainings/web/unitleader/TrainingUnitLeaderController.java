@@ -31,15 +31,22 @@ public class TrainingUnitLeaderController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<TrainingDto> create(@Validated @RequestBody TrainingDto formData) {
+    public ResponseEntity<TrainingDto> create(
+            @Validated @RequestBody TrainingDto formData,
+            @RequestHeader(name = "Outlook-Authorization", required = false) String outlookAuthToken
+    ) {
         Training receivedSkill = dtoToEntityConverter.convert(formData);
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(service.create(receivedSkill)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(service.create(receivedSkill, outlookAuthToken)));
     }
 
     @DeleteMapping(value = "{trainingId:[\\d]+}")
-    public ResponseEntity<Void> delete(@PathVariable Long trainingId, @RequestHeader("If-Match") String eTag) {
-        service.delete(trainingId, eTag);
+    public ResponseEntity<Void> delete(
+            @PathVariable Long trainingId,
+            @RequestHeader("If-Match") String eTag,
+            @RequestHeader(name = "Outlook-Authorization", required = false) String outlookAuthToken
+    ) {
+        service.delete(trainingId, eTag, outlookAuthToken);
 
         return ResponseEntity.noContent().build();
     }
@@ -60,8 +67,13 @@ public class TrainingUnitLeaderController extends BaseController {
     }
 
     @PutMapping(value = "{trainingId:[\\d]+}")
-    public ResponseEntity<Void> update(@PathVariable Long trainingId, @Validated @RequestBody TrainingDto training, @RequestHeader("If-Match") String eTag) {
-        service.update(trainingId, dtoToEntityConverter.convert(training), sanitizeReceivedETag(eTag));
+    public ResponseEntity<Void> update(
+            @PathVariable Long trainingId,
+            @Validated @RequestBody TrainingDto training,
+            @RequestHeader("If-Match") String eTag,
+            @RequestHeader(name = "Outlook-Authorization", required = false) String outlookAuthToken
+    ) {
+        service.update(trainingId, dtoToEntityConverter.convert(training), sanitizeReceivedETag(eTag), outlookAuthToken);
 
         return ResponseEntity.noContent().build();
     }

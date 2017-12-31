@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.integration.outlook.service.CalendarService;
+import pl.lodz.p.aurora.integration.outlook.service.CalendarServiceImpl;
 import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.trainings.domain.repository.TrainingRepository;
@@ -27,6 +29,7 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
 
     private final TrainingRepository repository;
     private final UserService userService;
+    private final CalendarService outlookService = new CalendarServiceImpl();
 
     @Autowired
     public TrainingUnitLeaderServiceImpl(TrainingRepository repository, UserService userService) {
@@ -35,10 +38,15 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
     }
 
     @Override
-    public Training create(Training training) {
+    public Training create(Training training, String outlookAuthToken) {
         failIfInvalidDateTimes(training);
+        Training saved = save(training, repository);
 
-        return save(training, repository);
+        if (outlookAuthToken != null) {
+            System.out.println(outlookService.createEvent(saved, outlookAuthToken));
+        }
+
+        return saved;
     }
 
     private void failIfInvalidDateTimes(Training training) {
@@ -62,12 +70,16 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
     }
 
     @Override
-    public void delete(Long trainingId, String eTag) {
+    public void delete(Long trainingId, String eTag, String outlookAuthToken) {
         Training storedTraining = repository.findOne(trainingId);
 
         failIfNoRecordInDatabaseFound(storedTraining, trainingId);
         failIfEncounteredOutdatedEntity(eTag, storedTraining);
         repository.delete(trainingId);
+
+        if (outlookAuthToken != null) {
+            outlookService.deleteEvent(storedTraining, outlookAuthToken);
+        }
     }
 
     @Override
@@ -93,7 +105,7 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
     }
 
     @Override
-    public void update(Long trainingId, Training training, String eTag) {
+    public void update(Long trainingId, Training training, String eTag, String outlookAuthToken) {
         Training storedTraining = repository.findOne(trainingId);
 
         failIfNoRecordInDatabaseFound(storedTraining, trainingId);
@@ -105,7 +117,12 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         storedTraining.setEndDateTime(training.getEndDateTime());
         storedTraining.setInternal(training.isInternal());
         storedTraining.setDescription(training.getDescription());
-        storedTraining.setUsers(training.getUsers().stream().map(u -> userService.findById(u.getId())).collect(Collectors.toSet()));
+        storedTraining.setUsers(training.getUsers().stream()
+                .map(u -> userService.findById(u.getId())).collect(Collectors.toSet()));
         save(storedTraining, repository);
+
+        if (outlookAuthToken != null) {
+            outlookService.updateEvent(storedTraining, outlookAuthToken);
+        }
     }
 }
