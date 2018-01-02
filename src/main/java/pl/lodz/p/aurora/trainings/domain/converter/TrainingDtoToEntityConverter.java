@@ -1,8 +1,8 @@
 package pl.lodz.p.aurora.trainings.domain.converter;
 
+import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.core.convert.converter.Converter;
-import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.trainings.domain.dto.TrainingDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
@@ -11,9 +11,10 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TrainingDtoToEntityConverter extends BaseConverter implements Converter<TrainingDto, Training> {
+public class TrainingDtoToEntityConverter implements Converter<TrainingDto, Training> {
 
     private final TypeMap<TrainingDto, Training> typeMap;
+    private final ModelMapper mapper = new ModelMapper();
 
     public TrainingDtoToEntityConverter() {
         typeMap = mapper.createTypeMap(TrainingDto.class, Training.class)

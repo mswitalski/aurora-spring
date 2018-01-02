@@ -1,16 +1,17 @@
 package pl.lodz.p.aurora.skills.domain.converter;
 
+import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.core.convert.converter.Converter;
-import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.skills.domain.dto.EvaluationDto;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
-public class EvaluationDtoToEntityConverter extends BaseConverter implements Converter<EvaluationDto, Evaluation> {
+public class EvaluationDtoToEntityConverter implements Converter<EvaluationDto, Evaluation> {
 
     private final TypeMap<EvaluationDto, Evaluation> typeMap;
+    private final ModelMapper mapper = new ModelMapper();
 
     public EvaluationDtoToEntityConverter() {
         typeMap = mapper.createTypeMap(EvaluationDto.class, Evaluation.class)

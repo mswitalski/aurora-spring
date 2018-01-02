@@ -1,7 +1,7 @@
 package pl.lodz.p.aurora.users.domain.converter;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.core.convert.converter.Converter;
-import pl.lodz.p.aurora.common.domain.converter.BaseConverter;
 import pl.lodz.p.aurora.users.domain.dto.DutyBasicDto;
 import pl.lodz.p.aurora.users.domain.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -9,9 +9,10 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class UserEntityToDtoConverter extends BaseConverter implements Converter<User, UserDto> {
+public class UserEntityToDtoConverter implements Converter<User, UserDto> {
 
     private final DutyBasicDtoConverter dutyConverter = new DutyBasicDtoConverter();
+    private final ModelMapper mapper = new ModelMapper();
 
     @Override
     public UserDto convert(User user) {
