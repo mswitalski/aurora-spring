@@ -2,7 +2,6 @@ package pl.lodz.p.aurora.common.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lodz.p.aurora.common.domain.entity.BaseEntity;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
 import pl.lodz.p.aurora.common.exception.*;
 
@@ -34,7 +33,7 @@ public abstract class BaseService {
      * @param entity     Record fetched from data source (or null if no relevant record was found)
      * @param identifier What identifier was used to get this entity
      */
-    protected void failIfNoRecordInDatabaseFound(BaseEntity entity, Object identifier) {
+    protected void failIfNoRecordInDatabaseFound(Object entity, Object identifier) {
         if (entity == null) {
             throw new InvalidResourceRequestedException(identifier);
         }

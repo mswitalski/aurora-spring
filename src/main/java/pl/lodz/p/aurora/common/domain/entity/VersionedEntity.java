@@ -4,15 +4,13 @@ import com.google.common.base.Objects;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 
 /**
  * An abstract entity that will serve as base entity for other versioned entities.
  */
 @MappedSuperclass
-public abstract class VersionedEntity extends BaseEntity {
+public abstract class VersionedEntity {
 
-    @NotNull
     @Version
     private Long version;
 

@@ -1,7 +1,5 @@
 package pl.lodz.p.aurora.users.domain.entity;
 
-import pl.lodz.p.aurora.common.domain.entity.BaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,7 +11,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table
-public class Role extends BaseEntity {
+public class Role {
 
     @Id
     @Column(length = 15)
@@ -40,5 +38,24 @@ public class Role extends BaseEntity {
         return "Role[" +
                 "name='" + name + '\'' +
                 ']';
+    }
+
+    @Override
+    public int hashCode() {
+        return 117 * name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Role that = (Role) o;
+
+        return name.equals(that.getName());
     }
 }

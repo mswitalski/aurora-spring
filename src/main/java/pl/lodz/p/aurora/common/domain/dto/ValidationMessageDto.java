@@ -8,9 +8,6 @@ public class ValidationMessageDto {
     private String messageContent;
     private String fieldName;
 
-    public ValidationMessageDto() {
-    }
-
     public ValidationMessageDto(String messageContent, String fieldName) {
         this.messageContent = messageContent;
         this.fieldName = fieldName;
@@ -19,16 +16,7 @@ public class ValidationMessageDto {
     public String getMessageContent() {
         return messageContent;
     }
-
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
-    }
-
     public String getFieldName() {
         return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
     }
 }
