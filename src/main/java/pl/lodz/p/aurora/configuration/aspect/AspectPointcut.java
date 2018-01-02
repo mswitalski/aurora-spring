@@ -7,12 +7,7 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 public class AspectPointcut {
 
-    @Pointcut("bean(*Controller)")
-    public void anyControllerBean() {}
-
-    @Pointcut("bean(*ServiceImpl)")
-    public void anyServiceBean() {}
-
-    @Pointcut("anyControllerBean() || anyServiceBean()")
-    public void anyControllerAndServiceBean() {}
+    @Pointcut("bean(*Controller) || bean(*ServiceImpl)")
+    public void anyControllerAndServiceBean() {
+    }
 }

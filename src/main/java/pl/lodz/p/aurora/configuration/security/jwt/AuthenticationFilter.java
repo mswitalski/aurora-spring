@@ -29,41 +29,39 @@ import java.util.Map;
  */
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private AuthenticationManager authenticationManager;
-    private TokenConfigurationData configurationData;
     private final String filteredPath = "/login";
     private final HttpMethod filteredMethod = HttpMethod.POST;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private AuthenticationManager authManager;
+    private TokenConfigurationData configurationData;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+    public AuthenticationFilter(AuthenticationManager authManager) {
         super();
-        this.authenticationManager = authenticationManager;
+        this.authManager = authManager;
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(filteredPath, filteredMethod.name()));
     }
 
     /**
      * Try to authenticate user with given credentials.
      *
-     * @param request Received request
-     * @param response Response to send
+     * @param req Received request
+     * @param res Response to send
      * @return Authentication manager with authenticated user
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        initializeDependencies(request);
+    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
+        initializeDependencies(req);
 
         try {
-            UserAccountCredentialsDto accountCredentialsDto = new ObjectMapper()
-                    .readValue(request.getInputStream(), UserAccountCredentialsDto.class);
+            UserAccountCredentialsDto dto = new ObjectMapper()
+                    .readValue(req.getInputStream(), UserAccountCredentialsDto.class);
 
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            accountCredentialsDto.getUsername(),
-                            accountCredentialsDto.getPassword()));
+            return authManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
         } catch (IOException e) {
             logger.error("Authentication attempt has failed", e);
-            response.setStatus(400);
+            res.setStatus(400);
         }
 
         return null;
@@ -73,28 +71,28 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      * Initialize mandatory dependencies. These dependencies are managed by Spring and can't be initialized
      * any other way.
      *
-     * @param request Received request
+     * @param req Received request
      */
-    private void initializeDependencies(HttpServletRequest request) {
+    private void initializeDependencies(HttpServletRequest req) {
         configurationData = WebApplicationContextUtils.
-                getWebApplicationContext(request.getServletContext()).
+                getWebApplicationContext(req.getServletContext()).
                 getBean(TokenConfigurationData.class);
     }
 
     /**
      * Create JWT token and add it to response header on successful authentication.
      *
-     * @param request Received request
-     * @param response Response to send
+     * @param req         Received request
+     * @param res         Response to send
      * @param filterChain Spring security filter chain
-     * @param auth Authentication object
+     * @param auth        Authentication object
      */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
+    protected void successfulAuthentication(HttpServletRequest req,
+                                            HttpServletResponse res,
                                             FilterChain filterChain,
                                             Authentication auth) {
-        initializeDependencies(request);
+        initializeDependencies(req);
         User authenticatedUser = (User) auth.getPrincipal();
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", authenticatedUser.getRoles());
@@ -106,12 +104,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(getExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, configurationData.getTokenSecretKey())
                 .compact();
-        response.addHeader(configurationData.getTokenHeader(), configurationData.getTokenPrefix() + token);
-        response.setContentType("application/json");
-        response.addHeader("Access-Control-Expose-Headers", "Authorization");
+        res.addHeader(configurationData.getTokenHeader(), configurationData.getTokenPrefix() + token);
+        res.setContentType("application/json");
+        res.addHeader("Access-Control-Expose-Headers", "Authorization");
 
         try {
-            response.getOutputStream().write("{}".getBytes());
+            res.getOutputStream().write("{}".getBytes());
 
         } catch (IOException e) {
             logger.error("Failed to provide the default JSON body for the JWT token response", e);

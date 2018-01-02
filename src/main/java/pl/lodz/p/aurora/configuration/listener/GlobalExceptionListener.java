@@ -47,6 +47,6 @@ public class GlobalExceptionListener {
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void processInvalidRequest(InvalidRequestException exception) {
-        logger.warn(exception. getMessage(), exception);
+        logger.warn(exception.getMessage(), exception);
     }
 }

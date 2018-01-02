@@ -12,7 +12,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 import java.util.Arrays;
 
 /**
- * TODO
+ * Logger aspect.
  */
 @Aspect
 @Component
@@ -23,8 +23,8 @@ public class LoggerAspect {
     @Around("pl.lodz.p.aurora.configuration.aspect.AspectPointcut.anyControllerAndServiceBean()")
     public Object aroundAnyControllerOrServiceCall(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         StringBuilder messageToLog = new StringBuilder("Invoked business method: ")
-            .append(proceedingJoinPoint.getTarget().getClass().getName())
-            .append(".").append(proceedingJoinPoint.getSignature().getName()).append("()");
+                .append(proceedingJoinPoint.getTarget().getClass().getName())
+                .append(".").append(proceedingJoinPoint.getSignature().getName()).append("()");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null) {
@@ -32,7 +32,6 @@ public class LoggerAspect {
         }
 
         messageToLog.append(" Parameters values: ");
-
         Object[] params = proceedingJoinPoint.getArgs();
 
         if (params.length > 0) {
@@ -46,10 +45,10 @@ public class LoggerAspect {
             });
 
         } else {
-            messageToLog.append("no invocation arguments");
+            messageToLog.append("no invocation arguments ");
         }
 
-        Object result = null;
+        Object result;
 
         try {
             long startTime = System.currentTimeMillis();
