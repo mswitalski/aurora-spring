@@ -30,7 +30,7 @@ public class Feedback extends VersionedEntity {
     @NotNull
     private boolean satisfied = true;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, length = 200)
     @NotNull
     @Size(max = 200)
     private String studentFeedback = "";

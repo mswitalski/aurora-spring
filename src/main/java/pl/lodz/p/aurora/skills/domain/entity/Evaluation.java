@@ -32,12 +32,12 @@ public class Evaluation extends VersionedEntity {
     @Enumerated(EnumType.STRING)
     private SkillLevel leaderEvaluation;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     @NotNull
     @Size(max = 200)
     private String selfExplanation = "";
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     @NotNull
     @Size(max = 200)
     private String leaderExplanation = "";

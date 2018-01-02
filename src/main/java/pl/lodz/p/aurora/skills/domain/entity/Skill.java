@@ -10,13 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(indexes = {
-            @Index(columnList = "name")
-        },
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = "name", name = "unique_skill_name")
-        }
-)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "unique_skill_name")})
 public class Skill extends VersionedEntity {
 
     @Id
@@ -24,7 +18,7 @@ public class Skill extends VersionedEntity {
     @SequenceGenerator(name = "skill_pk_sequence", sequenceName = "skill_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @NotNull
     @NotEmpty
     @Size(max = 50)

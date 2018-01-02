@@ -13,7 +13,9 @@ import java.util.Set;
 
 @Entity
 @Table(indexes = {
-        @Index(columnList = "name")
+        @Index(columnList = "name", name = "index_training_name"),
+        @Index(columnList = "type", name = "index_training_type"),
+        @Index(columnList = "location", name = "index_training_location"),
 })
 public class Training extends VersionedEntity {
 
@@ -22,19 +24,19 @@ public class Training extends VersionedEntity {
     @SequenceGenerator(name = "training_pk_sequence", sequenceName = "training_id_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     @NotNull
     @NotEmpty
     @Size(max = 100)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     @NotNull
     @NotEmpty
     @Size(max = 20)
     private String type;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @NotNull
     @NotEmpty
     @Size(max = 50)
@@ -52,7 +54,7 @@ public class Training extends VersionedEntity {
     @NotNull
     private boolean internal = true;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     @NotNull
     @NotEmpty
     @Size(max = 500)

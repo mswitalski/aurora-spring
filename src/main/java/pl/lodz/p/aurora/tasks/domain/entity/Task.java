@@ -10,7 +10,10 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-@Table
+@Table(indexes = {
+        @Index(columnList = "deadlineDate", name = "index_task_deadline_date"),
+        @Index(columnList = "doneDate", name = "index_task_done_date")
+})
 public class Task extends VersionedEntity {
 
     @Id
@@ -22,7 +25,7 @@ public class Task extends VersionedEntity {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     @NotNull
     @NotEmpty
     @Size(max = 100)

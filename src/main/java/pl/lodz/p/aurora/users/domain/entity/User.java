@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "`user`",
         indexes = {
-            @Index(columnList = "name", name = "index_user_name"),
-            @Index(columnList = "surname", name = "index_user_surname"),
-            @Index(columnList = "enabled", name = "index_user_enabled")
+                @Index(columnList = "name", name = "index_user_name"),
+                @Index(columnList = "surname", name = "index_user_surname"),
+                @Index(columnList = "enabled", name = "index_user_enabled")
         },
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = "username", name = "unique_user_username"),
-            @UniqueConstraint(columnNames = "email", name = "unique_user_email")
+                @UniqueConstraint(columnNames = "username", name = "unique_user_username"),
+                @UniqueConstraint(columnNames = "email", name = "unique_user_email")
         }
 )
 public class User extends VersionedEntity implements Cloneable, UserDetails {
