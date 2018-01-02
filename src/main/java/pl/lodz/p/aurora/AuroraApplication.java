@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Main class for Aurora application.
@@ -21,21 +23,28 @@ import java.util.Locale;
 @SpringBootApplication(exclude = RepositoryRestMvcAutoConfiguration.class)
 public class AuroraApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuroraApplication.class, args);
-	}
+    @Value("${aurora.i18n.supported-languages}")
+    private String supportedLanguages;
 
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
+    @Value("${aurora.i18n.default-language}")
+    private String defaultLanguage;
 
-	@Bean
-	public LocaleResolver localeResolver() {
-		AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-		resolver.setDefaultLocale(Locale.ENGLISH);
-		resolver.setSupportedLocales(Arrays.asList(Locale.ENGLISH, Locale.forLanguageTag("pl")));
+    public static void main(String[] args) {
+        SpringApplication.run(AuroraApplication.class, args);
+    }
 
-		return resolver;
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
+        resolver.setDefaultLocale(Locale.forLanguageTag(defaultLanguage));
+        resolver.setSupportedLocales(Arrays.stream(supportedLanguages.split(","))
+                .map(Locale::forLanguageTag).collect(Collectors.toList()));
+
+        return resolver;
+    }
 }
