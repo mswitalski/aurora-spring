@@ -48,7 +48,7 @@ public class MentorUnitLeaderController extends BaseController {
 
     @GetMapping(value = "{mentorId:[\\d]+}")
     public ResponseEntity<MentorDto> findById(@PathVariable Long mentorId) {
-        return respondWithConversion(service.findById(mentorId), entityToDtoConverter);
+        return respondWithETag(service.findById(mentorId), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")

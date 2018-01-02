@@ -62,7 +62,7 @@ public class DutyUnitLeaderController extends BaseController {
 
     @GetMapping(value = "{dutyId:[\\d]+}")
     public ResponseEntity<DutyDto> findById(@PathVariable Long dutyId) {
-        return respondWithConversion(dutyService.findById(dutyId), entityToDtoConverter);
+        return respondWithETag(dutyService.findById(dutyId), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")

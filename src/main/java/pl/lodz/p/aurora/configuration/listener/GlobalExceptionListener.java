@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.exception.InvalidApplicationConfigurationException;
+import pl.lodz.p.aurora.common.exception.InvalidRequestException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 
 /**
@@ -33,13 +34,19 @@ public class GlobalExceptionListener {
 
     @ExceptionHandler(InvalidApplicationConfigurationException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void processInvalidApplicationConfigurationException(InvalidApplicationConfigurationException exception) {
+    public void processInvalidApplicationConfiguration(InvalidApplicationConfigurationException exception) {
         logger.error(exception.getMessage(), exception);
     }
 
     @ExceptionHandler(ActionForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public void processActionForbiddenException(ActionForbiddenException exception) {
+    public void processActionForbidden(ActionForbiddenException exception) {
         logger.warn("Client tried to do action that is forbidden with his privileges", exception);
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void processInvalidRequest(InvalidRequestException exception) {
+        logger.warn(exception. getMessage(), exception);
     }
 }

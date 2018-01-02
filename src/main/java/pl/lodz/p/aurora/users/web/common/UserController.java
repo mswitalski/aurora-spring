@@ -33,7 +33,7 @@ public class UserController extends BaseController {
 
     @GetMapping(value = "{userId:[\\d]+}")
     public ResponseEntity<UserDto> findById(@PathVariable Long userId) {
-        return respondWithConversion(userService.findById(userId), entityToDtoConverter);
+        return respondWithETag(userService.findById(userId), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")

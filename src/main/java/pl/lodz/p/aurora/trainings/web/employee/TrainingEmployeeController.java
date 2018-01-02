@@ -42,6 +42,6 @@ public class TrainingEmployeeController extends BaseController {
 
     @GetMapping(value = "{trainingId:[\\d]+}")
     public ResponseEntity<TrainingDto> findById(@PathVariable Long trainingId, @AuthenticationPrincipal User activeUser) {
-        return respondWithConversion(service.findById(trainingId, activeUser), entityToDtoConverter);
+        return respondWithETag(service.findById(trainingId, activeUser), entityToDtoConverter);
     }
 }

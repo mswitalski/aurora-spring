@@ -43,7 +43,7 @@ public class EvaluationEmployeeController extends BaseController {
 
     @GetMapping(value = "{evaluationId:[\\d]+}")
     public ResponseEntity<EvaluationDto> findById(@PathVariable Long evaluationId, @AuthenticationPrincipal User activeUser) {
-        return respondWithConversion(evaluationService.findById(evaluationId, activeUser), entityToDtoConverter);
+        return respondWithETag(evaluationService.findById(evaluationId, activeUser), entityToDtoConverter);
     }
 
     @PutMapping(value = "{evaluationId:[\\d]+}")

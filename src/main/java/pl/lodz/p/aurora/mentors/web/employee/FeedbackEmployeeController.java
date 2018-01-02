@@ -32,6 +32,6 @@ public class FeedbackEmployeeController extends BaseController  {
     public ResponseEntity<FeedbackDto> create(@RequestBody FeedbackDto formData, @AuthenticationPrincipal User activeUser) {
         Feedback receivedFeedback = dtoToEntityConverter.convert(formData);
 
-        return respondWithConversion(service.create(receivedFeedback, activeUser), entityToDtoConverter);
+        return respondWithETag(service.create(receivedFeedback, activeUser), entityToDtoConverter);
     }
 }

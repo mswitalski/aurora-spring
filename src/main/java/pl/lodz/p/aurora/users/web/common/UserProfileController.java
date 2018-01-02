@@ -43,7 +43,7 @@ public class UserProfileController extends BaseController {
     @GetMapping
     public ResponseEntity<UserDto> findLoggedUser(@AuthenticationPrincipal User activeUser) {
 
-        return respondWithConversion(userService.findById(activeUser.getId()), entityToDtoConverter);
+        return respondWithETag(userService.findById(activeUser.getId()), entityToDtoConverter);
     }
 
     @PreAuthorize("#user.username == principal.username")

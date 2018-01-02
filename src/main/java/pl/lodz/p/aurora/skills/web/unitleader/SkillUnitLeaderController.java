@@ -35,7 +35,7 @@ public class SkillUnitLeaderController extends BaseController {
 
     @GetMapping(value = "{skillId:[\\d]+}")
     public ResponseEntity<SkillDto> findById(@PathVariable Long skillId) {
-        return respondWithConversion(skillService.findById(skillId), entityToDtoConverter);
+        return respondWithETag(skillService.findById(skillId), entityToDtoConverter);
     }
 
     @PostMapping

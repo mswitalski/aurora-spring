@@ -58,7 +58,7 @@ public class TrainingUnitLeaderController extends BaseController {
 
     @GetMapping(value = "{trainingId:[\\d]+}")
     public ResponseEntity<TrainingDto> findById(@PathVariable Long trainingId) {
-        return respondWithConversion(service.findById(trainingId), entityToDtoConverter);
+        return respondWithETag(service.findById(trainingId), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")

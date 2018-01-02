@@ -7,8 +7,7 @@ import pl.lodz.p.aurora.common.exception.*;
 
 import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 /**
  * An abstract service that will serve as base for other services.
@@ -22,8 +21,13 @@ public abstract class BaseService {
      * @param entity Relevant entity from data source
      */
     protected void failIfEncounteredOutdatedEntity(String eTag, VersionedEntity entity) {
-        if (Long.parseLong(eTag) != entity.getVersion()) {
-            throw new OutdatedEntityModificationException(entity);
+        try {
+            if (Long.parseLong(eTag) != entity.getVersion()) {
+                throw new OutdatedEntityModificationException(entity);
+            }
+
+        } catch (NumberFormatException e) {
+            throw new InvalidRequestException("Provided ETag value was not a number", e);
         }
     }
 
@@ -37,29 +41,6 @@ public abstract class BaseService {
         if (entity == null) {
             throw new InvalidResourceRequestedException(identifier);
         }
-    }
-
-    /**
-     * Fail on unique constraint violation and provide name of the constraint that was violated.
-     *
-     * @param exception Data integrity violation exception
-     * @throws UniqueConstraintViolationException       when provided entity violates unique constraints
-     * @throws InvalidApplicationConfigurationException when could not found the name of the field that violated unique
-     *                                                  constraint
-     */
-    protected void failOnUniqueConstraintViolation(DataIntegrityViolationException exception, Object entity)
-            throws UniqueConstraintViolationException, InvalidApplicationConfigurationException {
-        String message = exception.getCause().getCause().getMessage();
-        Pattern pattern = Pattern.compile("unique_([a-zA-Z-]+)_([a-zA-Z-]+)");
-        Matcher matcher = pattern.matcher(message);
-
-        if (matcher.find()) {
-            throw new UniqueConstraintViolationException(exception, entity.getClass().getSimpleName(), matcher.group(2));
-        }
-
-        throw new InvalidApplicationConfigurationException(
-                "Could not match any violated unique constraint in message",
-                exception.getCause().getCause());
     }
 
     /**
@@ -83,5 +64,28 @@ public abstract class BaseService {
         }
 
         return null;
+    }
+
+    /**
+     * Fail on unique constraint violation and provide name of the constraint that was violated.
+     *
+     * @param exception Data integrity violation exception
+     * @throws UniqueConstraintViolationException       when provided entity violates unique constraints
+     * @throws InvalidApplicationConfigurationException when could not found the name of the field that violated unique
+     *                                                  constraint
+     */
+    private void failOnUniqueConstraintViolation(DataIntegrityViolationException exception, Object entity)
+            throws UniqueConstraintViolationException, InvalidApplicationConfigurationException {
+        String message = exception.getCause().getCause().getMessage();
+        Pattern pattern = Pattern.compile("unique_([a-zA-Z-]+)_([a-zA-Z-]+)");
+        Matcher matcher = pattern.matcher(message);
+
+        if (matcher.find()) {
+            throw new UniqueConstraintViolationException(exception, entity.getClass().getSimpleName(), matcher.group(2));
+        }
+
+        throw new InvalidApplicationConfigurationException(
+                "Could not match any violated unique constraint in message",
+                exception.getCause().getCause());
     }
 }

@@ -33,7 +33,7 @@ public class TaskEmployeeController extends BaseController {
 
     @GetMapping(value = "tasks/{taskId:[\\d]+}")
     public ResponseEntity<TaskDto> findById(@PathVariable Long taskId, @AuthenticationPrincipal User activeUser) {
-        return respondWithConversion(service.findById(taskId, activeUser), entityToDtoConverter);
+        return respondWithETag(service.findById(taskId, activeUser), entityToDtoConverter);
     }
 
     @GetMapping(value = "users/me/tasks/undone/")

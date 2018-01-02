@@ -13,7 +13,7 @@ public class InvalidEntityStateException extends RuntimeException {
      * @param cause What exactly caused this situation
      */
     public InvalidEntityStateException(Object invalidEntity, Throwable cause) {
-        super("Processed entity has invalid state or tried to insert null in many-to-many relationship: "
+        super("Processed entity has invalid state or tried to violate some constraints: "
                 + invalidEntity.toString(), cause);
     }
 }

@@ -16,10 +16,10 @@ public abstract class BaseController {
      * @return Sanitized ETag
      */
     protected String sanitizeReceivedETag(String eTag) {
-        return eTag.replaceAll("[^0-9-]", "");
+        return eTag.replaceAll("[^0-9]", "");
     }
 
-    protected <T, E extends VersionedEntity> ResponseEntity<T> respondWithConversion(E entity, Converter<E, T> converter) {
+    protected <T, E extends VersionedEntity> ResponseEntity<T> respondWithETag(E entity, Converter<E, T> converter) {
         return ResponseEntity.ok().eTag(Long.toString(entity.getVersion())).body(converter.convert(entity));
     }
 }
