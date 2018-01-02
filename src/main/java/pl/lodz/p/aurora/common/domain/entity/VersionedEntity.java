@@ -2,8 +2,7 @@ package pl.lodz.p.aurora.common.domain.entity;
 
 import com.google.common.base.Objects;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 /**
  * An abstract entity that will serve as base entity for other versioned entities.

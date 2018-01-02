@@ -16,6 +16,7 @@ public class ValidationMessageDto {
     public String getMessageContent() {
         return messageContent;
     }
+
     public String getFieldName() {
         return fieldName;
     }
