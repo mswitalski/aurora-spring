@@ -29,7 +29,7 @@ public class GlobalExceptionListener {
     @ExceptionHandler(InvalidResourceRequestedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void processInvalidResourceRequest(InvalidResourceRequestedException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
     }
 
     @ExceptionHandler(InvalidApplicationConfigurationException.class)
@@ -41,7 +41,7 @@ public class GlobalExceptionListener {
     @ExceptionHandler(ActionForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public void processActionForbidden(ActionForbiddenException exception) {
-        logger.warn("Client tried to do action that is forbidden with his privileges", exception);
+        logger.warn(exception.getMessage());
     }
 
     @ExceptionHandler(InvalidRequestException.class)

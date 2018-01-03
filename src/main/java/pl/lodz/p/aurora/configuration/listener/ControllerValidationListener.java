@@ -68,7 +68,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processUniqueValidationError(UniqueConstraintViolationException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator
                 .translate(exception.getEntityName() + "." + exception.getFieldName() + ".Unique", locale);
@@ -85,14 +85,14 @@ public class ControllerValidationListener {
     @ExceptionHandler(OutdatedEntityModificationException.class)
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public void processOutdatedEntityModification(OutdatedEntityModificationException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
     }
 
     @ExceptionHandler(IncompetentMentorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processIncompetentMentor(IncompetentMentorException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Mentor.skill.insufficientLevel", locale);
 
@@ -103,7 +103,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processSelfFeedback(SelfFeedbackException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Feedback.user.selfFeedback", locale);
 
@@ -114,7 +114,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processTooFrequentFeedback(TooFrequentFeedbackException exception) {
-        logger.info(exception.getMessage(), exception);
+        logger.info(exception.getMessage());
         Locale locale = LocaleContextHolder.getLocale();
         String translatedMessage = translator.translate("Feedback.createDateTime.onePerDay", locale);
 
