@@ -13,7 +13,7 @@ import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
 import java.util.List;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "musTransactionManager")
 public class RoleServiceImpl extends BaseService implements RoleService {
 
     private final RoleRepository repository;

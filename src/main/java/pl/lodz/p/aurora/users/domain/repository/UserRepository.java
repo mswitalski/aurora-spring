@@ -12,7 +12,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 /**
  * Repository interface for users entity.
  */
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "musTransactionManager")
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByOrderBySurnameAscNameAsc(Pageable pageable);

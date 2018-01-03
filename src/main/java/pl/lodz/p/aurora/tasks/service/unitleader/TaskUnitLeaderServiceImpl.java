@@ -19,7 +19,7 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mtaTransactionManager")
 public class TaskUnitLeaderServiceImpl extends BaseService implements TaskUnitLeaderService {
 
     private final TaskRepository repository;

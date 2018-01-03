@@ -17,7 +17,7 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "musTransactionManager")
 public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLeaderService {
 
     private final DutyRepository repository;
@@ -28,13 +28,13 @@ public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLe
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
     public Duty create(Duty duty) {
         return save(duty, repository);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
     public void delete(Long dutyId, String eTag) {
         Duty storedDuty = repository.findOne(dutyId);
 
@@ -68,7 +68,7 @@ public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLe
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
     public void update(Long dutyId, Duty duty, String eTag) {
         Duty storedDuty = repository.findOne(dutyId);
 

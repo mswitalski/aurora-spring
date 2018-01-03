@@ -13,7 +13,7 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
 public class ProfileServiceImpl extends BaseService implements ProfileService {
 
     private final UserRepository repository;

@@ -17,7 +17,7 @@ import pl.lodz.p.aurora.users.service.common.UserService;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mskTransactionManager")
 public class EvaluationUnitLeaderServiceImpl extends BaseService implements EvaluationUnitLeaderService {
 
     private final EvaluationRepository repository;
@@ -58,7 +58,7 @@ public class EvaluationUnitLeaderServiceImpl extends BaseService implements Eval
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mskTransactionManager")
     public Evaluation findById(Long evaluationId) {
         Evaluation storedEvaluation = repository.findOne(evaluationId);
 

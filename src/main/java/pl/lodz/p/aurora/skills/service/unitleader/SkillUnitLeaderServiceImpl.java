@@ -15,7 +15,7 @@ import pl.lodz.p.aurora.skills.domain.repository.SkillRepository;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mskTransactionManager")
 public class SkillUnitLeaderServiceImpl extends BaseService implements SkillUnitLeaderService {
 
     private final SkillRepository repository;
@@ -40,13 +40,13 @@ public class SkillUnitLeaderServiceImpl extends BaseService implements SkillUnit
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mskTransactionManager")
     public Page<Skill> findAllByPage(Pageable pageable) {
         return repository.findAllByOrderByNameAsc(pageable);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mskTransactionManager")
     public Page<Skill> search(SkillSearchDto criteria, Pageable pageable) {
         return repository.search(criteria.getName(), pageable);
     }

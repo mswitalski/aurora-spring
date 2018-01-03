@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mmeTransactionManager")
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
 
     @Query(value = "select m from Mentor m inner join m.evaluation e inner join e.skill s where lower(s.name) like concat('%', lower(?1), '%')")

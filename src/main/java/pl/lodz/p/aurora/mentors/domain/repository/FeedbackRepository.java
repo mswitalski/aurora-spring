@@ -10,7 +10,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.List;
 
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, transactionManager = "mmeTransactionManager")
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     List<Feedback> findAllByMentorAndUser(Mentor mentor, User user);

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  */
 @ComponentScan
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication(exclude = RepositoryRestMvcAutoConfiguration.class)
 public class AuroraApplication {
 

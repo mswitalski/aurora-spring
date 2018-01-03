@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mtrTransactionManager")
 public class TrainingUnitLeaderServiceImpl extends BaseService implements TrainingUnitLeaderService {
 
     private final TrainingRepository repository;

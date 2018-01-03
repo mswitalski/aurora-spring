@@ -15,7 +15,7 @@ import pl.lodz.p.aurora.mentors.domain.repository.MentorRepository;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mmeTransactionManager")
 public class MentorUnitLeaderServiceImpl extends BaseService implements MentorUnitLeaderService {
 
     private final MentorRepository repository;

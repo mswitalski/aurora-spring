@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
 public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLeaderService {
 
     private final UserRepository repository;

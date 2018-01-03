@@ -22,7 +22,7 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mtaTransactionManager")
 public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployeeService {
 
     private final TaskRepository repository;
@@ -42,7 +42,7 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mtaTransactionManager")
     public Task create(Task task, User employee) {
         task.setUser(employee);
         task.setDoneDate(null);
@@ -76,7 +76,7 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mtaTransactionManager")
     public void delete(Long taskId, User employee, String eTag) {
         Task storedTask = repository.findOne(taskId);
 
@@ -94,7 +94,7 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mtaTransactionManager")
     public void update(Long taskId, Task task, String eTag, User employee) {
         Task storedTask = repository.findOne(taskId);
 

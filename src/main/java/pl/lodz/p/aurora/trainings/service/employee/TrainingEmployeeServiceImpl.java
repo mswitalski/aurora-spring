@@ -18,7 +18,7 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mtrTransactionManager")
 public class TrainingEmployeeServiceImpl extends BaseService implements TrainingEmployeeService {
 
     private final TrainingRepository repository;

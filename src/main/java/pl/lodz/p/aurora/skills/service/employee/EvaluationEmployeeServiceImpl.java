@@ -16,7 +16,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mskTransactionManager")
 public class EvaluationEmployeeServiceImpl extends BaseService implements EvaluationEmployeeService {
 
     private final EvaluationRepository repository;
@@ -55,7 +55,7 @@ public class EvaluationEmployeeServiceImpl extends BaseService implements Evalua
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mskTransactionManager")
     public Evaluation findById(Long evaluationId, User employee) {
         Evaluation storedEvaluation = repository.findOne(evaluationId);
 

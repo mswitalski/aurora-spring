@@ -19,7 +19,7 @@ import java.util.List;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mmeTransactionManager")
 public class FeedbackEmployeeServiceImpl extends BaseService implements FeedbackEmployeeService {
 
     private final FeedbackRepository repository;

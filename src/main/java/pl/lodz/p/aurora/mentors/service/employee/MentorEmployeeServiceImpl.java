@@ -22,7 +22,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mmeTransactionManager")
 public class MentorEmployeeServiceImpl extends BaseService implements MentorEmployeeService {
 
     private final MentorRepository repository;

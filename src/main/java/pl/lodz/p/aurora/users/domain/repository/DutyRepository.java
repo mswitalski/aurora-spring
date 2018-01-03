@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.users.domain.entity.Duty;
 
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
 public interface DutyRepository extends JpaRepository<Duty, Long> {
 
     Page<Duty> findAllByOrderByNameAsc(Pageable pageable);

@@ -9,7 +9,7 @@ import pl.lodz.p.aurora.users.domain.entity.Role;
 /**
  * Repository interface for role entity.
  */
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "musTransactionManager")
 public interface RoleRepository extends JpaRepository<Role, String> {
 
     Role findByName(String name);

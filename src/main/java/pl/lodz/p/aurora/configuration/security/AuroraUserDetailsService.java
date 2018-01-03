@@ -11,7 +11,7 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
  * Service related to security that provides user account by given username.
  */
 @Component
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "musTransactionManager")
 public class AuroraUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;

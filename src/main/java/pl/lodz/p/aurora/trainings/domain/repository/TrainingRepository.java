@@ -12,7 +12,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.List;
 
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mtrTransactionManager")
 public interface TrainingRepository extends JpaRepository<Training, Long> {
 
     List<Training> findAllByUsersContains(User user);

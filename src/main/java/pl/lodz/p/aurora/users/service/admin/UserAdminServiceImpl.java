@@ -14,7 +14,7 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "musTransactionManager")
 public class UserAdminServiceImpl extends BaseService implements UserAdminService {
 
     private final UserRepository repository;

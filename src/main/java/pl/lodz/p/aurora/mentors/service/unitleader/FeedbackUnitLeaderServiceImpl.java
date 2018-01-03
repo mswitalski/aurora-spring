@@ -12,7 +12,7 @@ import pl.lodz.p.aurora.mentors.domain.repository.FeedbackRepository;
 
 @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, transactionManager = "mmeTransactionManager")
 public class FeedbackUnitLeaderServiceImpl extends BaseService implements FeedbackUnitLeaderService {
 
     private final FeedbackRepository repository;

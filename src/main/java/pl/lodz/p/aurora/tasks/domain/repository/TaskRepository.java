@@ -12,7 +12,7 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.List;
 
-@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true)
+@Transactional(propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ, readOnly = true, transactionManager = "mtaTransactionManager")
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = "select t from Task t where t.doneDate = null and t.user = ?1 order by t.deadlineDate asc")
