@@ -20,42 +20,42 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLeaderService {
 
-    private final DutyRepository dutyRepository;
+    private final DutyRepository repository;
 
     @Autowired
-    public DutyUnitLeaderServiceImpl(DutyRepository dutyRepository) {
-        this.dutyRepository = dutyRepository;
+    public DutyUnitLeaderServiceImpl(DutyRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
     public Duty create(Duty duty) {
-        return save(duty, dutyRepository);
+        return save(duty, repository);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
     public void delete(Long dutyId, String eTag) {
-        Duty storedDuty = dutyRepository.findOne(dutyId);
+        Duty storedDuty = repository.findOne(dutyId);
 
         failIfNoRecordInDatabaseFound(storedDuty, dutyId);
         failIfEncounteredOutdatedEntity(eTag, storedDuty);
-        dutyRepository.delete(storedDuty);
+        repository.delete(storedDuty);
     }
 
     @Override
     public List<Duty> findAll() {
-        return dutyRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Page<Duty> findAllByPage(Pageable pageable) {
-        return dutyRepository.findAllByOrderByNameAsc(pageable);
+        return repository.findAllByOrderByNameAsc(pageable);
     }
 
     @Override
     public Duty findById(Long id) {
-        Duty storedDuty = dutyRepository.findOne(id);
+        Duty storedDuty = repository.findOne(id);
 
         failIfNoRecordInDatabaseFound(storedDuty, id);
 
@@ -64,19 +64,17 @@ public class DutyUnitLeaderServiceImpl extends BaseService implements DutyUnitLe
 
     @Override
     public Page<Duty> search(DutySearchDto critieria, Pageable pageable) {
-        return this.dutyRepository.search(critieria.getName(), pageable);
+        return repository.search(critieria.getName(), pageable);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
     public void update(Long dutyId, Duty duty, String eTag) {
-        Duty storedDuty = dutyRepository.findOne(dutyId);
+        Duty storedDuty = repository.findOne(dutyId);
 
         failIfNoRecordInDatabaseFound(storedDuty, duty);
         failIfEncounteredOutdatedEntity(eTag, storedDuty);
-
         storedDuty.setName(duty.getName());
-
-        save(storedDuty, dutyRepository);
+        save(storedDuty, repository);
     }
 }

@@ -10,7 +10,7 @@ public class DutyDtoToEntityConverter implements Converter<DutyDto, Duty> {
     private final ModelMapper mapper = new ModelMapper();
 
     @Override
-    public Duty convert(DutyDto duty) {
-        return mapper.map(duty, Duty.class);
+    public Duty convert(DutyDto dto) {
+        return mapper.map(dto, Duty.class);
     }
 }

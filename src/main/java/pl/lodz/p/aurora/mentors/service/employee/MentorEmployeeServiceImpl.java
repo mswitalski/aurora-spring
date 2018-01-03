@@ -25,12 +25,12 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class MentorEmployeeServiceImpl extends BaseService implements MentorEmployeeService {
 
-    private final MentorRepository mentorRepository;
+    private final MentorRepository repository;
     private final EvaluationEmployeeService evaluationService;
 
     @Autowired
-    public MentorEmployeeServiceImpl(MentorRepository mentorRepository, EvaluationEmployeeService evaluationService) {
-        this.mentorRepository = mentorRepository;
+    public MentorEmployeeServiceImpl(MentorRepository repository, EvaluationEmployeeService evaluationService) {
+        this.repository = repository;
         this.evaluationService = evaluationService;
     }
 
@@ -43,7 +43,7 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
         mentor.setApproved(false);
         mentor.setActive(true);
 
-        return save(mentor, mentorRepository);
+        return save(mentor, repository);
     }
 
     private void failOnIncompetentUser(User employee, Evaluation evaluation) {
@@ -58,12 +58,12 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
 
     @Override
     public void delete(Long mentorId, User employee, String eTag) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
         failIfTriedToAccessNotOwnedMentor(employee, storedMentor);
         failIfEncounteredOutdatedEntity(eTag, storedMentor);
-        mentorRepository.delete(mentorId);
+        repository.delete(mentorId);
     }
 
     private void failIfTriedToAccessNotOwnedMentor(User employee, Mentor mentor) {
@@ -74,12 +74,12 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
 
     @Override
     public Page<Mentor> findAllByPage(Pageable pageable) {
-        return mentorRepository.findAllByActiveTrueAndApprovedTrue(pageable);
+        return repository.findAllByActiveTrueAndApprovedTrue(pageable);
     }
 
     @Override
     public Mentor findById(Long mentorId, User employee) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
         failIfAccessedSomebodyElsesDormantMentor(storedMentor, employee);
@@ -97,17 +97,17 @@ public class MentorEmployeeServiceImpl extends BaseService implements MentorEmpl
 
     @Override
     public Page<Mentor> search(MentorSearchDto criteria, Pageable pageable) {
-        return mentorRepository.searchActive(criteria.getSkill(), pageable);
+        return repository.searchActive(criteria.getSkill(), pageable);
     }
 
     @Override
     public void update(Long mentorId, Mentor mentor, String eTag, User employee) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
         failIfTriedToAccessNotOwnedMentor(employee, storedMentor);
         failIfEncounteredOutdatedEntity(eTag, storedMentor);
         storedMentor.setActive(mentor.isActive());
-        save(storedMentor, mentorRepository);
+        save(storedMentor, repository);
     }
 }

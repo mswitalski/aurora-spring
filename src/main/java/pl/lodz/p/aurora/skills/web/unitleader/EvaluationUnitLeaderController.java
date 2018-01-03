@@ -18,13 +18,13 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 @RestController
 public class EvaluationUnitLeaderController extends BaseController {
 
-    private final EvaluationUnitLeaderService evaluationService;
+    private final EvaluationUnitLeaderService service;
     private final EvaluationDtoToEntityConverter dtoToEntityConverter = new EvaluationDtoToEntityConverter();
     private final EvaluationEntityToDtoConverter entityToDtoConverter = new EvaluationEntityToDtoConverter();
 
     @Autowired
-    public EvaluationUnitLeaderController(EvaluationUnitLeaderService evaluationService) {
-        this.evaluationService = evaluationService;
+    public EvaluationUnitLeaderController(EvaluationUnitLeaderService service) {
+        this.service = service;
     }
 
     @PostMapping
@@ -32,25 +32,25 @@ public class EvaluationUnitLeaderController extends BaseController {
     public ResponseEntity<EvaluationDto> create(@Validated @RequestBody EvaluationDto formData) {
         Evaluation receivedEvaluation = dtoToEntityConverter.convert(formData);
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(evaluationService.create(receivedEvaluation)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(service.create(receivedEvaluation)));
     }
 
     @DeleteMapping(value = "{evaluationId:[\\d]+}")
     public ResponseEntity<Void> delete(@PathVariable Long evaluationId, @RequestHeader("If-Match") String eTag, @AuthenticationPrincipal User activeUser) {
-        evaluationService.delete(evaluationId, eTag, activeUser);
+        service.delete(evaluationId, eTag, activeUser);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "{evaluationId:[\\d]+}")
     public ResponseEntity<EvaluationDto> findById(@PathVariable Long evaluationId) {
-        return respondWithETag(evaluationService.findById(evaluationId), entityToDtoConverter);
+        return respondWithETag(service.findById(evaluationId), entityToDtoConverter);
     }
 
     @PutMapping(value = "{evaluationId:[\\d]+}")
     @PreAuthorize("#evaluation.user.username != principal.username")
     public ResponseEntity<Void> update(@PathVariable Long evaluationId, @Validated @RequestBody EvaluationDto evaluation, @RequestHeader("If-Match") String eTag) {
-        evaluationService.update(evaluationId, dtoToEntityConverter.convert(evaluation), sanitizeReceivedETag(eTag));
+        service.update(evaluationId, dtoToEntityConverter.convert(evaluation), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

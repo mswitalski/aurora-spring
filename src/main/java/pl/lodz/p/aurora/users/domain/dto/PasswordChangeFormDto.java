@@ -20,15 +20,6 @@ public class PasswordChangeFormDto {
     @Size(min = 3, max = 60, message = "{Default.Size.MinMax}")
     private String newPasswordRepeated;
 
-    public PasswordChangeFormDto() {
-    }
-
-    public PasswordChangeFormDto(String currentPassword, String newPassword, String newPasswordRepeated) {
-        this.currentPassword = currentPassword;
-        this.newPassword = newPassword;
-        this.newPasswordRepeated = newPasswordRepeated;
-    }
-
     public String getCurrentPassword() {
         return currentPassword;
     }

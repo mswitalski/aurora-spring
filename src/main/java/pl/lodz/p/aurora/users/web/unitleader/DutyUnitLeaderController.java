@@ -25,54 +25,54 @@ import java.util.stream.Collectors;
 @RestController
 public class DutyUnitLeaderController extends BaseController {
 
-    private final DutyUnitLeaderService dutyService;
+    private final DutyUnitLeaderService service;
     private final DutyEntityToDtoConverter entityToDtoConverter = new DutyEntityToDtoConverter();
     private final DutyDtoToEntityConverter dtoToEntityConverter = new DutyDtoToEntityConverter();
     private final DutyBasicDtoConverter basicConverter = new DutyBasicDtoConverter();
 
     @Autowired
-    public DutyUnitLeaderController(DutyUnitLeaderService dutyService) {
-        this.dutyService = dutyService;
+    public DutyUnitLeaderController(DutyUnitLeaderService service) {
+        this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<DutyDto> create(@Validated @RequestBody DutyDto userDto) {
         DutyDto savedDuty = entityToDtoConverter
-                .convert(dutyService.create(dtoToEntityConverter.convert(userDto)));
+                .convert(service.create(dtoToEntityConverter.convert(userDto)));
 
         return ResponseEntity.ok().body(savedDuty);
     }
 
     @DeleteMapping(value = "{dutyId:[\\d]+}")
     public ResponseEntity<Void> delete(@PathVariable Long dutyId, @RequestHeader("If-Match") String eTag) {
-        dutyService.delete(dutyId, eTag);
+        service.delete(dutyId, eTag);
 
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<List<DutyBasicDto>> findAll() {
-        return ResponseEntity.ok().body(dutyService.findAll().stream().map(basicConverter::convert).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(service.findAll().stream().map(basicConverter::convert).collect(Collectors.toList()));
     }
 
     @GetMapping(value = "paged/")
     public ResponseEntity<Page<DutyBasicDto>> findAllByPage(Pageable pageable) {
-        return ResponseEntity.ok().body(dutyService.findAllByPage(pageable).map(basicConverter));
+        return ResponseEntity.ok().body(service.findAllByPage(pageable).map(basicConverter));
     }
 
     @GetMapping(value = "{dutyId:[\\d]+}")
     public ResponseEntity<DutyDto> findById(@PathVariable Long dutyId) {
-        return respondWithETag(dutyService.findById(dutyId), entityToDtoConverter);
+        return respondWithETag(service.findById(dutyId), entityToDtoConverter);
     }
 
     @PostMapping(value = "search/")
     public ResponseEntity<Page<DutyBasicDto>> search(@RequestBody DutySearchDto criteria, Pageable pageable) {
-        return ResponseEntity.ok().body(dutyService.search(criteria, pageable).map(basicConverter));
+        return ResponseEntity.ok().body(service.search(criteria, pageable).map(basicConverter));
     }
 
     @PutMapping(value = "{dutyId:[\\d]+}")
     public ResponseEntity<Void> update(@PathVariable Long dutyId, @Validated @RequestBody DutyDto duty, @RequestHeader("If-Match") String eTag) {
-        dutyService.update(dutyId, dtoToEntityConverter.convert(duty), sanitizeReceivedETag(eTag));
+        service.update(dutyId, dtoToEntityConverter.convert(duty), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

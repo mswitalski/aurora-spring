@@ -19,12 +19,12 @@ import pl.lodz.p.aurora.users.domain.entity.User;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class EvaluationEmployeeServiceImpl extends BaseService implements EvaluationEmployeeService {
 
-    private final EvaluationRepository evaluationRepository;
+    private final EvaluationRepository repository;
     private final SkillService skillService;
 
     @Autowired
-    public EvaluationEmployeeServiceImpl(EvaluationRepository evaluationRepository, SkillService skillService) {
-        this.evaluationRepository = evaluationRepository;
+    public EvaluationEmployeeServiceImpl(EvaluationRepository repository, SkillService skillService) {
+        this.repository = repository;
         this.skillService = skillService;
     }
 
@@ -35,17 +35,17 @@ public class EvaluationEmployeeServiceImpl extends BaseService implements Evalua
         evaluation.setLeaderEvaluation(SkillLevel.NOT_EVALUATED);
         evaluation.setLeaderExplanation("");
 
-        return save(evaluation, evaluationRepository);
+        return save(evaluation, repository);
     }
 
     @Override
     public void delete(Long evaluationId, User employee, String eTag) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
         failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
-        evaluationRepository.delete(evaluationId);
+        repository.delete(evaluationId);
     }
 
     private void failIfTriedToAccessNotOwnedEvaluation(User employee, Evaluation evaluation) {
@@ -57,7 +57,7 @@ public class EvaluationEmployeeServiceImpl extends BaseService implements Evalua
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Evaluation findById(Long evaluationId, User employee) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
         failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
@@ -67,13 +67,13 @@ public class EvaluationEmployeeServiceImpl extends BaseService implements Evalua
 
     @Override
     public void update(Long evaluationId, Evaluation evaluation, String eTag, User employee) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
         failIfTriedToAccessNotOwnedEvaluation(employee, storedEvaluation);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
         storedEvaluation.setSelfEvaluation(evaluation.getSelfEvaluation());
         storedEvaluation.setSelfExplanation(evaluation.getSelfExplanation());
-        save(storedEvaluation, evaluationRepository);
+        save(storedEvaluation, repository);
     }
 }

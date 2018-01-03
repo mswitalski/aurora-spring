@@ -16,15 +16,15 @@ import java.util.List;
 @RestController
 public class RoleAdminController {
 
-    private final RoleService roleService;
+    private final RoleService service;
 
     @Autowired
-    public RoleAdminController(RoleService roleService) {
-        this.roleService = roleService;
+    public RoleAdminController(RoleService service) {
+        this.service = service;
     }
 
     @GetMapping()
     public List<Role> findAll() {
-        return roleService.findAll();
+        return service.findAll();
     }
 }

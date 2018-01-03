@@ -14,9 +14,6 @@ public class UserBasicDto {
     private String goals;
     private boolean enabled;
 
-    public UserBasicDto() {
-    }
-
     public Long getId() {
         return id;
     }

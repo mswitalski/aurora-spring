@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
 @RestController
 public class UserEmployeeController extends BaseController {
 
-    private final UserService userService;
+    private final UserService service;
     private final EvaluationEntityToDtoConverter eEntityToDtoConverter = new EvaluationEntityToDtoConverter();
     private final MentorEntityToDtoConverter mEntityToDtoConverter = new MentorEntityToDtoConverter();
 
     @Autowired
-    public UserEmployeeController(UserService userService) {
-        this.userService = userService;
+    public UserEmployeeController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping(value = "{userId:[\\d]+}/evaluations/")
     @PreAuthorize("#userId == principal.id")
     public ResponseEntity<List<EvaluationDto>> findEmployeeEvaluations(@PathVariable Long userId) {
-        List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(userId).getSkills());
+        List<Evaluation> employeeEvaluations = new ArrayList<>(service.findById(userId).getSkills());
 
         return ResponseEntity.ok()
                 .body(employeeEvaluations.stream().map(eEntityToDtoConverter::convert).collect(Collectors.toList()));
@@ -47,7 +47,7 @@ public class UserEmployeeController extends BaseController {
 
     @GetMapping(value = "me/mentoring/")
     public ResponseEntity<List<MentorDto>> findEmployeeMentorActivity(@AuthenticationPrincipal User activeUser) {
-        List<Evaluation> employeeEvaluations = new ArrayList<>(userService.findById(activeUser.getId()).getSkills());
+        List<Evaluation> employeeEvaluations = new ArrayList<>(service.findById(activeUser.getId()).getSkills());
         List<Mentor> employeeMentorActivity = employeeEvaluations.stream().map(Evaluation::getMentor).filter(Objects::nonNull)
                 .collect(Collectors.toList());
 

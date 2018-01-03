@@ -17,13 +17,13 @@ import pl.lodz.p.aurora.users.service.admin.UserAdminService;
 @RestController
 public class UserAdminController extends BaseController {
 
-    private final UserAdminService userAdminService;
+    private final UserAdminService service;
     private final UserEntityToDtoConverter entityToDtoConverter = new UserEntityToDtoConverter();
     private final UserDtoToEntityConverter dtoToEntityConverter = new UserDtoToEntityConverter();
 
     @Autowired
-    public UserAdminController(UserAdminService userAdminService) {
-        this.userAdminService = userAdminService;
+    public UserAdminController(UserAdminService service) {
+        this.service = service;
     }
 
     @PostMapping
@@ -31,26 +31,26 @@ public class UserAdminController extends BaseController {
         User receivedUser = dtoToEntityConverter.convert(formData);
         receivedUser.setPassword(formData.getPassword());
 
-        return ResponseEntity.ok().body(entityToDtoConverter.convert(userAdminService.create(receivedUser)));
+        return ResponseEntity.ok().body(entityToDtoConverter.convert(service.create(receivedUser)));
     }
 
     @DeleteMapping(value = "{userId:[\\d]+}")
     public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestHeader("If-Match") String eTag) {
-        userAdminService.delete(userId, eTag);
+        service.delete(userId, eTag);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "{userId:[\\d]+}")
     public ResponseEntity<Void> update(@PathVariable Long userId, @Validated @RequestBody UserDto user, @RequestHeader("If-Match") String eTag) {
-        userAdminService.update(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
+        service.update(userId, dtoToEntityConverter.convert(user), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "{userId:[\\d]+}/password")
     public ResponseEntity<Void> updatePassword(@PathVariable Long userId, @Validated @RequestBody AdminPasswordChangeFormDto formData, @RequestHeader("If-Match") String eTag) {
-        userAdminService.updatePassword(userId, formData.getNewPassword(), sanitizeReceivedETag(eTag));
+        service.updatePassword(userId, formData.getNewPassword(), sanitizeReceivedETag(eTag));
 
         return ResponseEntity.noContent().build();
     }

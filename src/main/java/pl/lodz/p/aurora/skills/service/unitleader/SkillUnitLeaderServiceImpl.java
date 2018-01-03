@@ -18,46 +18,46 @@ import pl.lodz.p.aurora.skills.domain.repository.SkillRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class SkillUnitLeaderServiceImpl extends BaseService implements SkillUnitLeaderService {
 
-    private final SkillRepository skillRepository;
+    private final SkillRepository repository;
 
     @Autowired
-    public SkillUnitLeaderServiceImpl(SkillRepository skillRepository) {
-        this.skillRepository = skillRepository;
+    public SkillUnitLeaderServiceImpl(SkillRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public Skill create(Skill skill) {
-        return save(skill, skillRepository);
+        return save(skill, repository);
     }
 
     @Override
     public void delete(Long skillId, String eTag) {
-        Skill storedSkill = skillRepository.findOne(skillId);
+        Skill storedSkill = repository.findOne(skillId);
 
         failIfNoRecordInDatabaseFound(storedSkill, skillId);
         failIfEncounteredOutdatedEntity(eTag, storedSkill);
-        skillRepository.delete(skillId);
+        repository.delete(skillId);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Skill> findAllByPage(Pageable pageable) {
-        return skillRepository.findAllByOrderByNameAsc(pageable);
+        return repository.findAllByOrderByNameAsc(pageable);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Page<Skill> search(SkillSearchDto criteria, Pageable pageable) {
-        return skillRepository.search(criteria.getName(), pageable);
+        return repository.search(criteria.getName(), pageable);
     }
 
     @Override
     public void update(Long skillId, Skill skill, String eTag) {
-        Skill storedSkill = skillRepository.findOne(skillId);
+        Skill storedSkill = repository.findOne(skillId);
 
         failIfNoRecordInDatabaseFound(storedSkill, skillId);
         failIfEncounteredOutdatedEntity(eTag, storedSkill);
         storedSkill.setName(skill.getName());
-        save(storedSkill, skillRepository);
+        save(storedSkill, repository);
     }
 }

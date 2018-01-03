@@ -16,7 +16,7 @@ public class TaskDto {
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 100, message = "{Default.Size.Max}")
     private String content;
-
+    
     private LocalDate deadlineDate;
     private LocalDate doneDate;
 

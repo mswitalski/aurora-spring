@@ -18,30 +18,30 @@ import pl.lodz.p.aurora.mentors.domain.repository.MentorRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class MentorUnitLeaderServiceImpl extends BaseService implements MentorUnitLeaderService {
 
-    private final MentorRepository mentorRepository;
+    private final MentorRepository repository;
 
     @Autowired
-    public MentorUnitLeaderServiceImpl(MentorRepository mentorRepository) {
-        this.mentorRepository = mentorRepository;
+    public MentorUnitLeaderServiceImpl(MentorRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public void delete(Long mentorId, String eTag) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
         failIfEncounteredOutdatedEntity(eTag, storedMentor);
-        mentorRepository.delete(mentorId);
+        repository.delete(mentorId);
     }
 
     @Override
     public Page<Mentor> findAllByPage(Pageable pageable) {
-        return mentorRepository.findAll(pageable);
+        return repository.findAll(pageable);
     }
 
     @Override
     public Mentor findById(Long mentorId) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
 
@@ -50,17 +50,17 @@ public class MentorUnitLeaderServiceImpl extends BaseService implements MentorUn
 
     @Override
     public Page<Mentor> search(MentorSearchDto criteria, Pageable pageable) {
-        return mentorRepository.searchAll(criteria.getSkill(), pageable);
+        return repository.searchAll(criteria.getSkill(), pageable);
     }
 
     @Override
     public void update(Long mentorId, Mentor mentor, String eTag) {
-        Mentor storedMentor = mentorRepository.findOne(mentorId);
+        Mentor storedMentor = repository.findOne(mentorId);
 
         failIfNoRecordInDatabaseFound(storedMentor, mentorId);
         failIfEncounteredOutdatedEntity(eTag, storedMentor);
         storedMentor.setActive(mentor.isActive());
         storedMentor.setApproved(mentor.isApproved());
-        save(storedMentor, mentorRepository);
+        save(storedMentor, repository);
     }
 }

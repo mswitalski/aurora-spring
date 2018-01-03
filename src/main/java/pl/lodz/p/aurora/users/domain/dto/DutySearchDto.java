@@ -4,9 +4,6 @@ public class DutySearchDto {
 
     private String name = "";
 
-    public DutySearchDto() {
-    }
-
     public String getName() {
         return name;
     }

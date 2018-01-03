@@ -22,7 +22,7 @@ public class UserDto implements Cloneable {
     @Size(min = 3, max = 20, message = "{Default.Size.MinMax}")
     private String username;
 
-    @Email(message = "{UserDto.email.Email}")
+    @Email(message = "{Default.Email}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 40, message = "{Default.Size.Max}")

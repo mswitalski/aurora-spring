@@ -17,23 +17,23 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class UserServiceImpl extends BaseService implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
     public Page<User> findAllByPage(Pageable pageable) {
-        return userRepository.findAllByOrderBySurnameAscNameAsc(pageable);
+        return repository.findAllByOrderBySurnameAscNameAsc(pageable);
     }
 
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_UNIT_LEADER')")
     public User findById(Long userId) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, userId);
 
@@ -49,7 +49,7 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Override
     public User findByUsername(String username) {
-        User storedUser = userRepository.findDistinctByUsername(username);
+        User storedUser = repository.findDistinctByUsername(username);
 
         failIfNoRecordInDatabaseFound(storedUser, username);
 
@@ -59,7 +59,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_UNIT_LEADER')")
     public Page<User> search(UserSearchDto critieria, Pageable pageable) {
-        return this.userRepository.search(
+        return this.repository.search(
                 critieria.getUsername(),
                 critieria.getName(),
                 critieria.getSurname(),

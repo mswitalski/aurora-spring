@@ -29,23 +29,30 @@ public class StatisticsDto {
 
     public void processTask(Task task) {
         if (task.getDoneDate() == null) {
-            this.planned++;
-
-            if (task.getDeadlineDate() != null && task.getDeadlineDate().isBefore(LocalDate.now())) {
-                this.overdue++;
-            }
+            processUndoneTask(task);
 
         } else {
-            LocalDate lastWeek = LocalDate.now().minusWeeks(1);
-            LocalDate lastMonth = LocalDate.now().minusMonths(1);
+            processDoneTask(task);
+        }
+    }
 
-            if (task.getDoneDate().isAfter(lastWeek) || task.getDoneDate().isEqual(lastWeek)) {
-                this.doneLastWeek++;
+    private void processUndoneTask(Task task) {
+        this.planned++;
 
-            }
-            if (task.getDoneDate().isAfter(lastMonth) || task.getDoneDate().isEqual(lastMonth)) {
-                this.doneLastMonth++;
-            }
+        if (task.getDeadlineDate() != null && task.getDeadlineDate().isBefore(LocalDate.now())) {
+            this.overdue++;
+        }
+    }
+
+    private void processDoneTask(Task task) {
+        LocalDate lastWeek = LocalDate.now().minusWeeks(1);
+        LocalDate lastMonth = LocalDate.now().minusMonths(1);
+
+        if (task.getDoneDate().isAfter(lastWeek) || task.getDoneDate().isEqual(lastWeek)) {
+            this.doneLastWeek++;
+        }
+        if (task.getDoneDate().isAfter(lastMonth) || task.getDoneDate().isEqual(lastMonth)) {
+            this.doneLastMonth++;
         }
     }
 }

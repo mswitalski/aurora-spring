@@ -20,13 +20,13 @@ import pl.lodz.p.aurora.users.service.common.UserService;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class EvaluationUnitLeaderServiceImpl extends BaseService implements EvaluationUnitLeaderService {
 
-    private final EvaluationRepository evaluationRepository;
+    private final EvaluationRepository repository;
     private final SkillService skillService;
     private final UserService userService;
 
     @Autowired
-    public EvaluationUnitLeaderServiceImpl(EvaluationRepository evaluationRepository, SkillService skillService, UserService userService) {
-        this.evaluationRepository = evaluationRepository;
+    public EvaluationUnitLeaderServiceImpl(EvaluationRepository repository, SkillService skillService, UserService userService) {
+        this.repository = repository;
         this.skillService = skillService;
         this.userService = userService;
     }
@@ -38,17 +38,17 @@ public class EvaluationUnitLeaderServiceImpl extends BaseService implements Eval
         evaluation.setSelfEvaluation(SkillLevel.NOT_EVALUATED);
         evaluation.setSelfExplanation("");
 
-        return save(evaluation, evaluationRepository);
+        return save(evaluation, repository);
     }
 
     @Override
     public void delete(Long evaluationId, String eTag, User activeUser) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
         failIfTriedToModifyOwnedEvaluation(activeUser, storedEvaluation);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
-        evaluationRepository.delete(evaluationId);
+        repository.delete(evaluationId);
     }
 
     private void failIfTriedToModifyOwnedEvaluation(User unitLeader, Evaluation evaluation) {
@@ -60,7 +60,7 @@ public class EvaluationUnitLeaderServiceImpl extends BaseService implements Eval
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
     public Evaluation findById(Long evaluationId) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
 
@@ -69,12 +69,12 @@ public class EvaluationUnitLeaderServiceImpl extends BaseService implements Eval
 
     @Override
     public void update(Long evaluationId, Evaluation evaluation, String eTag) {
-        Evaluation storedEvaluation = evaluationRepository.findOne(evaluationId);
+        Evaluation storedEvaluation = repository.findOne(evaluationId);
 
         failIfNoRecordInDatabaseFound(storedEvaluation, evaluationId);
         failIfEncounteredOutdatedEntity(eTag, storedEvaluation);
         storedEvaluation.setLeaderEvaluation(evaluation.getLeaderEvaluation());
         storedEvaluation.setLeaderExplanation(evaluation.getLeaderExplanation());
-        save(storedEvaluation, evaluationRepository);
+        save(storedEvaluation, repository);
     }
 }

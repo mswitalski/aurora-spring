@@ -16,31 +16,30 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class ProfileServiceImpl extends BaseService implements ProfileService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final PasswordEncoderProvider passwordEncoderProvider;
 
     @Autowired
-    public ProfileServiceImpl(UserRepository userRepository, PasswordEncoderProvider passwordEncoderProvider) {
-        this.userRepository = userRepository;
+    public ProfileServiceImpl(UserRepository repository, PasswordEncoderProvider passwordEncoderProvider) {
+        this.repository = repository;
         this.passwordEncoderProvider = passwordEncoderProvider;
     }
 
     @Override
     public void update(String eTag, User user) {
-        User storedUser = userRepository.findDistinctByUsername(user.getUsername());
+        User storedUser = repository.findDistinctByUsername(user.getUsername());
 
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-
         storedUser.setName(user.getName());
         storedUser.setSurname(user.getSurname());
         storedUser.setGoals(user.getGoals());
-        save(storedUser, userRepository);
+        save(storedUser, repository);
     }
 
     @Override
     public boolean updatePassword(String username, String newPassword, String oldPassword, String eTag) {
-        User loggedUser = userRepository.findDistinctByUsername(username);
+        User loggedUser = repository.findDistinctByUsername(username);
         failIfNoRecordInDatabaseFound(loggedUser, username);
         failIfEncounteredOutdatedEntity(eTag, loggedUser);
 
@@ -49,7 +48,7 @@ public class ProfileServiceImpl extends BaseService implements ProfileService {
         }
 
         loggedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
-        userRepository.saveAndFlush(loggedUser);
+        save(loggedUser, repository);
 
         return true;
     }

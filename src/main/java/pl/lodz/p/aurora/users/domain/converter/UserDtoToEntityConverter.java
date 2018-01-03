@@ -22,14 +22,14 @@ public class UserDtoToEntityConverter implements Converter<UserDto, User> {
     }
 
     @Override
-    public User convert(UserDto user) {
-        User convertedUser = typeMap.map(user);
-        convertedUser.setDuties(convertDuties(user.getDuties()));
+    public User convert(UserDto dto) {
+        User convertedUser = typeMap.map(dto);
+        convertedUser.setDuties(convertDuties(dto.getDuties()));
 
         return convertedUser;
     }
 
-    private Set<Duty> convertDuties(Set<DutyBasicDto> basicDuties) {
-        return basicDuties.stream().map(duty -> mapper.map(duty, Duty.class)).collect(Collectors.toSet());
+    private Set<Duty> convertDuties(Set<DutyBasicDto> duties) {
+        return duties.stream().map(duty -> mapper.map(duty, Duty.class)).collect(Collectors.toSet());
     }
 }

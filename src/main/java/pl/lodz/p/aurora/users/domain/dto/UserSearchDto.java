@@ -7,9 +7,6 @@ public class UserSearchDto {
     private String username = "";
     private String email = "";
 
-    public UserSearchDto() {
-    }
-
     public String getName() {
         return name;
     }

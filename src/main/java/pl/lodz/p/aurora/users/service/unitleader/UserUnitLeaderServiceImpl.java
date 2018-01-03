@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLeaderService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final RoleService roleService;
     private final DutyUnitLeaderService dutyUnitLeaderService;
     private final PasswordEncoderProvider passwordEncoderProvider;
@@ -35,36 +35,37 @@ public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLe
     private String defaultEmployeeRoleName;
 
     @Autowired
-    public UserUnitLeaderServiceImpl(UserRepository userRepository, RoleService roleService, DutyUnitLeaderService dutyUnitLeaderService, PasswordEncoderProvider passwordEncoderProvider) {
-        this.userRepository = userRepository;
+    public UserUnitLeaderServiceImpl(UserRepository repository, RoleService roleService, DutyUnitLeaderService dutyService, PasswordEncoderProvider encoder) {
+        this.repository = repository;
         this.roleService = roleService;
-        this.dutyUnitLeaderService = dutyUnitLeaderService;
-        this.passwordEncoderProvider = passwordEncoderProvider;
+        this.dutyUnitLeaderService = dutyService;
+        this.passwordEncoderProvider = encoder;
     }
 
     @Override
     public User create(User user) {
-        user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
         Role employeeRole = roleService.findByName(defaultEmployeeRoleName);
 
         // Roles received from the client must be completely disregarded
         user.setRoles(Collections.singleton(employeeRole));
+        user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
 
-        return save(user, userRepository);
+        return save(user, repository);
     }
 
     @Override
     public void delete(Long userId, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
+
         failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfTriedToChangeNonEmployee(storedUser);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-        userRepository.delete(storedUser);
+        repository.delete(storedUser);
     }
 
     @Override
     public List<User> findAll() {
-        return this.userRepository.findAll();
+        return this.repository.findAll();
     }
 
     private void failIfTriedToChangeNonEmployee(User user) {
@@ -77,31 +78,29 @@ public class UserUnitLeaderServiceImpl extends BaseService implements UserUnitLe
 
     @Override
     public void update(Long userId, User user, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfTriedToChangeNonEmployee(storedUser);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-
         storedUser.setName(user.getName());
         storedUser.setSurname(user.getSurname());
         storedUser.setGoals(user.getGoals());
         storedUser.setEmail(user.getEmail());
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
-        save(storedUser, userRepository);
+        save(storedUser, repository);
     }
 
     @Override
     public void updateDuties(Long userId, User user, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-
         Set<Duty> duties = user.getDuties().stream()
                 .map(d -> dutyUnitLeaderService.findById(d.getId())).collect(Collectors.toSet());
         storedUser.setDuties(duties);
-        save(storedUser, userRepository);
+        save(storedUser, repository);
     }
 }

@@ -5,9 +5,6 @@ public class DutyBasicDto {
     private Long id;
     private String name;
 
-    public DutyBasicDto() {
-    }
-
     public Long getId() {
         return id;
     }

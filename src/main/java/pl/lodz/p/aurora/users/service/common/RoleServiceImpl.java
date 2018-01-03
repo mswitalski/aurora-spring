@@ -16,11 +16,11 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class RoleServiceImpl extends BaseService implements RoleService {
 
-    private final RoleRepository roleRepository;
+    private final RoleRepository repository;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleServiceImpl(RoleRepository repository) {
+        this.repository = repository;
     }
 
     /**
@@ -31,7 +31,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public List<Role> findAll() {
-        return roleRepository.findAll();
+        return repository.findAll();
     }
 
     /**
@@ -42,7 +42,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     @PreAuthorize("hasRole('ROLE_UNIT_LEADER')")
     @Override
     public Role findByName(String name) {
-        Role storedRole = roleRepository.findByName(name);
+        Role storedRole = repository.findByName(name);
 
         failIfNoRecordInDatabaseFound(storedRole, name);
 

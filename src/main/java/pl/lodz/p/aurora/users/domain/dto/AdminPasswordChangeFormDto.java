@@ -13,14 +13,6 @@ public class AdminPasswordChangeFormDto {
     @Size(min = 3, max = 60, message = "{Default.Size.MinMax}")
     private String newPasswordRepeated;
 
-    public AdminPasswordChangeFormDto() {
-    }
-
-    public AdminPasswordChangeFormDto(String newPassword, String newPasswordRepeated) {
-        this.newPassword = newPassword;
-        this.newPasswordRepeated = newPasswordRepeated;
-    }
-
     public String getNewPassword() {
         return newPassword;
     }

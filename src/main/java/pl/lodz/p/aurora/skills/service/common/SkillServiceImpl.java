@@ -17,21 +17,21 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ, readOnly = true)
 public class SkillServiceImpl extends BaseService implements SkillService {
 
-    private final SkillRepository skillRepository;
+    private final SkillRepository repository;
 
     @Autowired
-    public SkillServiceImpl(SkillRepository skillRepository) {
-        this.skillRepository = skillRepository;
+    public SkillServiceImpl(SkillRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public List<Skill> findAll() {
-        return skillRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Skill findById(Long skillId) {
-        Skill storedSkill = skillRepository.findOne(skillId);
+        Skill storedSkill = repository.findOne(skillId);
 
         failIfNoRecordInDatabaseFound(storedSkill, skillId);
 

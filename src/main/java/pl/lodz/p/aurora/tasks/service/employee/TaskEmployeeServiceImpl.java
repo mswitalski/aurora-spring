@@ -103,7 +103,7 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
         failIfEncounteredOutdatedEntity(eTag, storedTask);
 
         if (storedTask.getDoneDate() == null) {
-            failIfInvalidDateTimes(task.getDeadlineDate(), storedTask.getDeadlineDate(), task.getDoneDate());
+            failIfInvalidDates(task.getDeadlineDate(), storedTask.getDeadlineDate(), task.getDoneDate());
             storedTask.setContent(task.getContent());
             storedTask.setDeadlineDate(task.getDeadlineDate());
             storedTask.setDoneDate(processDoneDate(task.getDoneDate()));
@@ -112,11 +112,8 @@ public class TaskEmployeeServiceImpl extends BaseService implements TaskEmployee
         save(storedTask, repository);
     }
 
-    private void failIfInvalidDateTimes(LocalDate newDeadlineDate, LocalDate oldDeadlineDate, LocalDate doneDone) {
-        if (newDeadlineDate != null &&
-                oldDeadlineDate != null &&
-                doneDone == null &&
-                newDeadlineDate.compareTo(LocalDate.now()) < 0) {
+    private void failIfInvalidDates(LocalDate newDate, LocalDate oldDate, LocalDate doneDone) {
+        if (newDate != null && oldDate != null && doneDone == null && newDate.compareTo(LocalDate.now()) < 0) {
             throw new InvalidDateException(
                     "Employee tried to set a task's deadline date with invalid value",
                     Collections.singleton(InvalidDateException.ERROR.DATE_BEFORE_TODAY));

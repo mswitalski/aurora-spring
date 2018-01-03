@@ -17,40 +17,40 @@ import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 public class UserAdminServiceImpl extends BaseService implements UserAdminService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoderProvider passwordEncoderProvider;
+    private final UserRepository repository;
+    private final PasswordEncoderProvider encoderProvider;
 
     @Value("${aurora.default.role.admin.name}")
     private String defaultAdminRoleName;
 
     @Autowired
-    public UserAdminServiceImpl(UserRepository userRepository, PasswordEncoderProvider passwordEncoderProvider) {
-        this.userRepository = userRepository;
-        this.passwordEncoderProvider = passwordEncoderProvider;
+    public UserAdminServiceImpl(UserRepository repository, PasswordEncoderProvider encoderProvider) {
+        this.repository = repository;
+        this.encoderProvider = encoderProvider;
     }
 
     @Override
     public User create(User user) {
-        user.setPassword(passwordEncoderProvider.getEncoder().encode(user.getPassword()));
+        user.setPassword(encoderProvider.getEncoder().encode(user.getPassword()));
 
-        return save(user, userRepository);
+        return save(user, repository);
     }
 
     @Override
     public void delete(Long userId, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
+
         failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-        userRepository.delete(storedUser);
+        repository.delete(storedUser);
     }
 
     @Override
     public void update(Long userId, User user, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
 
         failIfNoRecordInDatabaseFound(storedUser, user);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-
         storedUser.setName(user.getName());
         storedUser.setSurname(user.getSurname());
         storedUser.setGoals(user.getGoals());
@@ -58,15 +58,16 @@ public class UserAdminServiceImpl extends BaseService implements UserAdminServic
         storedUser.setPosition(user.getPosition());
         storedUser.setEnabled(user.isEnabled());
         storedUser.setRoles(user.getRoles());
-        save(storedUser, userRepository);
+        save(storedUser, repository);
     }
 
     @Override
     public void updatePassword(Long userId, String newPassword, String eTag) {
-        User storedUser = userRepository.findOne(userId);
+        User storedUser = repository.findOne(userId);
+
         failIfNoRecordInDatabaseFound(storedUser, userId);
         failIfEncounteredOutdatedEntity(eTag, storedUser);
-        storedUser.setPassword(passwordEncoderProvider.getEncoder().encode(newPassword));
-        userRepository.saveAndFlush(storedUser);
+        storedUser.setPassword(encoderProvider.getEncoder().encode(newPassword));
+        save(storedUser, repository);
     }
 }

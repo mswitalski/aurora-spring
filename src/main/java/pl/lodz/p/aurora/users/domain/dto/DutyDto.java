@@ -18,9 +18,6 @@ public class DutyDto {
 
     private Set<UserDto> users = new HashSet<>();
 
-    public DutyDto() {
-    }
-
     public Long getId() {
         return id;
     }

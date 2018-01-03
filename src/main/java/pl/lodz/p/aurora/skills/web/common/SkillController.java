@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 @RestController
 public class SkillController {
 
-    private final SkillService skillService;
-    private final SkillBasicDtoConverter basicDtoConverter = new SkillBasicDtoConverter();
+    private final SkillService service;
+    private final SkillBasicDtoConverter converter = new SkillBasicDtoConverter();
 
     @Autowired
-    public SkillController(SkillService skillService) {
-        this.skillService = skillService;
+    public SkillController(SkillService service) {
+        this.service = service;
     }
 
     @GetMapping
     public ResponseEntity<List<SkillBasicDto>> findAll() {
-        return ResponseEntity.ok().body(skillService.findAll().stream().map(basicDtoConverter::convert).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(service.findAll().stream().map(converter::convert).collect(Collectors.toList()));
     }
 }

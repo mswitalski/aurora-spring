@@ -10,7 +10,7 @@ public class SkillDtoToEntityConverter implements Converter<SkillDto, Skill> {
     private final ModelMapper mapper = new ModelMapper();
 
     @Override
-    public Skill convert(SkillDto skill) {
-        return mapper.map(skill, Skill.class);
+    public Skill convert(SkillDto dto) {
+        return mapper.map(dto, Skill.class);
     }
 }

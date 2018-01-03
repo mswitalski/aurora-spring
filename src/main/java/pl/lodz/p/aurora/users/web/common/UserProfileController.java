@@ -61,7 +61,6 @@ public class UserProfileController extends BaseController {
         if (!formData.getNewPassword().equals(formData.getNewPasswordRepeated())) {
             return preparePasswordChangeErrorResponse("PasswordChangeFormDto.newPasswordRepeated.Invalid", "new-password-repeated", locale);
         }
-
         if (wasUserPasswordUpdated(eTag, activeUser.getUsername(), formData)) {
             return ResponseEntity.noContent().build();
 
