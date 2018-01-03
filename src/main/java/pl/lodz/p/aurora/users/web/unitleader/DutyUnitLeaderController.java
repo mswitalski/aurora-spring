@@ -47,7 +47,7 @@ public class DutyUnitLeaderController extends BaseController {
     public ResponseEntity<Void> delete(@PathVariable Long dutyId, @RequestHeader("If-Match") String eTag) {
         service.delete(dutyId, eTag);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
