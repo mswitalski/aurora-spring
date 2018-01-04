@@ -52,7 +52,7 @@ public class EvaluationUnitLeaderServiceImpl extends BaseService implements Eval
     }
 
     private void failIfTriedToModifyOwnedEvaluation(User unitLeader, Evaluation evaluation) {
-        if (!evaluation.getUser().getId().equals(unitLeader.getId())) {
+        if (evaluation.getUser().getId().equals(unitLeader.getId())) {
             throw new ActionForbiddenException("Unit leader tried to delete his evaluation: " + evaluation);
         }
     }

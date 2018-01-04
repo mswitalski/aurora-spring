@@ -298,7 +298,7 @@ GRANT SELECT, INSERT, DELETE ON user_training TO auroramtr;
 GRANT SELECT ON duty TO auroramsk;
 GRANT SELECT, INSERT, UPDATE, DELETE ON evaluation TO auroramsk;
 GRANT SELECT ON feedback TO auroramsk;
-GRANT SELECT ON mentor TO auroramsk;
+GRANT SELECT, DELETE ON mentor TO auroramsk;
 GRANT SELECT ON "role" TO auroramsk;
 GRANT SELECT, INSERT, UPDATE, DELETE ON skill TO auroramsk;
 GRANT SELECT ON training TO auroramsk;
