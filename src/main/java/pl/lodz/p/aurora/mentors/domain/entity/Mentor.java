@@ -29,7 +29,7 @@ public class Mentor extends VersionedEntity {
     @NotNull
     private boolean active;
 
-    @OneToMany(mappedBy = "mentor", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<Feedback> feedback = new HashSet<>();
 
     @Override
