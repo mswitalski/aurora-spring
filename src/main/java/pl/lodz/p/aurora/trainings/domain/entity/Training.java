@@ -60,7 +60,7 @@ public class Training extends VersionedEntity {
     @Size(max = 500)
     private String description;
 
-    @ManyToMany(targetEntity = User.class)
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinTable(
             name = "user_training",
             joinColumns = @JoinColumn(
@@ -143,6 +143,10 @@ public class Training extends VersionedEntity {
 
     public void setUsers(Set<User> users) {
         this.users = new HashSet<>(users);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
     }
 
     @PreRemove

@@ -298,4 +298,9 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
 
         return clonedUser;
     }
+
+    @PreRemove
+    private void preRemove() {
+        this.trainings.forEach(training -> training.removeUser(this));
+    }
 }
