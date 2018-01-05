@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.mentors.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class FeedbackDto {
     @NotNull(message = "{Default.NotNull}")
     private boolean satisfied = true;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
     private String studentFeedback = "";

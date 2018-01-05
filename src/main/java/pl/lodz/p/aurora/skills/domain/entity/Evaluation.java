@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.skills.domain.entity;
 
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.skills.domain.other.SkillLevel;
 import pl.lodz.p.aurora.users.domain.entity.User;
@@ -33,11 +34,13 @@ public class Evaluation extends VersionedEntity {
     private SkillLevel leaderEvaluation;
 
     @Column(nullable = false, length = 200)
+    @NoHtml
     @NotNull
     @Size(max = 200)
     private String selfExplanation = "";
 
     @Column(nullable = false, length = 200)
+    @NoHtml
     @NotNull
     @Size(max = 200)
     private String leaderExplanation = "";

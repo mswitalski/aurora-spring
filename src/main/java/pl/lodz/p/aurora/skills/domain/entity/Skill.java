@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.skills.domain.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ public class Skill extends VersionedEntity {
     private Long id;
 
     @Column(nullable = false, length = 50)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 50)

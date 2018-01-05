@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.tasks.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,6 +13,7 @@ public class TaskDto {
 
     private Long id;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 100, message = "{Default.Size.Max}")

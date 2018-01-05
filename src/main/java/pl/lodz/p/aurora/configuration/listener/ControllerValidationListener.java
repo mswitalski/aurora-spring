@@ -54,7 +54,7 @@ public class ControllerValidationListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public List<ValidationMessageDto> processBeanValidationError(MethodArgumentNotValidException exception) {
-        logger.info("Data provided by user did not pass validation phase", exception);
+        logger.info(exception.getMessage());
         BindingResult bindingResult = exception.getBindingResult();
 
         return bindingResult.getFieldErrors().stream().map(this::constructValidationMessage).collect(Collectors.toList());

@@ -6,12 +6,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.mentors.domain.entity.Feedback;
 import pl.lodz.p.aurora.skills.domain.entity.Evaluation;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,7 +44,9 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     private Long id;
 
     @Column(nullable = false, length = 20, updatable = false)
+    @NoHtml
     @NotNull
+    @Pattern(regexp = "[a-zA-Z0-9]*")
     @Size(min = 3, max = 20)
     private String username;
 
@@ -59,21 +63,25 @@ public class User extends VersionedEntity implements Cloneable, UserDetails {
     private String email;
 
     @Column(nullable = false, length = 20)
+    @NoHtml
     @NotNull
     @Size(min = 3, max = 20)
     private String name;
 
     @Column(nullable = false, length = 30)
+    @NoHtml
     @NotNull
     @Size(min = 3, max = 30)
     private String surname;
 
     @Column(nullable = false, length = 40)
+    @NoHtml
     @NotNull
     @Size(min = 2, max = 40)
     private String position;
 
     @Column(nullable = false, length = 200)
+    @NoHtml
     @NotNull
     @Size(max = 200)
     private String goals = "";

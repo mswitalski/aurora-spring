@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.users.domain.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class Duty extends VersionedEntity {
     private Long id;
 
     @Column(nullable = false, length = 100)
+    @NoHtml
     @NotEmpty
     @NotNull
     @Size(max = 100)

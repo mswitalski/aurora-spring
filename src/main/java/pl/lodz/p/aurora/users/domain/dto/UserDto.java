@@ -4,9 +4,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +20,9 @@ public class UserDto implements Cloneable {
 
     private Long id;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
+    @Pattern(regexp = "[a-zA-Z0-9]*", message = "{User.username.Pattern}")
     @Size(min = 3, max = 20, message = "{Default.Size.MinMax}")
     private String username;
 
@@ -28,18 +32,22 @@ public class UserDto implements Cloneable {
     @Size(max = 40, message = "{Default.Size.Max}")
     private String email;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(min = 3, max = 20, message = "{Default.Size.MinMax}")
     private String name;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(min = 3, max = 30, message = "{Default.Size.MinMax}")
     private String surname;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(min = 2, max = 40, message = "{Default.Size.MinMax}")
     private String position;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
     private String goals = "";

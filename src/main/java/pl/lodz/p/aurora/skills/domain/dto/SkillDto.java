@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.skills.domain.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -9,6 +10,7 @@ public class SkillDto {
 
     private Long id;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 50, message = "{Default.Size.Max}")

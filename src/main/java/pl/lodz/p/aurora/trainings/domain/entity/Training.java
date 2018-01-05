@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.trainings.domain.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.persistence.*;
@@ -25,18 +26,21 @@ public class Training extends VersionedEntity {
     private Long id;
 
     @Column(nullable = false, length = 100)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 100)
     private String name;
 
     @Column(nullable = false, length = 20)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 20)
     private String type;
 
     @Column(nullable = false, length = 50)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 50)
@@ -55,6 +59,7 @@ public class Training extends VersionedEntity {
     private boolean internal = true;
 
     @Column(nullable = false, length = 500)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 500)

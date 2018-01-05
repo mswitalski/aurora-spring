@@ -1,5 +1,6 @@
 package pl.lodz.p.aurora.skills.domain.dto;
 
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.skills.domain.other.SkillLevel;
 import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 
@@ -14,10 +15,12 @@ public class EvaluationDto {
     private SkillLevel selfEvaluation;
     private SkillLevel leaderEvaluation;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
     private String selfExplanation = "";
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 200, message = "{Default.Size.Max}")
     private String leaderExplanation = "";

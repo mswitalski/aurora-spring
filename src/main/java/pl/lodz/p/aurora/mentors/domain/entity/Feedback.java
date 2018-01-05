@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.mentors.domain.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class Feedback extends VersionedEntity {
     private boolean satisfied = true;
 
     @Column(nullable = false, updatable = false, length = 200)
+    @NoHtml
     @NotNull
     @Size(max = 200)
     private String studentFeedback = "";

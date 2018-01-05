@@ -1,6 +1,7 @@
 package pl.lodz.p.aurora.users.domain.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,6 +12,7 @@ public class DutyDto {
 
     private Long id;
 
+    @NoHtml
     @NotEmpty(message = "{Default.NotEmpty}")
     @NotNull(message = "{Default.NotNull}")
     @Size(max = 100, message = "{Default.Size.Max}")

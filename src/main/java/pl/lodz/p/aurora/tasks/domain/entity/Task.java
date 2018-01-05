@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.tasks.domain.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Task extends VersionedEntity {
     private User user;
 
     @Column(nullable = false, length = 100)
+    @NoHtml
     @NotNull
     @NotEmpty
     @Size(max = 100)

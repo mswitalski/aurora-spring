@@ -2,6 +2,7 @@ package pl.lodz.p.aurora.trainings.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotEmpty;
+import pl.lodz.p.aurora.common.validator.NoHtml;
 import pl.lodz.p.aurora.users.domain.dto.UserBasicDto;
 
 import javax.validation.constraints.NotNull;
@@ -15,16 +16,19 @@ public class TrainingDto {
 
     private Long id;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 100, message = "{Default.Size.Max}")
     private String name;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 20, message = "{Default.Size.Max}")
     private String type;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 50, message = "{Default.Size.Max}")
@@ -39,6 +43,7 @@ public class TrainingDto {
     @NotNull(message = "{Default.NotNull}")
     private boolean internal = true;
 
+    @NoHtml
     @NotNull(message = "{Default.NotNull}")
     @NotEmpty(message = "{Default.NotEmpty}")
     @Size(max = 500, message = "{Default.Size.Max}")
