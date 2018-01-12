@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
-import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
+import pl.lodz.p.aurora.users.web.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 import pl.lodz.p.aurora.users.domain.repository.UserRepository;
 

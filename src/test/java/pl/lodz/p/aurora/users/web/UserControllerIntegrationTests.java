@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
+import pl.lodz.p.aurora.common.web.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.web.AuthorizedTestsBase;
 import pl.lodz.p.aurora.helper.*;
-import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.web.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.Role;
 
 import java.util.List;

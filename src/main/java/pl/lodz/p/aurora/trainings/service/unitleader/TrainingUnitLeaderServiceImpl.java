@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarServiceImpl;
-import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
+import pl.lodz.p.aurora.trainings.web.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 import pl.lodz.p.aurora.trainings.domain.repository.TrainingRepository;
 import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;

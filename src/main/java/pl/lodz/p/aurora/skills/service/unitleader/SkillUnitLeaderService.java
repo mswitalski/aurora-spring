@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.skills.service.unitleader;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.skills.domain.dto.SkillSearchDto;
+import pl.lodz.p.aurora.skills.web.dto.SkillSearchDto;
 import pl.lodz.p.aurora.skills.domain.entity.Skill;
 
 public interface SkillUnitLeaderService {

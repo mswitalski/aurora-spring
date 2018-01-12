@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.service.BaseService;
-import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
+import pl.lodz.p.aurora.tasks.web.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 import pl.lodz.p.aurora.tasks.domain.repository.TaskRepository;
 import pl.lodz.p.aurora.tasks.exception.InvalidDateException;

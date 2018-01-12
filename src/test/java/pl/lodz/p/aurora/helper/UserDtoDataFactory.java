@@ -3,7 +3,7 @@ package pl.lodz.p.aurora.helper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.aurora.users.domain.dto.UserDto;
+import pl.lodz.p.aurora.users.web.dto.UserDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import java.util.ArrayList;

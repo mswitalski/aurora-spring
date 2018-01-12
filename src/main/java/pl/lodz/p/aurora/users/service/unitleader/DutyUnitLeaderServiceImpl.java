@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.service.BaseService;
-import pl.lodz.p.aurora.users.domain.dto.DutySearchDto;
+import pl.lodz.p.aurora.users.web.dto.DutySearchDto;
 import pl.lodz.p.aurora.users.domain.entity.Duty;
 import pl.lodz.p.aurora.users.domain.repository.DutyRepository;
 

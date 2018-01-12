@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.tasks.service.unitleader;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.tasks.domain.dto.StatisticsDto;
+import pl.lodz.p.aurora.tasks.web.dto.StatisticsDto;
 import pl.lodz.p.aurora.tasks.domain.entity.Task;
 
 import java.util.List;

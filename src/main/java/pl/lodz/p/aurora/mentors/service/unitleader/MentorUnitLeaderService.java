@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.mentors.service.unitleader;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
+import pl.lodz.p.aurora.mentors.web.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 
 public interface MentorUnitLeaderService {

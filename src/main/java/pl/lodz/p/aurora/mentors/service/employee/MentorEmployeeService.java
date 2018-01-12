@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.mentors.service.employee;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
+import pl.lodz.p.aurora.mentors.web.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.users.domain.entity.User;
 

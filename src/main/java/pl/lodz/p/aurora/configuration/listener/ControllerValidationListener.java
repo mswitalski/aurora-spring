@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import pl.lodz.p.aurora.common.domain.dto.ValidationMessageDto;
+import pl.lodz.p.aurora.common.web.dto.ValidationMessageDto;
 import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;

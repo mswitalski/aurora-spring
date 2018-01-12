@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import pl.lodz.p.aurora.users.domain.dto.UserAccountCredentialsDto;
+import pl.lodz.p.aurora.users.web.dto.UserAccountCredentialsDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 import javax.servlet.FilterChain;

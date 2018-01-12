@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.users.service.unitleader;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.users.domain.dto.DutySearchDto;
+import pl.lodz.p.aurora.users.web.dto.DutySearchDto;
 import pl.lodz.p.aurora.users.domain.entity.Duty;
 
 import java.util.List;

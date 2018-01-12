@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.users.service.common;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.users.domain.dto.UserSearchDto;
+import pl.lodz.p.aurora.users.web.dto.UserSearchDto;
 import pl.lodz.p.aurora.users.domain.entity.User;
 
 public interface UserService {

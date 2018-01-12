@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.trainings.service.unitleader;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.lodz.p.aurora.trainings.domain.dto.TrainingSearchDto;
+import pl.lodz.p.aurora.trainings.web.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.trainings.domain.entity.Training;
 
 public interface TrainingUnitLeaderService {

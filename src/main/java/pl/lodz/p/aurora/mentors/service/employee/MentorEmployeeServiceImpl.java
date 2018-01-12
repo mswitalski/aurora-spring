@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.common.service.BaseService;
-import pl.lodz.p.aurora.mentors.domain.dto.MentorSearchDto;
+import pl.lodz.p.aurora.mentors.web.dto.MentorSearchDto;
 import pl.lodz.p.aurora.mentors.domain.entity.Mentor;
 import pl.lodz.p.aurora.mentors.domain.repository.MentorRepository;
 import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
