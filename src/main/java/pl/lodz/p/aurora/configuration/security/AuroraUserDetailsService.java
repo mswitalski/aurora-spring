@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.*;
-import pl.lodz.p.aurora.users.domain.entity.User;
-import pl.lodz.p.aurora.users.domain.repository.UserRepository;
+import pl.lodz.p.aurora.mus.domain.entity.User;
+import pl.lodz.p.aurora.mus.domain.repository.UserRepository;
 
 /**
  * Service related to security that provides user account by given username.

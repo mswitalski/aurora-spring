@@ -13,10 +13,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
-import pl.lodz.p.aurora.users.web.dto.TokenClaimsDto;
-import pl.lodz.p.aurora.users.domain.entity.Role;
-import pl.lodz.p.aurora.users.domain.entity.User;
-import pl.lodz.p.aurora.users.service.common.UserService;
+import pl.lodz.p.aurora.mus.web.dto.TokenClaimsDto;
+import pl.lodz.p.aurora.mus.domain.entity.Role;
+import pl.lodz.p.aurora.mus.domain.entity.User;
+import pl.lodz.p.aurora.mus.service.common.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

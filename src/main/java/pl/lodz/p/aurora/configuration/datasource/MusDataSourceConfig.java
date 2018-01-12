@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "musEntityManagerFactory",
-        basePackages = {"pl.lodz.p.aurora.users.domain.repository"},
+        basePackages = {"pl.lodz.p.aurora.mus.domain.repository"},
         transactionManagerRef = "musTransactionManager")
 public class MusDataSourceConfig {
 
@@ -40,10 +40,10 @@ public class MusDataSourceConfig {
     ) {
         return builder
                 .dataSource(dataSource)
-                .packages("pl.lodz.p.aurora.users.domain.entity",
-                        "pl.lodz.p.aurora.mentors.domain.entity",
-                        "pl.lodz.p.aurora.skills.domain.entity",
-                        "pl.lodz.p.aurora.trainings.domain.entity")
+                .packages("pl.lodz.p.aurora.mus.domain.entity",
+                        "pl.lodz.p.aurora.mme.domain.entity",
+                        "pl.lodz.p.aurora.msk.domain.entity",
+                        "pl.lodz.p.aurora.mtr.domain.entity")
                 .persistenceUnit("mus")
                 .build();
     }

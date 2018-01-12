@@ -17,11 +17,11 @@ import pl.lodz.p.aurora.common.exception.InvalidEntityStateException;
 import pl.lodz.p.aurora.common.exception.OutdatedEntityModificationException;
 import pl.lodz.p.aurora.common.exception.UniqueConstraintViolationException;
 import pl.lodz.p.aurora.common.util.Translator;
-import pl.lodz.p.aurora.mentors.exception.IncompetentMentorException;
-import pl.lodz.p.aurora.mentors.exception.SelfFeedbackException;
-import pl.lodz.p.aurora.mentors.exception.TooFrequentFeedbackException;
-import pl.lodz.p.aurora.tasks.exception.InvalidDateException;
-import pl.lodz.p.aurora.trainings.exception.InvalidDateTimeException;
+import pl.lodz.p.aurora.mme.exception.IncompetentMentorException;
+import pl.lodz.p.aurora.mme.exception.SelfFeedbackException;
+import pl.lodz.p.aurora.mme.exception.TooFrequentFeedbackException;
+import pl.lodz.p.aurora.mta.exception.InvalidDateException;
+import pl.lodz.p.aurora.mtr.exception.InvalidDateTimeException;
 
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;

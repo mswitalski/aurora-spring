@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
-import pl.lodz.p.aurora.users.domain.entity.Role;
-import pl.lodz.p.aurora.users.domain.entity.User;
-import pl.lodz.p.aurora.users.domain.repository.RoleRepository;
-import pl.lodz.p.aurora.users.domain.repository.UserRepository;
+import pl.lodz.p.aurora.mus.domain.entity.Role;
+import pl.lodz.p.aurora.mus.domain.entity.User;
+import pl.lodz.p.aurora.mus.domain.repository.RoleRepository;
+import pl.lodz.p.aurora.mus.domain.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;

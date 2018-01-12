@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "mtrEntityManagerFactory",
         transactionManagerRef = "mtrTransactionManager",
-        basePackages = { "pl.lodz.p.aurora.trainings.domain.repository" })
+        basePackages = {"pl.lodz.p.aurora.mtr.domain.repository"})
 public class MtrDataSourceConfig {
 
     @Bean(name = "mtrDataSource")
@@ -37,10 +37,10 @@ public class MtrDataSourceConfig {
     ) {
         return builder
                 .dataSource(dataSource)
-                .packages("pl.lodz.p.aurora.trainings.domain.entity",
-                        "pl.lodz.p.aurora.users.domain.entity",
-                        "pl.lodz.p.aurora.mentors.domain.entity",
-                        "pl.lodz.p.aurora.skills.domain.entity")
+                .packages("pl.lodz.p.aurora.mtr.domain.entity",
+                        "pl.lodz.p.aurora.mus.domain.entity",
+                        "pl.lodz.p.aurora.mme.domain.entity",
+                        "pl.lodz.p.aurora.msk.domain.entity")
                 .persistenceUnit("mtr")
                 .build();
     }

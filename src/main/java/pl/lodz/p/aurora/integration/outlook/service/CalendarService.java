@@ -1,6 +1,6 @@
 package pl.lodz.p.aurora.integration.outlook.service;
 
-import pl.lodz.p.aurora.trainings.domain.entity.Training;
+import pl.lodz.p.aurora.mtr.domain.entity.Training;
 
 public interface CalendarService {
 

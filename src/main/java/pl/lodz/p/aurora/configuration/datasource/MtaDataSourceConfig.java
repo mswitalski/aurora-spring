@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "mtaEntityManagerFactory",
         transactionManagerRef = "mtaTransactionManager",
-        basePackages = { "pl.lodz.p.aurora.tasks.domain.repository" })
+        basePackages = {"pl.lodz.p.aurora.mta.domain.repository"})
 public class MtaDataSourceConfig {
 
     @Bean(name = "mtaDataSource")
@@ -37,11 +37,11 @@ public class MtaDataSourceConfig {
     ) {
         return builder
                 .dataSource(dataSource)
-                .packages("pl.lodz.p.aurora.tasks.domain.entity",
-                        "pl.lodz.p.aurora.users.domain.entity",
-                        "pl.lodz.p.aurora.mentors.domain.entity",
-                        "pl.lodz.p.aurora.skills.domain.entity",
-                        "pl.lodz.p.aurora.trainings.domain.entity")
+                .packages("pl.lodz.p.aurora.mta.domain.entity",
+                        "pl.lodz.p.aurora.mus.domain.entity",
+                        "pl.lodz.p.aurora.mme.domain.entity",
+                        "pl.lodz.p.aurora.msk.domain.entity",
+                        "pl.lodz.p.aurora.mtr.domain.entity")
                 .persistenceUnit("mta")
                 .build();
     }

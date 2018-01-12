@@ -5,7 +5,7 @@ import pl.lodz.p.aurora.integration.outlook.dao.CalendarDao;
 import pl.lodz.p.aurora.integration.outlook.dao.CalendarDaoImpl;
 import pl.lodz.p.aurora.integration.outlook.dto.Event;
 import pl.lodz.p.aurora.integration.outlook.dto.ResponseEventsList;
-import pl.lodz.p.aurora.trainings.domain.entity.Training;
+import pl.lodz.p.aurora.mtr.domain.entity.Training;
 
 import java.util.List;
 import java.util.Optional;
