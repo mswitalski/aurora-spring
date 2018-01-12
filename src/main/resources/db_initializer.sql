@@ -230,17 +230,18 @@ CREATE INDEX index_user_enabled ON "user" USING btree (enabled);
 CREATE INDEX index_user_name ON "user" USING btree (name);
 CREATE INDEX index_user_surname ON "user" USING btree (surname);
 
-ALTER TABLE ONLY user_duty ADD CONSTRAINT fk2326ulxxbm13p5ybws3d5hb2n FOREIGN KEY (duty_id) REFERENCES duty(id);
-ALTER TABLE ONLY evaluation ADD CONSTRAINT fk2l0draqrnk43i12wpl2r0in5b FOREIGN KEY (skill_id) REFERENCES skill(id);
-ALTER TABLE ONLY feedback ADD CONSTRAINT fkcu9glycmh3rkqa3p2cby7o6k2 FOREIGN KEY (mentor_id) REFERENCES mentor(id);
-ALTER TABLE ONLY feedback ADD CONSTRAINT fkdxktj8lagk6hxogb4px7pl70s FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE ONLY evaluation ADD CONSTRAINT fkejkya5gvjctpwahmvy2hgcyra FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE ONLY user_training ADD CONSTRAINT fkf17ahwu9o42hdtc09tvn8x9hd FOREIGN KEY (training_id) REFERENCES training(id);
-ALTER TABLE ONLY user_role ADD CONSTRAINT fkfgsgxvihks805qcq8sq26ab7c FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE ONLY mentor ADD CONSTRAINT fkllw7dj64d2lx7yhn0inqcnx4q FOREIGN KEY (evaluation_id) REFERENCES evaluation(id);
-ALTER TABLE ONLY user_training ADD CONSTRAINT fkltjvbngbv45bxlvau5ohtrwpb FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE ONLY user_duty ADD CONSTRAINT fkm68dnubyo3txtq9wsiw8pesi FOREIGN KEY (user_id) REFERENCES "user"(id);
-ALTER TABLE ONLY user_role ADD CONSTRAINT fkrtdpopqf4fmiyp19q84gs15dn FOREIGN KEY (role_name) REFERENCES role(name);
+ALTER TABLE ONLY user_duty ADD CONSTRAINT user_duty_duty_fkey FOREIGN KEY (duty_id) REFERENCES duty(id);
+ALTER TABLE ONLY evaluation ADD CONSTRAINT evaluation_skill_fkey FOREIGN KEY (skill_id) REFERENCES skill(id);
+ALTER TABLE ONLY feedback ADD CONSTRAINT feedback_mentor_fkey FOREIGN KEY (mentor_id) REFERENCES mentor(id);
+ALTER TABLE ONLY feedback ADD CONSTRAINT feedback_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY evaluation ADD CONSTRAINT evaluation_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY user_training ADD CONSTRAINT user_training_training_fkey FOREIGN KEY (training_id) REFERENCES training(id);
+ALTER TABLE ONLY user_role ADD CONSTRAINT user_role_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY mentor ADD CONSTRAINT mentor_evaluation_fkey FOREIGN KEY (evaluation_id) REFERENCES evaluation(id);
+ALTER TABLE ONLY user_training ADD CONSTRAINT user_training_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY user_duty ADD CONSTRAINT user_duty_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+ALTER TABLE ONLY user_role ADD CONSTRAINT user_role_role_fkey FOREIGN KEY (role_name) REFERENCES role(name);
+ALTER TABLE ONLY task ADD CONSTRAINT task_user_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
 
 -- Define roles and privileges
 -- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM auroramme;
