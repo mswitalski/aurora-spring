@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.lodz.p.aurora.common.web.controller.BaseController;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 import pl.lodz.p.aurora.mus.service.common.RoleService;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @RequestMapping(value = "api/v1/roles/", headers = "Requester-Role=ADMIN")
 @RestController
-public class RoleAdminController {
+public class RoleAdminController extends BaseController {
 
     private final RoleService service;
 

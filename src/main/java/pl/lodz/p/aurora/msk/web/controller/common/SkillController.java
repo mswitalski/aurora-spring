@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.lodz.p.aurora.common.web.controller.BaseController;
 import pl.lodz.p.aurora.msk.web.converter.SkillBasicDtoConverter;
 import pl.lodz.p.aurora.msk.web.dto.SkillBasicDto;
 import pl.lodz.p.aurora.msk.service.common.SkillService;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RequestMapping(value = "api/v1/skills/", headers = "Requester-Role=ANY")
 @RestController
-public class SkillController {
+public class SkillController extends BaseController {
 
     private final SkillService service;
     private final SkillBasicDtoConverter converter = new SkillBasicDtoConverter();
