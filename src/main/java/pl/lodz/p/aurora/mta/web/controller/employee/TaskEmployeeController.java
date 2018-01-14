@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.mta.web.converter.TaskDtoToEntityConverter;
 import pl.lodz.p.aurora.mta.web.converter.TaskEntityToDtoConverter;
 import pl.lodz.p.aurora.mta.web.dto.StatisticsDto;

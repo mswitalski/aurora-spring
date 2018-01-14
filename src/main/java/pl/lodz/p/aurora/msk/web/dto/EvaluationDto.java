@@ -1,6 +1,6 @@
 package pl.lodz.p.aurora.msk.web.dto;
 
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.msk.domain.other.SkillLevel;
 import pl.lodz.p.aurora.mus.web.dto.UserBasicDto;
 

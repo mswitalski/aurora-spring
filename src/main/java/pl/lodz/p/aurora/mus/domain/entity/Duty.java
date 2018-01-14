@@ -1,8 +1,8 @@
 package pl.lodz.p.aurora.mus.domain.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

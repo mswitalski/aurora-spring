@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.domain.entity;
+package pl.lodz.p.aurora.msh.domain.entity;
 
 import com.google.common.base.Objects;
 

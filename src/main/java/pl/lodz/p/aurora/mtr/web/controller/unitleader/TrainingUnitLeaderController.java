@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.mtr.web.converter.TrainingBasicDtoConverter;
 import pl.lodz.p.aurora.mtr.web.converter.TrainingDtoToEntityConverter;
 import pl.lodz.p.aurora.mtr.web.converter.TrainingEntityToDtoConverter;

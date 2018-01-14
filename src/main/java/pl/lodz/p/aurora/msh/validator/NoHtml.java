@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.validator;
+package pl.lodz.p.aurora.msh.validator;
 
 
 import javax.validation.Constraint;

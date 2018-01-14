@@ -1,6 +1,6 @@
-package pl.lodz.p.aurora.common.exception;
+package pl.lodz.p.aurora.msh.exception;
 
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
 
 /**
  * Unchecked exception thrown in situation when the client tries to update entity in data source with outdated

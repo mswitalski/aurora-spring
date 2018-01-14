@@ -1,6 +1,6 @@
 package pl.lodz.p.aurora.mme.domain.entity;
 
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
 import pl.lodz.p.aurora.msk.domain.entity.Evaluation;
 
 import javax.persistence.*;

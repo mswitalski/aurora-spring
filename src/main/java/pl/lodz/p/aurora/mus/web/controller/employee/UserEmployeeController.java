@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.mme.web.converter.MentorEntityToDtoConverter;
 import pl.lodz.p.aurora.mme.web.dto.MentorDto;
 import pl.lodz.p.aurora.mme.domain.entity.Mentor;

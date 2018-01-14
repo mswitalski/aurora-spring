@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.web.dto;
+package pl.lodz.p.aurora.msh.web.dto;
 
 /**
  * DTO class for validation message that are returned to client application.

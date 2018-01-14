@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.exception;
+package pl.lodz.p.aurora.msh.exception;
 
 /**
  * Unchecked exception thrown in situation when any of unique constraints on table was violated.

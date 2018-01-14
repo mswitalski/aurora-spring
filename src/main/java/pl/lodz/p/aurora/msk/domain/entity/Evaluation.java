@@ -1,7 +1,7 @@
 package pl.lodz.p.aurora.msk.domain.entity;
 
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.mme.domain.entity.Mentor;
 import pl.lodz.p.aurora.msk.domain.other.SkillLevel;
 import pl.lodz.p.aurora.mus.domain.entity.User;

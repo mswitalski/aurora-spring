@@ -1,8 +1,8 @@
-package pl.lodz.p.aurora.common.web.controller;
+package pl.lodz.p.aurora.msh.web.controller;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.ResponseEntity;
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
 
 /**
  * An abstract controller that will serve as base for other controllers.

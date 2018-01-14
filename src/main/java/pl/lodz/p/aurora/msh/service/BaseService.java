@@ -1,9 +1,9 @@
-package pl.lodz.p.aurora.common.service;
+package pl.lodz.p.aurora.msh.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lodz.p.aurora.common.domain.entity.VersionedEntity;
-import pl.lodz.p.aurora.common.exception.*;
+import pl.lodz.p.aurora.msh.domain.entity.VersionedEntity;
+import pl.lodz.p.aurora.msh.exception.*;
 
 import javax.validation.ConstraintViolationException;
 import java.io.Serializable;

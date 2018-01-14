@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 
 import javax.validation.constraints.NotNull;

@@ -2,7 +2,7 @@ package pl.lodz.p.aurora.mtr.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.validator.constraints.NotEmpty;
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.mus.web.dto.UserBasicDto;
 
 import javax.validation.constraints.NotNull;

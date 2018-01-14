@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.mme.web.converter.FeedbackDtoToEntityConverter;
 import pl.lodz.p.aurora.mme.web.converter.FeedbackEntityToDtoConverter;
 import pl.lodz.p.aurora.mme.web.dto.FeedbackDto;

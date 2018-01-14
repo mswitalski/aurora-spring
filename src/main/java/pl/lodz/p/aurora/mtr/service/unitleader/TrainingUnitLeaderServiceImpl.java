@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.msh.service.BaseService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarServiceImpl;
 import pl.lodz.p.aurora.mtr.web.dto.TrainingSearchDto;

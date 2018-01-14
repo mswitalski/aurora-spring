@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.web;
+package pl.lodz.p.aurora.msh.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

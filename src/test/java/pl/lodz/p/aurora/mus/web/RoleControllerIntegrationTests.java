@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import pl.lodz.p.aurora.common.web.AuthorizedTestsBase;
+import pl.lodz.p.aurora.msh.web.AuthorizedTestsBase;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 
 import static org.assertj.core.api.Assertions.assertThat;

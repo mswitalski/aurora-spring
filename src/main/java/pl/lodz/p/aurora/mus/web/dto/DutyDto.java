@@ -1,7 +1,7 @@
 package pl.lodz.p.aurora.mus.web.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import pl.lodz.p.aurora.common.validator.NoHtml;
+import pl.lodz.p.aurora.msh.validator.NoHtml;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

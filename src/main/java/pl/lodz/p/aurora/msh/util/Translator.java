@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.util;
+package pl.lodz.p.aurora.msh.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

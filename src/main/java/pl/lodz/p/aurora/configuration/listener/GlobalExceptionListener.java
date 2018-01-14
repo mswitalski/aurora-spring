@@ -7,10 +7,10 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import pl.lodz.p.aurora.common.exception.ActionForbiddenException;
-import pl.lodz.p.aurora.common.exception.InvalidApplicationConfigurationException;
-import pl.lodz.p.aurora.common.exception.InvalidRequestException;
-import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.msh.exception.ActionForbiddenException;
+import pl.lodz.p.aurora.msh.exception.InvalidApplicationConfigurationException;
+import pl.lodz.p.aurora.msh.exception.InvalidRequestException;
+import pl.lodz.p.aurora.msh.exception.InvalidResourceRequestedException;
 
 /**
  * Listener for any global exceptions that occurred during the work of the application.

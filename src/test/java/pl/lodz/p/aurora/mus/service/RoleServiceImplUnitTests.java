@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.msh.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.helper.RoleDataFactory;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 import pl.lodz.p.aurora.mus.domain.repository.RoleRepository;

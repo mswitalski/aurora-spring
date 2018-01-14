@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.msk.web.converter.EvaluationDtoToEntityConverter;
 import pl.lodz.p.aurora.msk.web.converter.EvaluationEntityToDtoConverter;
 import pl.lodz.p.aurora.msk.web.dto.EvaluationDto;

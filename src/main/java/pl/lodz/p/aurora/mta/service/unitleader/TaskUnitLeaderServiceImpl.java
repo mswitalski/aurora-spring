@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.aurora.common.service.BaseService;
+import pl.lodz.p.aurora.msh.service.BaseService;
 import pl.lodz.p.aurora.mta.web.dto.StatisticsDto;
 import pl.lodz.p.aurora.mta.domain.entity.Task;
 import pl.lodz.p.aurora.mta.domain.repository.TaskRepository;

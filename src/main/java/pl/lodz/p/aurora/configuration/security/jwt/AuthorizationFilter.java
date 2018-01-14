@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import pl.lodz.p.aurora.common.exception.InvalidResourceRequestedException;
+import pl.lodz.p.aurora.msh.exception.InvalidResourceRequestedException;
 import pl.lodz.p.aurora.mus.web.dto.TokenClaimsDto;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 import pl.lodz.p.aurora.mus.domain.entity.User;

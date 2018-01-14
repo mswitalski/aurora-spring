@@ -1,4 +1,4 @@
-package pl.lodz.p.aurora.common.exception;
+package pl.lodz.p.aurora.msh.exception;
 
 public class ActionForbiddenException extends RuntimeException {
 

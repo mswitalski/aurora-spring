@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.aurora.common.web.controller.BaseController;
+import pl.lodz.p.aurora.msh.web.controller.BaseController;
 import pl.lodz.p.aurora.mme.web.converter.FeedbackEntityToDtoConverter;
 import pl.lodz.p.aurora.mme.web.converter.MentorDtoToEntityConverter;
 import pl.lodz.p.aurora.mme.web.converter.MentorEntityToDtoConverter;
