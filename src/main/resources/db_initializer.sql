@@ -5,7 +5,7 @@ GRANT ALL ON SCHEMA public TO public;
 
 CREATE TABLE duty (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   name character varying(100) NOT NULL
 );
 
@@ -22,7 +22,7 @@ ALTER TABLE duty_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE evaluation (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   leaderevaluation character varying(255),
   leaderexplanation character varying(200) NOT NULL,
   selfevaluation character varying(255),
@@ -44,7 +44,7 @@ ALTER TABLE evaluation_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE feedback (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   createdatetime timestamp without time zone,
   satisfied boolean NOT NULL,
   studentfeedback character varying(200) NOT NULL,
@@ -65,7 +65,7 @@ ALTER TABLE feedback_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE mentor (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   active boolean NOT NULL,
   approved boolean NOT NULL,
   evaluation_id bigint NOT NULL
@@ -90,7 +90,7 @@ ALTER TABLE role OWNER TO dbadmin;
 
 CREATE TABLE skill (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   name character varying(50) NOT NULL
 );
 
@@ -107,7 +107,7 @@ ALTER TABLE skill_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE task (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   content character varying(100) NOT NULL,
   deadlinedate date,
   donedate date,
@@ -127,7 +127,7 @@ ALTER TABLE task_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE training (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   description character varying(500) NOT NULL,
   enddatetime timestamp without time zone NOT NULL,
   internal boolean NOT NULL,
@@ -150,7 +150,7 @@ ALTER TABLE training_id_sequence OWNER TO dbadmin;
 
 CREATE TABLE "user" (
   id bigint NOT NULL,
-  version bigint,
+  version bigint NOT NULL,
   email character varying(40) NOT NULL,
   enabled boolean NOT NULL,
   goals character varying(200) NOT NULL,
