@@ -7,7 +7,6 @@ import javax.validation.constraints.Size;
  * Entity class holding information about an user role in the system.
  */
 @Entity
-@Table
 public class Role {
 
     @Id

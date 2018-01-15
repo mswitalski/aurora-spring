@@ -21,10 +21,10 @@ public class LoggerAspect {
     private static Logger logger = Logger.getLogger(LoggerAspect.class.getName());
 
     @Around("pl.lodz.p.aurora.configuration.aspect.AspectPointcut.anyControllerAndServiceBean()")
-    public Object aroundAnyControllerOrServiceCall(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object aroundAnyControllerOrServiceCall(ProceedingJoinPoint point) throws Throwable {
         StringBuilder messageToLog = new StringBuilder("Invoked business method: ")
-                .append(proceedingJoinPoint.getTarget().getClass().getName())
-                .append(".").append(proceedingJoinPoint.getSignature().getName()).append("()");
+                .append(point.getTarget().getClass().getName())
+                .append(".").append(point.getSignature().getName()).append("()");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null) {
@@ -32,7 +32,7 @@ public class LoggerAspect {
         }
 
         messageToLog.append(" Parameters values: ");
-        Object[] params = proceedingJoinPoint.getArgs();
+        Object[] params = point.getArgs();
 
         if (params.length > 0) {
             Arrays.stream(params).forEach(param -> {
@@ -52,7 +52,7 @@ public class LoggerAspect {
 
         try {
             long startTime = System.currentTimeMillis();
-            result = proceedingJoinPoint.proceed();
+            result = point.proceed();
             long duration = System.currentTimeMillis() - startTime;
             messageToLog.append(" Processing time: ").append(duration).append("ms");
 

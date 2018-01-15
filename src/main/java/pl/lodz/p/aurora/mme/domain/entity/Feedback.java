@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
-@Table
 public class Feedback extends VersionedEntity {
 
     @Id
