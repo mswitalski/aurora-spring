@@ -117,7 +117,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                     return new UsernamePasswordAuthenticationToken(storedUser, null, storedUser.getAuthorities());
 
                 } else {
-                    logger.info("The subject in provided token does not exist");
+                    logger.info("Provided token is not valid - subject does not exists or his data has changed");
                 }
 
             } catch (ExpiredJwtException ex) {
@@ -143,6 +143,6 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private boolean areTokenClaimsValid(User user, TokenClaimsDto dto) {
-        return user != null && user.isEnabled() && user.getRoles().containsAll(dto.getRoles());
+        return user != null && user.isEnabled() && dto.getRoles().containsAll(user.getRoles());
     }
 }
