@@ -117,7 +117,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                     return new UsernamePasswordAuthenticationToken(storedUser, null, storedUser.getAuthorities());
 
                 } else {
-                    logger.info("Provided token is not valid - subject does not exists or his data has changed");
+                    logger.info("Provided token is not valid - subject does not exist or his data has changed");
                 }
 
             } catch (ExpiredJwtException ex) {
