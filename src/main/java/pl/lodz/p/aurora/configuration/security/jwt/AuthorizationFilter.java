@@ -143,6 +143,6 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private boolean areTokenClaimsValid(User user, TokenClaimsDto dto) {
-        return user != null && user.isEnabled() && dto.getRoles().containsAll(user.getRoles());
+        return user != null && user.isEnabled() && dto.getRoles().equals(user.getRoles());
     }
 }
