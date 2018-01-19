@@ -158,9 +158,6 @@ CREATE TABLE "user" (
   username   CHARACTER VARYING(20)                      NOT NULL
 );
 
-ALTER TABLE "user"
-  OWNER TO dbadmin;
-
 CREATE TABLE user_duty (
   user_id BIGINT NOT NULL,
   duty_id BIGINT NOT NULL
@@ -259,25 +256,11 @@ ALTER TABLE ONLY task
   ADD CONSTRAINT task_user_fkey FOREIGN KEY (user_id) REFERENCES "user" (id);
 
 -- Define roles and privileges
--- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM aurmme;
--- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM aurmta;
--- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM aurmtr;
--- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM aurmsk;
--- REVOKE ALL ON ALL TABLES IN SCHEMA public FROM aurmus;
---
--- DROP ROLE aurmme;
--- DROP ROLE aurmta;
--- DROP ROLE aurmtr;
--- DROP ROLE aurmsk;
--- DROP ROLE aurmus;
-
 CREATE ROLE aurmme WITH LOGIN PASSWORD 'jz43hpz@m&#q3N^?';
 CREATE ROLE aurmta WITH LOGIN PASSWORD 'ezf*Er3#6nt-2P@Q';
 CREATE ROLE aurmtr WITH LOGIN PASSWORD 'a5j*@_eQN5xYawr6';
 CREATE ROLE aurmsk WITH LOGIN PASSWORD '7xfvuTV?%vnzz$S5';
 CREATE ROLE aurmus WITH LOGIN PASSWORD 'BF!+r8+kMaY2cR3y';
-
-GRANT ALL ON ALL TABLES IN SCHEMA public TO dbadmin;
 
 GRANT SELECT ON duty TO aurmme;
 GRANT SELECT ON evaluation TO aurmme;
