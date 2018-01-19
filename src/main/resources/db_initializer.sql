@@ -256,6 +256,11 @@ ALTER TABLE ONLY task
   ADD CONSTRAINT task_user_fkey FOREIGN KEY (user_id) REFERENCES "user" (id);
 
 -- Define roles and privileges
+DROP ROLE IF EXISTS aurmme;
+DROP ROLE IF EXISTS aurmta;
+DROP ROLE IF EXISTS aurmtr;
+DROP ROLE IF EXISTS aurmsk;
+DROP ROLE IF EXISTS aurmus;
 CREATE ROLE aurmme WITH LOGIN PASSWORD 'jz43hpz@m&#q3N^?';
 CREATE ROLE aurmta WITH LOGIN PASSWORD 'ezf*Er3#6nt-2P@Q';
 CREATE ROLE aurmtr WITH LOGIN PASSWORD 'a5j*@_eQN5xYawr6';
