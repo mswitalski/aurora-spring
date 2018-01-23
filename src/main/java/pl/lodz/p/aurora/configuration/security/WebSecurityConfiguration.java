@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,6 +33,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public WebSecurityConfiguration(AuroraUserDetailsService userDetailsService, PasswordEncoderProvider passwordEncoderProvider) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoderProvider = passwordEncoderProvider;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/");
     }
 
     @Override
@@ -118,7 +124,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/v1/tasks/{id:[\\d]+}").hasRole("EMPLOYEE")
 
                 // The rest of the configuration
-                .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().frameOptions().disable()

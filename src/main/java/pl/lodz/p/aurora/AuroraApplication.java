@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @SpringBootApplication(exclude = RepositoryRestMvcAutoConfiguration.class)
-public class AuroraApplication {
+public class AuroraApplication extends SpringBootServletInitializer {
 
     @Value("${aurora.i18n.supported-languages}")
     private String supportedLanguages;
@@ -48,5 +50,10 @@ public class AuroraApplication {
                 .map(Locale::forLanguageTag).collect(Collectors.toList()));
 
         return resolver;
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(AuroraApplication.class);
     }
 }
