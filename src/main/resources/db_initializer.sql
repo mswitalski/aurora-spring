@@ -133,15 +133,16 @@ CREATE TABLE task (
 
 
 CREATE TABLE training (
-  id            BIGINT DEFAULT nextval('training_id_sequence') NOT NULL,
-  version       BIGINT DEFAULT 0                               NOT NULL,
-  description   CHARACTER VARYING(500)                         NOT NULL,
-  enddatetime   TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
-  internal      BOOLEAN                                        NOT NULL,
-  location      CHARACTER VARYING(50)                          NOT NULL,
-  name          CHARACTER VARYING(100)                         NOT NULL,
-  startdatetime TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
-  type          CHARACTER VARYING(20)                          NOT NULL
+  id                BIGINT DEFAULT nextval('training_id_sequence') NOT NULL,
+  version           BIGINT DEFAULT 0                               NOT NULL,
+  description       CHARACTER VARYING(500)                         NOT NULL,
+  enddatetime       TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+  internal          BOOLEAN                                        NOT NULL,
+  participantslimit INTEGER                                        NOT NULL,
+  location          CHARACTER VARYING(50)                          NOT NULL,
+  name              CHARACTER VARYING(100)                         NOT NULL,
+  startdatetime     TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+  type              CHARACTER VARYING(20)                          NOT NULL
 );
 
 
@@ -462,44 +463,44 @@ INSERT INTO PUBLIC.feedback (satisfied, studentfeedback, createdatetime, mentor_
 VALUES (TRUE, 'some feedback', current_timestamp - INTERVAL '42 day', 4, 1);
 
 -- Create trainings
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Maven training', 'Workshop', 'Conference room 209', TRUE, current_date - INTERVAL '1 day' + INTERVAL '9 hour',
-   current_date - INTERVAL '1 day' + INTERVAL '12 hour', 'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   current_date - INTERVAL '1 day' + INTERVAL '12 hour', 'some description', 10);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('JPA/Hibernate training', 'Workshop', 'Conference room 403', TRUE,
    current_date - INTERVAL '5 day' + INTERVAL '12 hour', current_date - INTERVAL '5 day' + INTERVAL '16 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 15);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Introduction to collections in C#', 'Presentation', 'Conference room 521', TRUE,
    current_date - INTERVAL '10 day' + INTERVAL '8 hour', current_date - INTERVAL '10 day' + INTERVAL '16 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 10);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Advanced features of GIT', 'Workshop', 'Conference room 217', TRUE,
    current_date + INTERVAL '1 day' + INTERVAL '8 hour', current_date + INTERVAL '1 day' + INTERVAL '14 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 5);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Self improvement for everybody', 'Workshop', 'Kraków, Piaseczna 5', FALSE,
    current_date + INTERVAL '3 day' + INTERVAL '14 hour', current_date + INTERVAL '3 day' + INTERVAL '16 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 50);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('How to use new coffee machine', 'Presentation', 'Conference room 311', TRUE,
    current_date + INTERVAL '5 day' + INTERVAL '10 hour', current_date + INTERVAL '5 day' + INTERVAL '12 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 25);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Migration from PHP5 to PHP7', 'Presentation', 'Conference room 203', TRUE,
    current_date + INTERVAL '5 day' + INTERVAL '9 hour', current_date + INTERVAL '5 day' + INTERVAL '12 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 5);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Linux administration', 'Workshop', 'Conference room 403', TRUE,
    current_date + INTERVAL '6 day' + INTERVAL '11 hour', current_date + INTERVAL '6 day' + INTERVAL '15 hour',
-   'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   'some description', 8);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('Java9 features', 'Presentation', 'Conference room 209', TRUE, current_date - INTERVAL '8 day' + INTERVAL '8 hour',
-   current_date - INTERVAL '8 day' + INTERVAL '10 hour', 'some description');
-INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description) VALUES
+   current_date - INTERVAL '8 day' + INTERVAL '10 hour', 'some description', 20);
+INSERT INTO PUBLIC.training (name, type, location, internal, startdatetime, enddatetime, description, participantslimit) VALUES
   ('SQL Injections and how to prevent them', 'Workshop', 'Conference room 311', TRUE,
    current_date + INTERVAL '10 day' + INTERVAL '10 hour', current_date + INTERVAL '10 day' + INTERVAL '13 hour',
-   'some description');
+   'some description', 5);
 
 -- Create relationships between trainings and users
 INSERT INTO PUBLIC.user_training (user_id, training_id) VALUES (1, 1);

@@ -6,6 +6,7 @@ import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.mus.domain.entity.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -57,6 +58,11 @@ public class Training extends VersionedEntity {
     @Column(nullable = false)
     @NotNull
     private boolean internal = true;
+
+    @Column(nullable = false)
+    @NotNull
+    @Min(1)
+    private Integer participantsLimit;
 
     @Column(nullable = false, length = 500)
     @NoHtml
@@ -132,6 +138,14 @@ public class Training extends VersionedEntity {
 
     public void setInternal(boolean internal) {
         this.internal = internal;
+    }
+
+    public Integer getParticipantsLimit() {
+        return participantsLimit;
+    }
+
+    public void setParticipantsLimit(Integer participantsLimit) {
+        this.participantsLimit = participantsLimit;
     }
 
     public String getDescription() {

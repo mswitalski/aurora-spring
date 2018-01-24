@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.msh.service.BaseService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarService;
 import pl.lodz.p.aurora.integration.outlook.service.CalendarServiceImpl;
+import pl.lodz.p.aurora.mtr.exception.OverpeopledTrainingException;
 import pl.lodz.p.aurora.mtr.web.dto.TrainingSearchDto;
 import pl.lodz.p.aurora.mtr.domain.entity.Training;
 import pl.lodz.p.aurora.mtr.domain.repository.TrainingRepository;
@@ -110,12 +111,14 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
 
         failIfNoRecordInDatabaseFound(storedTraining, trainingId);
         failIfInvalidDateTimes(training);
+        failIfExceededParticipantsLimit(training);
         storedTraining.setName(training.getName());
         storedTraining.setType(training.getType());
         storedTraining.setLocation(training.getLocation());
         storedTraining.setStartDateTime(training.getStartDateTime());
         storedTraining.setEndDateTime(training.getEndDateTime());
         storedTraining.setInternal(training.isInternal());
+        storedTraining.setParticipantsLimit(training.getParticipantsLimit());
         storedTraining.setDescription(training.getDescription());
         storedTraining.setUsers(training.getUsers().stream()
                 .map(u -> userService.findById(u.getId())).collect(Collectors.toSet()));
@@ -123,6 +126,12 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
 
         if (outlookAuthToken != null) {
             outlookService.updateEvent(storedTraining, outlookAuthToken);
+        }
+    }
+
+    private void failIfExceededParticipantsLimit(Training training) {
+        if (training.getUsers().size() > training.getParticipantsLimit()) {
+            throw new OverpeopledTrainingException("Unit leader tried to assign more users to the training than limit");
         }
     }
 }

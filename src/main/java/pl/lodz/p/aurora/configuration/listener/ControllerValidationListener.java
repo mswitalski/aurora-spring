@@ -22,6 +22,7 @@ import pl.lodz.p.aurora.mme.exception.SelfFeedbackException;
 import pl.lodz.p.aurora.mme.exception.TooFrequentFeedbackException;
 import pl.lodz.p.aurora.mta.exception.InvalidDateException;
 import pl.lodz.p.aurora.mtr.exception.InvalidDateTimeException;
+import pl.lodz.p.aurora.mtr.exception.OverpeopledTrainingException;
 
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -168,5 +169,16 @@ public class ControllerValidationListener {
         }
 
         return messages;
+    }
+
+    @ExceptionHandler(OverpeopledTrainingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public List<ValidationMessageDto> processOverpeopledTraining(OverpeopledTrainingException exception) {
+        logger.info(exception.getMessage());
+        Locale locale = LocaleContextHolder.getLocale();
+        String translatedMessage = translator.translate("Training.participantsLimit.overpeopled", locale);
+
+        return Collections.singletonList(new ValidationMessageDto(translatedMessage, "participantsLimit"));
     }
 }

@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import pl.lodz.p.aurora.msh.validator.NoHtml;
 import pl.lodz.p.aurora.mus.web.dto.UserBasicDto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -42,6 +43,10 @@ public class TrainingDto {
 
     @NotNull(message = "{Default.NotNull}")
     private boolean internal = true;
+
+    @NotNull(message = "{Default.NotNull}")
+    @Min(value = 1, message = "{Default.Min}")
+    private Integer participantsLimit;
 
     @NoHtml
     @NotNull(message = "{Default.NotNull}")
@@ -123,6 +128,14 @@ public class TrainingDto {
 
     public void setInternal(boolean internal) {
         this.internal = internal;
+    }
+
+    public Integer getParticipantsLimit() {
+        return participantsLimit;
+    }
+
+    public void setParticipantsLimit(Integer participantsLimit) {
+        this.participantsLimit = participantsLimit;
     }
 
     public Set<UserBasicDto> getUsers() {
