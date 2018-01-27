@@ -1,10 +1,8 @@
 package pl.lodz.p.aurora.min.outlook.service;
 
-import org.springframework.http.HttpStatus;
-import pl.lodz.p.aurora.min.outlook.dao.CalendarDao;
-import pl.lodz.p.aurora.min.outlook.dao.CalendarDaoImpl;
+import pl.lodz.p.aurora.min.outlook.dao.EventDao;
+import pl.lodz.p.aurora.min.outlook.dao.EventDaoImpl;
 import pl.lodz.p.aurora.min.outlook.dto.Event;
-import pl.lodz.p.aurora.min.outlook.dto.ResponseEventsList;
 import pl.lodz.p.aurora.mtr.domain.entity.Training;
 
 import java.util.List;
@@ -12,14 +10,13 @@ import java.util.Optional;
 
 public class CalendarServiceImpl implements CalendarService {
 
-    private CalendarDao dao = new CalendarDaoImpl();
+    private EventDao dao = new EventDaoImpl();
 
     @Override
-    public boolean createEvent(Training training, String authToken) {
+    public void createEvent(Training training, String authToken) {
         Event event = new Event();
         setEventFields(event, training);
-
-        return dao.createEvent(event, authToken).getStatusCode() == HttpStatus.CREATED;
+        dao.create(event, authToken);
     }
 
     private void setEventFields(Event event, Training training) {
@@ -33,30 +30,27 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public void deleteEvent(Training training, String authToken) {
-        List<Event> eventList = dao.getEventsList(authToken).getBody().getEvents();
+        List<Event> eventList = dao.findAll(authToken).getEvents();
         Optional<Event> relatedEvent = eventList.stream()
                 .filter(e -> e.getSubject().equals(training.getName()))
                 .findFirst();
-        relatedEvent.ifPresent(event -> dao.deleteEvent(event, authToken));
+        relatedEvent.ifPresent(event -> dao.delete(event, authToken));
     }
 
     @Override
-    public boolean updateEvent(Training training, String authToken) {
-        ResponseEventsList xD = dao.getEventsList(authToken).getBody();
-        System.out.println(xD == null);
-        List<Event> eventList = xD.getEvents();
+    public void updateEvent(Training training, String authToken) {
+        List<Event> eventList = dao.findAll(authToken).getEvents();
         Optional<Event> relatedEvent = eventList.stream()
                 .filter(e -> e.getSubject().equals(training.getName()))
                 .findFirst();
 
         if (relatedEvent.isPresent()) {
-            Event storedEvent = dao.findById(relatedEvent.get().getId(), authToken).getBody();
+            Event storedEvent = dao.findById(relatedEvent.get().getId(), authToken);
             setEventFields(storedEvent, training);
-
-            return dao.updateEvent(storedEvent, authToken).getStatusCode() == HttpStatus.OK;
+            dao.update(storedEvent, authToken);
 
         } else {
-            return createEvent(training, authToken);
+            createEvent(training, authToken);
         }
     }
 }

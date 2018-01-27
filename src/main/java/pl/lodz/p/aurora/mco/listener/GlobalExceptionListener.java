@@ -7,6 +7,8 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestClientException;
+import pl.lodz.p.aurora.min.outlook.exception.OutlookApiException;
 import pl.lodz.p.aurora.msh.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.msh.exception.InvalidApplicationConfigurationException;
 import pl.lodz.p.aurora.msh.exception.InvalidRequestException;
@@ -48,5 +50,17 @@ public class GlobalExceptionListener {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void processInvalidRequest(InvalidRequestException exception) {
         logger.warn(exception.getMessage(), exception);
+    }
+
+    @ExceptionHandler(RestClientException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void processRestClient(RestClientException exception) {
+        logger.error(exception.getMessage(), exception);
+    }
+
+    @ExceptionHandler(OutlookApiException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public void processOutlookApi(OutlookApiException exception) {
+        logger.error(exception.getMessage(), exception);
     }
 }

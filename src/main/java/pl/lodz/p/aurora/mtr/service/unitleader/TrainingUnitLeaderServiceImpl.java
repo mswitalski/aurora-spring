@@ -44,7 +44,7 @@ public class TrainingUnitLeaderServiceImpl extends BaseService implements Traini
         Training saved = save(training, repository);
 
         if (outlookAuthToken != null) {
-            System.out.println(outlookService.createEvent(saved, outlookAuthToken));
+            outlookService.createEvent(saved, outlookAuthToken);
         }
 
         return saved;
