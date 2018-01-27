@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.aurora.msh.exception.ActionForbiddenException;
 import pl.lodz.p.aurora.msh.service.BaseService;
-import pl.lodz.p.aurora.configuration.security.PasswordEncoderProvider;
+import pl.lodz.p.aurora.mco.security.PasswordEncoderProvider;
 import pl.lodz.p.aurora.mus.domain.entity.Duty;
 import pl.lodz.p.aurora.mus.domain.entity.Role;
 import pl.lodz.p.aurora.mus.domain.entity.User;
