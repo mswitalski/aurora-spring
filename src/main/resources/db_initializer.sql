@@ -353,16 +353,16 @@ INSERT INTO PUBLIC."user" (username, password, name, surname, email, enabled, po
    'unitleader@bar.mail.dummy', TRUE, 'Unit leader', 'Deliver IoT Nova project before deadline');
 INSERT INTO PUBLIC."user" (username, password, name, surname, email, enabled, position, goals) VALUES
   ('employee', '$2a$11$Msstp8c.6ktm4x7Y63QI3ezgnPqFPiuTuMOh.ysCVIbZBJMJL6Aqi', 'Adam', 'Zaborowski',
-   'employee@bar.mail.dummy', TRUE, 'Junior Java Programmer', 'Opanować dobrze Jave i zostać wreszcie regularem');
+   'pl.2018.aurora@outlook.com', TRUE, 'Junior Java Programmer', 'Opanować dobrze Jave i zostać wreszcie regularem');
 INSERT INTO PUBLIC."user" (username, password, name, surname, email, enabled, position, goals) VALUES
   ('adminunitleader', '$2a$11$Msstp8c.6ktm4x7Y63QI3ezgnPqFPiuTuMOh.ysCVIbZBJMJL6Aqi', 'Joanna', 'Zaborowska',
-   'adminunitleader@bar.mail.dummy', TRUE, 'Senior Android Programmer', 'Get to know the new Android 8.0');
+   'pl.2018.aurora.jz@outlook.com', TRUE, 'Senior Android Programmer', 'Get to know the new Android 8.0');
 INSERT INTO PUBLIC."user" (username, password, name, surname, email, enabled, position, goals) VALUES
   ('adminemployee', '$2a$11$Msstp8c.6ktm4x7Y63QI3ezgnPqFPiuTuMOh.ysCVIbZBJMJL6Aqi', 'Emil', 'Gustaffsonn',
    'adminemployee@bar.mail.dummy', TRUE, 'Senior Architect', 'Meet with Bill Gates');
 INSERT INTO PUBLIC."user" (username, password, name, surname, email, enabled, position, goals) VALUES
   ('allroles', '$2a$11$Msstp8c.6ktm4x7Y63QI3ezgnPqFPiuTuMOh.ysCVIbZBJMJL6Aqi', 'Sigur', 'Ross',
-   'allroles@bar.mail.dummy', TRUE, 'Senior Designer', 'Go to Paris for Nova conference');
+   'pl.2018.aurora.sr@outlook.com', TRUE, 'Senior Designer', 'Go to Paris for Nova conference');
 
 -- Create relationships between users and roles
 INSERT INTO PUBLIC.user_role VALUES (1, 'ADMIN');
