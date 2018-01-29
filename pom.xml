@@ -5,8 +5,8 @@
 
     <groupId>pl.lodz.p</groupId>
     <artifactId>aurora</artifactId>
-    <version>0.0.26-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <name>aurora</name>
     <description>BEng Thesis for Lodz University of Technology</description>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
