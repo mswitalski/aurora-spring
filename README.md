@@ -1,9 +1,10 @@
 # Aurora - server application made with Spring Boot
 
-Aurora is a system supporting development of employees' competencies built with simplicity in mind. This project is a part of my BSc Thesis: "System supporting development of employees' competencies in Java EE technology".
+Aurora is a system supporting development of employees' competencies built with simplicity in mind. This project is a part of my BSc Thesis: "**System supporting development of employees' competencies in Java EE technology**".
 
 ## Description
 The server application was made with:
+* Maven
 * Spring Framework
 * Spring Boot
 * Spring Data
