@@ -1,23 +1,21 @@
-# Aurora #
+# Aurora - server application made with Spring Boot
 
-Aurora is a system supporting development of employees' competencies built with simplicity in mind.
+Aurora is a system supporting development of employees' competencies built with simplicity in mind. This project is a part of my BSc Thesis: "System supporting development of employees' competencies in Java EE technology".
 
-### How do I get set up? ###
+## Description
+The server application was made with:
+* Spring Framework
+* Spring Boot
+* Spring Data
+* Spring Security
+* Hibernate
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+It also uses:
+* JWT
+* PostgreSQL database
 
-### Contribution guidelines ###
+## Database set up
+Create a new PostgreSQL database `auroraproject` and initialize it with provided `db-init.sql` script.
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+## License
+This project is released under the MIT license.
