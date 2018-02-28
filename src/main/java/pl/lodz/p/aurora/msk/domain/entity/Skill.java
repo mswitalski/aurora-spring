@@ -32,6 +32,11 @@ public class Skill extends VersionedEntity {
     public Skill() {
     }
 
+    public Skill(String name, Set<Evaluation> users) {
+        this.name = name;
+        this.users = users;
+    }
+
     @Override
     public Long getId() {
         return id;
