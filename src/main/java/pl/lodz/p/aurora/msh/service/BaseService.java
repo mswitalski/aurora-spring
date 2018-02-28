@@ -44,23 +44,23 @@ public abstract class BaseService {
     }
 
     /**
-     * Save given user to data source and return managed entity.
+     * Save given entity to data source and return managed entity.
      *
-     * @param user User object that we want to save to data source
+     * @param entity Entity object that we want to save to data source
      * @param repository Repository for object that we want to save
-     * @return Managed users entity saved to data source
+     * @return Managed entity saved to data source
      * @throws UniqueConstraintViolationException when provided entity violates unique constraints
      * @throws InvalidEntityStateException when entity has invalid state in spite of previously DTO validation
      */
-    protected <T, ID extends Serializable> T save(T user, JpaRepository<T, ID> repository) {
+    protected <T, ID extends Serializable> T save(T entity, JpaRepository<T, ID> repository) {
         try {
-            return repository.saveAndFlush(user);
+            return repository.saveAndFlush(entity);
 
         } catch (DataIntegrityViolationException exception) {
-            failOnUniqueConstraintViolation(exception, user);
+            failOnUniqueConstraintViolation(exception, entity);
 
         } catch (ConstraintViolationException exception) {
-            throw new InvalidEntityStateException(user, exception);
+            throw new InvalidEntityStateException(entity, exception);
         }
 
         return null;
